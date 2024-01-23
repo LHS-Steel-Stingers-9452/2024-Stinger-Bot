@@ -6,10 +6,44 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants.Swerve;
+import frc.robot.Constants.ControllerConstants;
+import frc.robot.subsystems.SwerveBase;
+
 public class TeleopSwerve extends Command {
   /** Creates a new TeleopSwerve. */
-  public TeleopSwerve() {
+  private SwerveBase swerveBase;
+
+  private DoubleSupplier translationSup;
+  private DoubleSupplier strafeSup;
+  private DoubleSupplier rotationSup;
+
+  private BooleanSupplier robotCentricSup;
+
+  //limiters to soften control inputs
+  private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+  private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+
+  public TeleopSwerve( SwerveBase swerveBase,
+  DoubleSupplier translationSup,
+  DoubleSupplier strafeSup,
+  DoubleSupplier rotationSup,
+  BooleanSupplier robotCentricSup) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.swerveBase = swerveBase;
+    this.translationSup = translationSup;
+    this.strafeSup = strafeSup;
+    this.rotationSup = rotationSup;
+    this.robotCentricSup = robotCentricSup;
+
+    addRequirements(swerveBase);
+    
   }
 
   // Called when the command is initially scheduled.
@@ -18,7 +52,21 @@ public class TeleopSwerve extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //apply filters to control inputs
+    double translationVal = translationFilter.calculate(translationSup.getAsDouble());
+    double strafeVal = translationFilter.calculate(strafeSup.getAsDouble());
+    double rotationVal = rotationFilter.calculate(rotationSup.getAsDouble());
+
+    //apply new values to drive function in swerveBase file
+    swerveBase.drive(
+      /* 
+      new Translation2d(translationVal, strafeVal) * (Swerve.maxSpeed),
+      rotationalVal * Swerve.maxAngularVelcoity,
+      !robotCentricSup.getAsBoolean()
+      */
+    );
+  }
 
   // Called once the command ends or is interrupted.
   @Override
