@@ -41,52 +41,72 @@ public class Constants {
 
         );
 
+        public static final int maxDriveVelocity;
+        public static final int maxAngleVelocity;
+
+        public static final int freeCurrentVelocity;
+        public static final int stallCurrentVelocity;
+
 
 
         public static final class Mod0{
-            public static final int driveMotorID = 0;
-            public static final int angleMotorID = 4;
-            public static final int canCoderID = 8;
-            public static final Rotation2d angeOffset;
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 5;
+            public static final int canCoderID = 9;
+            public static final Rotation2d angleOffset;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 
         }
 
         public static final class Mod1{
-            public static final int driveMotorID = 1;
-            public static final int angleMotorID = 5;
-            public static final int canCoderID = 9;
-            public static final Rotation2d angeOffset;
+            public static final int driveMotorID = 2;
+            public static final int angleMotorID = 6;
+            public static final int canCoderID = 10;
+            public static final Rotation2d angelOffset;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
         }
 
         public static final class Mod2{
-            public static final int driveMotorID = 2;
-            public static final int angleMotorID = 6;
-            public static final int canCoderID = 10;
-            public static final Rotation2d angeOffset;
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 7;
+            public static final int canCoderID = 11;
+            public static final Rotation2d angleOffset;
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
         }
 
         public static final class Mod3{
-            public static final int driveMotorID = 3;
-            public static final int angleMotorID = 7;
-            public static final int canCoderID = 11;
-            public static final Rotation2d angeOffset;
+            public static final int driveMotorID = 4;
+            public static final int angleMotorID = 8;
+            public static final int canCoderID = 12;
+            public static final Rotation2d angleOffset;
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, angleOffset);
             
         }
     }
 
-    public static final class IntakeConstants{}
+    public static final class IntakeConstants{
+        public static final int intakeMotorID;
+        public static final double maxMotorVelocity;
 
-    public static final class LauncherConstants{}
+        public static final int freeCurrentLimit;
+        public static final int stallCurrentLimit;
+    }
+
+    public static final class LauncherConstants{
+        public static final int topLaunchMotorID;
+        public static final int bottomLauncherMotorID;
+
+        public static final double maxMotorVelocityPercent;
+
+        public static final int freeCurrentLimit;
+        public static final int stallCurrentLimit;
+    }
 
     public static final class ArmConstants{}
 
