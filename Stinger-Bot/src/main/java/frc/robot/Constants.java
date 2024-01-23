@@ -83,8 +83,13 @@ public class Constants {
             
         }
     }
-    public static final class AutoConstants{
 
-    }
+    public static final class IntakeConstants{}
+
+    public static final class LauncherConstants{}
+
+    public static final class ArmConstants{}
+
+    public static final class AutoConstants{}
     
 }
