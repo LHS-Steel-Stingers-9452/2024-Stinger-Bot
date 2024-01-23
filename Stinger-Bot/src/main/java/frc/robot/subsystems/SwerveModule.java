@@ -25,7 +25,7 @@ public class SwerveModule {
 
     //encoder/module configuration values(on top because they are physical factors)
     private double lastAngle;
-    private Rotation2d canCoderOffset;
+    private Rotation2d angleOffset;
 
     //motors
     private final CANSparkMax driveMotor;
@@ -53,7 +53,7 @@ public class SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         integratedAngleEncoder = angleMotor.getEncoder();
         canCoder = new CANcoder(swerveConstants.canCoderID);
-        canCoderOffset = swerveConstants.canCoderOffset;
+        angleOffset = swerveConstants.angleOffset;
 
         drivePIDController = driveMotor.getPIDController();
         anglePIDController = angleMotor.getPIDController();

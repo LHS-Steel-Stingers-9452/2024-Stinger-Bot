@@ -7,11 +7,11 @@ public class SwerveModuleConstants {
     public final int canCoderID;
     public final Rotation2d canCoderOffset;
 
-    public SwerveModuleConstants(int driveMotorCanID, int angleMotorCanID, int canCoderID, Rotation2d canCoderOffset) {
+    public SwerveModuleConstants(int driveMotorCanID, int angleMotorCanID, int canCoderID, Rotation2d angleOffset) {
         this.driveMotorCanID = driveMotorCanID;
         this.angleMotorCanID = angleMotorCanID;
         this.canCoderID = canCoderID;
-        this.canCoderOffset = canCoderOffset;
+        this.canCoderOffset = angleOffset;
     }
     
 }
