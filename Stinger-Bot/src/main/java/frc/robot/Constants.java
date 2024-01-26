@@ -22,7 +22,7 @@ public class Constants {
 
     public static final class Swerve{
         //Gyro ID
-        public static final int PIGEON_ID = 12;
+        public static final int PIGEON_ID = 13;
 
         //DriveTrain Constants
         public static final double TRACK_WIDTH = Units.inchesToMeters(24.75);
@@ -40,15 +40,23 @@ public class Constants {
             new Translation2d(-WHEELBASE/2, -TRACK_WIDTH/2)
 
         );
+        //meters/sec
+        public static final double maxDriveSpeed = 4.0; //values are subject to change upon testing
+        public static final double maxAngleVelocity = 4.0; 
 
-        public static final int maxDriveVelocity;
-        public static final int maxAngleVelocity;
+        public static final int driveCurrentLimit = 80;
+        public static final int angleCurrentLimit = 40;
 
-        public static final int freeCurrentVelocity;
-        public static final int stallCurrentVelocity;
+        public static final boolean openLoop = true;
 
+        //feed forward values, need to be obtiaed though WPI charactarization tool
+        public static final int driveKS;
+        public static final int driveKV;
+        public static final int driveKA;
 
-
+        public static final int driveP;
+        public static final int driveI;
+        public static final int driveD;
         public static final class Mod0{
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 5;
@@ -63,7 +71,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 10;
-            public static final Rotation2d angelOffset;
+            public static final Rotation2d angleOffset;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -85,7 +93,7 @@ public class Constants {
             public static final int canCoderID = 12;
             public static final Rotation2d angleOffset;
             public static final SwerveModuleConstants constants = 
-            new SwerveModuleConstants(driveMotorID, angleMotorID, angleOffset);
+                new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             
         }
     }
