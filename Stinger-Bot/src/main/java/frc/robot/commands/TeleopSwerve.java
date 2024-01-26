@@ -55,16 +55,15 @@ public class TeleopSwerve extends Command {
   public void execute() {
     //apply filters to control inputs
     double translationVal = translationFilter.calculate(translationSup.getAsDouble());
-    double strafeVal = translationFilter.calculate(strafeSup.getAsDouble());
+    double strafeVal = strafeFilter.calculate(strafeSup.getAsDouble());
     double rotationVal = rotationFilter.calculate(rotationSup.getAsDouble());
 
     //apply new values to drive function in swerveBase file
     swerveBase.drive(
-      /* 
-      new Translation2d(translationVal, strafeVal) * (Swerve.maxSpeed),
-      rotationalVal * Swerve.maxAngularVelcoity,
-      !robotCentricSup.getAsBoolean()
-      */
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxDriveSpeed)),
+      (rotationVal * Swerve.maxAngleVelocity),
+      (!robotCentricSup.getAsBoolean()),
+      (Swerve.openLoop)
     );
   }
 
