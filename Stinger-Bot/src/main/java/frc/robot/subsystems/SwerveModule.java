@@ -11,20 +11,23 @@ import frc.robot.SwerveModuleConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+//import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 //import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 
 /** Add your docs here. */
 public class SwerveModule {
-    private final int moduleNumber;
+    public int moduleNumber;
 
     //encoder/module configuration values(on top because they are physical factors)
-    private double lastAngle;
+    private Rotation2d lastAngle;
     private Rotation2d angleOffset;
 
     //motors
@@ -41,7 +44,8 @@ public class SwerveModule {
     private final SparkPIDController anglePIDController;
 
     //feed forward WEIRD
-    private final SimpleMotorFeedforward driveFeedforward;
+    private final SimpleMotorFeedforward driveFeedforward = 
+        new SimpleMotorFeedforward(Swerve.driveKS, Swerve.driveKV, Swerve.driveKA);
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants swerveConstants){
         //initialize variables here
@@ -52,6 +56,7 @@ public class SwerveModule {
 
         driveEncoder = driveMotor.getEncoder();
         integratedAngleEncoder = angleMotor.getEncoder();
+
         canCoder = new CANcoder(swerveConstants.canCoderID);
         angleOffset = swerveConstants.angleOffset;
 
@@ -60,21 +65,42 @@ public class SwerveModule {
 
         driveFeedforward = new SimpleMotorFeedforward(moduleNumber, moduleNumber, moduleNumber);
 
-        configureDrive();
-        configureAngle();
-        //lastAngle = getState().angle.getradians()
+        driveConfig();
+        angleConfig();
+
+        lastAngle = getState().angle;
 
 
     }
 
-    public void configureDrive() {
+    public void driveConfig() {
         //configure motors
+        driveMotor.restoreFactoryDefaults();
         driveMotor.setInverted(false);
+        driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);
+
+
         //confiugre encoders
         //configure other stuff
     }
 
-    public void configureAngle(){
-        angleMotor.setInverted(false);
+    public void angleConfig(){
+        //configure motors
+        angleMotor.restoreFactoryDefaults();
+        angleMotor.setInverted(true);
+        angleMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);
+        integratedAngleEncoder.setPositionConversionFactor(moduleNumber)
+
+        //configure encoders
+    }
+
+    private Rotation2d getAngle(){
+        return Rotation2d.fromDegrees(integratedAngleEncoder.getPosition());
+    } 
+
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(driveEncoder.getVelocity(), getAngle());
     }
 }
