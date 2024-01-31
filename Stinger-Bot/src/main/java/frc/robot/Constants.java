@@ -33,6 +33,15 @@ public class Constants {
         public static final double DRIVE_GEAR_RATIO = 6.75/1.0; //6.75:1
         public static final double ANGLE_GEAR_RATIO = (150.0/7.0)/1.0; //150/7:1
 
+        //Encoder converstion factors
+        public static final double DRIVE_ENCODER_POSITION_FACTOR = WHEEL_CIRCUMFERENCE / DRIVE_GEAR_RATIO;//Distance traveled
+        public static final double DRIVE_ENCODER_VELOCITY_FACTOR = DRIVE_ENCODER_POSITION_FACTOR / 60.0;//M/S
+
+        public static final double INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR = WHEEL_CIRCUMFERENCE / ANGLE_GEAR_RATIO;//Distance traveled
+        public static final double INTEGRATED_ANGLE_ENCODER_VELOCITY_FACTOR = INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR / 60.0;//M/S
+
+        public static final double CANCODER_VELOCITY_FACTOR = 360.0 / ANGLE_GEAR_RATIO;//Degrees per shaft rotation
+
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
             new Translation2d(WHEELBASE/2, TRACK_WIDTH/2),
             new Translation2d(WHEELBASE/2, -TRACK_WIDTH/2),
@@ -44,8 +53,8 @@ public class Constants {
         public static final double maxDriveSpeed = 4.0; //values are subject to change upon testing
         public static final double maxAngleVelocity = 4.0; 
 
-        public static final int driveCurrentLimit = 80;
-        public static final int angleCurrentLimit = 40;
+        public static final int driveCurrentLimit = 70;
+        public static final int angleCurrentLimit = 30;
 
         public static final boolean openLoop = true;
 
@@ -54,14 +63,16 @@ public class Constants {
         public static final int driveKV;
         public static final int driveKA;
 
+        //TBD
         public static final int driveP;
         public static final int driveI;
         public static final int driveD;
         public static final class Mod0{
+            //Offset values to be updated
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset;
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.03);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 
@@ -71,7 +82,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset;
+            public static final Rotation2d angleOffset =  Rotation2d.fromRotations(-0.086);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -81,7 +92,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset;
+            public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.163);
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -91,13 +102,13 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset;
+            public static final Rotation2d angleOffset =  Rotation2d.fromRotations(-0.025);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             
         }
     }
-
+/*
     public static final class IntakeConstants{
         public static final int intakeMotorID;
         public static final double maxMotorVelocity;
@@ -119,5 +130,5 @@ public class Constants {
     public static final class ArmConstants{}
 
     public static final class AutoConstants{}
-    
+*/
 }
