@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 import frc.robot.SwerveModuleConstants;
 
@@ -14,9 +14,9 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.units.Mult;
+//import edu.wpi.first.units.Mult;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+//import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -28,7 +28,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 //import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 
-import edu.wpi.first.math.util.Units;
+//import edu.wpi.first.math.util.Units;
 
 
 /** Add your docs here. */
@@ -54,11 +54,11 @@ public class SwerveModule {
     private final SparkPIDController drivePIDController;
     private final SparkPIDController anglePIDController;
 
-
-    /*feed forward WEIRD: use for close-loop
+/* 
+    //feed forward WEIRD: use for close-loop
     private final SimpleMotorFeedforward driveFeedforward = 
         new SimpleMotorFeedforward(Swerve.driveKS, Swerve.driveKV, Swerve.driveKA);
-    */
+*/
     public SwerveModule(int moduleNumber, SwerveModuleConstants swerveConstants){
         //initialize variables here
         this.moduleNumber = moduleNumber;
@@ -97,10 +97,11 @@ public class SwerveModule {
         drivePIDController.setPositionPIDWrappingEnabled(true);
         drivePIDController.setPositionPIDWrappingMinInput(-180);
         drivePIDController.setPositionPIDWrappingMaxInput(180);
-        //setp
-        //setI
-        //setD
-        //setFeedforward
+        drivePIDController.setP(Swerve.driveP);
+        drivePIDController.setI(Swerve.driveI);
+        drivePIDController.setD(Swerve.driveD);
+        drivePIDController.setFF(Swerve.driveFF);
+        //setFeedforward  use for closed loop
         //voltage compensation?
         driveMotor.burnFlash();
         //Reset As A Saftery Measure
@@ -121,10 +122,11 @@ public class SwerveModule {
         anglePIDController.setPositionPIDWrappingEnabled(true);
         anglePIDController.setPositionPIDWrappingMinInput(-180);
         anglePIDController.setPositionPIDWrappingMaxInput(180);
-        //setp
-        //setI
-        //setD
-        //setFeedforward
+       anglePIDController.setP(Swerve.angleP);
+       anglePIDController.setI(Swerve.angleI);
+       anglePIDController.setD(Swerve.angleD);
+       anglePIDController.setFF(Swerve.angleFF);
+        //setFeedforward use for closed loop
         //voltage compensation?
         angleMotor.burnFlash();
         //Reset As A Saftery Measure
