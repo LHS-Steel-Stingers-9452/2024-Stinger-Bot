@@ -83,9 +83,12 @@ public class SwerveBase extends SubsystemBase {
   }
 
   public Rotation2d getYaw(){
+    /* 
     return (false) 
     ? Rotation2d.fromDegrees(360 - pidgeotto.getYaw().getValue())
     : Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
+    */
+    return Rotation2d.fromDegrees(360 - pidgeotto.getYaw().getValue());
   }
 
   public SwerveModuleState[] getStates(){
