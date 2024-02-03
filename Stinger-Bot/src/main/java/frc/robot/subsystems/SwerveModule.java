@@ -18,6 +18,7 @@ import edu.wpi.first.units.Mult;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -161,8 +162,20 @@ public class SwerveModule {
         return new SwerveModuleState(driveEncoder.getVelocity(), getAngle());
     }
 
+    public SwerveModulePosition getPosition(){
+        return new SwerveModulePosition(
+            /* 
+            Use if rotation units don't work
+            Converts from Rotations to Distance traveled
+            driveEncoder.getPosition() * (Swerve.WHEEL_DIAMETER * Math.PI),
+            */
+            driveEncoder.getPosition(),
+            getAngle()
+        );
+    }
+
     //If necessary add closed loop option
-    private void setDesiredState(SwerveModuleState desiredModuleState){
+    public void setDesiredState(SwerveModuleState desiredModuleState){
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         driveMotor.set(desiredState.speedMetersPerSecond / Swerve.maxDriveSpeed);
