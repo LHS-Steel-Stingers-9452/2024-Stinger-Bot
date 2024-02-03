@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Swerve;
+import frc.robot.Constants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.SwerveBase;
 
@@ -50,13 +52,21 @@ public class TeleopSwerve extends Command {
   @Override
   public void initialize() {}
 
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     //apply filters to control inputs
-    double translationVal = translationFilter.calculate(translationSup.getAsDouble());
-    double strafeVal = strafeFilter.calculate(strafeSup.getAsDouble());
-    double rotationVal = rotationFilter.calculate(rotationSup.getAsDouble());
+    double translationVal =
+        translationFilter.calculate(
+            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+    double strafeVal =
+        strafeFilter.calculate(
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+    double rotationVal =
+        rotationFilter.calculate(
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+
 
     //apply new values to drive function in swerveBase file
     swerveBase.drive(
