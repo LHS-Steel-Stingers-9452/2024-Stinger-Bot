@@ -52,9 +52,15 @@ public class TeleopSwerve extends Command {
   @Override
   public void execute() {
     //apply filters to control inputs
-    double translationVal = translationFilter.calculate(translationSup.getAsDouble());
-    double strafeVal = strafeFilter.calculate(strafeSup.getAsDouble());
-    double rotationVal = rotationFilter.calculate(rotationSup.getAsDouble());
+    double translationVal =
+        translationFilter.calculate(
+            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+    double strafeVal =
+        strafeFilter.calculate(
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+    double rotationVal =
+        rotationFilter.calculate(
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
 
     //apply new values to drive function in swerveBase file
