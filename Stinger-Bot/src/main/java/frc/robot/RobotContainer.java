@@ -4,28 +4,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopSwerve;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 
 public class RobotContainer {
   //declare Controllers
-  private final Joystick driverController = new Joystick(ControllerConstants.DRIVER_CONTROLLER_PORT);
-  //private final XboxController operatorController;
-
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-  private final JoystickButton robotCentric =
-      new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+  private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
 
   private final SwerveBase swerveBase;
   private final TeleopSwerve teleopSwerve;
@@ -39,11 +27,11 @@ public class RobotContainer {
     swerveBase = new SwerveBase();
  
     teleopSwerve = new TeleopSwerve(
-      swerveBase, 
-      () -> -driverController.getRawAxis(translationAxis),
-      () -> driverController.getRawAxis(strafeAxis),
-      () -> driverController.getRawAxis(rotationAxis),
-      () -> robotCentric.getAsBoolean());
+      swerveBase,
+      () -> -driverController.getLeftY(),
+      () -> driverController.getLeftX(),
+      () -> driverController.getRightX(),
+      () -> driverController.leftBumper().getAsBoolean());
 
     
     swerveBase.setDefaultCommand(teleopSwerve);

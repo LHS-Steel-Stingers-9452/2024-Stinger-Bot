@@ -10,10 +10,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants.Swerve;
-import frc.robot.Constants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.SwerveBase;
 
@@ -28,9 +25,6 @@ public class TeleopSwerve extends Command {
   private BooleanSupplier robotCentricSup;
 
   //limiters to soften control inputs
-  private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
-  private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
-  private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
 
   public TeleopSwerve( SwerveBase swerveBase,
   DoubleSupplier translationSup,
@@ -53,20 +47,19 @@ public class TeleopSwerve extends Command {
   public void execute() {
     //apply filters to control inputs
     double translationVal =
-        translationFilter.calculate(
-            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
+
     double strafeVal =
-        strafeFilter.calculate(
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
+
     double rotationVal =
-        rotationFilter.calculate(
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
 
 
     //apply new values to drive function in swerveBase file
     swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxDriveSpeed)),
-      (rotationVal * Swerve.maxAngleVelocity),
+      (new Translation2d(translationVal, strafeVal)),
+      (rotationVal),
       (!robotCentricSup.getAsBoolean())//,
       //(Swerve.openLoop)
     );
