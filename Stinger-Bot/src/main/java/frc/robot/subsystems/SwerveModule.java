@@ -179,14 +179,24 @@ public class SwerveModule {
     //If necessary add closed loop option
     public void setDesiredState(SwerveModuleState desiredModuleState){
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
+
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-        driveMotor.set(desiredState.speedMetersPerSecond / Swerve.maxDriveSpeed);
-        // Prevent rotation when jittering is less than 1%
+        setAngle(desiredState);
+        setSpeed(desiredState);
+    }
+
+    
+    private void setSpeed(SwerveModuleState desiredModuleState){
+        driveMotor.set(desiredModuleState.speedMetersPerSecond / Swerve.maxDriveSpeed);
+    }
+
+    private void setAngle(SwerveModuleState desiredState){
         Rotation2d angle =
-        (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxAngleVelocity * 0.01))
-        ? lastAngle
-        : desiredState.angle;
+            (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxAngleVelocity * 0.01))
+            ? lastAngle
+            : desiredState.angle;
+
         anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
-    }
+        }
 }
