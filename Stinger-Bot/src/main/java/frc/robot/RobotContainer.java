@@ -8,30 +8,35 @@ import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopSwerve;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class RobotContainer {
   //declare Controllers
-  private final Joystick driverController = new Joystick(ControllerConstants.DRIVER_CONTROLLER_PORT);
+  private final XboxController driverController;
   //private final XboxController operatorController;
 
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
+  private final double translationAxis;
+  private final double strafeAxis;
+  private final double rotationAxis;
 
-  private final JoystickButton robotCentric =
-      new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+  private final boolean robotCentric;
 
   private final SwerveBase swerveBase;
   private final TeleopSwerve teleopSwerve;
 
   public RobotContainer() {
+    driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+
+    //intialize drive controller inputs
+    translationAxis = -driverController.getLeftY();
+    strafeAxis = driverController.getLeftX();
+    rotationAxis = driverController.getRightX();
+
     //initialize drive button inputs
+    robotCentric = driverController.getLeftBumper();
 
     //Zero gyro button?
 
@@ -40,12 +45,11 @@ public class RobotContainer {
  
     teleopSwerve = new TeleopSwerve(
       swerveBase, 
-      () -> -driverController.getRawAxis(translationAxis),
-      () -> driverController.getRawAxis(strafeAxis),
-      () -> driverController.getRawAxis(rotationAxis),
-      () -> robotCentric.getAsBoolean());
+      () -> MathUtil.applyDeadband(translationAxis, ControllerConstants.DEADBANDRANGE),
+      () -> MathUtil.applyDeadband(strafeAxis, ControllerConstants.DEADBANDRANGE),
+      () -> MathUtil.applyDeadband(rotationAxis, ControllerConstants.DEADBANDRANGE),
+      () -> robotCentric);
 
-    
     swerveBase.setDefaultCommand(teleopSwerve);
 
     configureBindings();
