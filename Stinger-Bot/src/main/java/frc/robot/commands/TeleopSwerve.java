@@ -52,7 +52,7 @@ public class TeleopSwerve extends Command {
   public void execute() {
     //apply filters to control inputs
     double translationVal =
-           translationFilter.calculate( MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+           translationFilter.calculate(MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
     double strafeVal =
             strafeFilter.calculate(MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
