@@ -12,7 +12,9 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.SwerveBase;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class TeleopSwerve extends Command {
   /** Creates a new TeleopSwerve. */
@@ -24,6 +26,9 @@ public class TeleopSwerve extends Command {
 
   private BooleanSupplier robotCentricSup;
 
+  private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+  private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
   //limiters to soften control inputs
 
   public TeleopSwerve( SwerveBase swerveBase,
@@ -47,28 +52,26 @@ public class TeleopSwerve extends Command {
   public void execute() {
     //apply filters to control inputs
     double translationVal =
-            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
+           translationFilter.calculate( MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
     double strafeVal =
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
+            strafeFilter.calculate(MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
     double rotationVal =
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE);
+            rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
 
     //apply new values to drive function in swerveBase file
     swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal)),
-      (rotationVal),
-      (!robotCentricSup.getAsBoolean())//,
-      //(Swerve.openLoop)
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxDriveSpeed)),
+      (rotationVal)*Swerve.maxAngleVelocity,
+      (!robotCentricSup.getAsBoolean())
     );
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerveBase.drive(new Translation2d(0, 0), 0, false);
   }
 
   // Returns true when the command should end.
