@@ -17,7 +17,7 @@ public class Constants {
         public static final double DEADBANDRANGE = 0.05;
 
         //public static final SlewRateLimiter translationFilter = new SlewRateLimiter(3);
-        public static final double SLEW_RATE = 3;
+        public static final double SLEW_RATE = 4;
     }
 
     public static final class Swerve{
@@ -64,13 +64,13 @@ public class Constants {
         public static final int driveKA;
 */
         //Drive Motor PID Values
-        public static final double driveP = 0.10;
+        public static final double driveP = .10;
         public static final double driveI = 0.0;
         public static final double driveD = 0.0;
         public static final double driveFF = 0.0;
 
         //Angle Motor PID Values
-        public static final double angleP = 0.01;
+        public static final double angleP = 0.0;
         public static final double angleI = 0.00;
         public static final double angleD = 0.00;
         public static final double angleFF = 0.0;
