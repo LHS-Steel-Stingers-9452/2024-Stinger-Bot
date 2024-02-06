@@ -181,6 +181,7 @@ public class SwerveModule {
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+
         setAngle(desiredState);
         setSpeed(desiredState);
     }
@@ -196,9 +197,7 @@ public class SwerveModule {
             ? lastAngle
             : desiredState.angle;
 
-        anglePIDController.setReference(angle.getRotations()*60, ControlType.kVelocity);
+        anglePIDController.setReference(angle.getRotations(), ControlType.kPosition);
         lastAngle = angle;
-        //desiredState.angle.getRotations()*60;
-        angleMotor.set(desiredState.angle.getRotations()*60);
         }
 }
