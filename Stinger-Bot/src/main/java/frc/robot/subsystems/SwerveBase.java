@@ -144,12 +144,12 @@ public class SwerveBase extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
-
+/* 
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
     //Measured outputs
     publisher.set(getStates());
-  
+  */
   }
 }

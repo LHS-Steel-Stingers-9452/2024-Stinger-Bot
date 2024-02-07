@@ -118,7 +118,7 @@ public class SwerveModule {
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
         angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);
         angleMotor.enableVoltageCompensation(Swerve.voltageComp);
-        integratedAngleEncoder.setPositionConversionFactor(Swerve.INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR);
+        integratedAngleEncoder.setPositionConversionFactor(Swerve.ANGLE_POSITION_FACTOR);
         //integratedAngleEncoder.setVelocityConversionFactor(Swerve.INTEGRATED_ANGLE_ENCODER_VELOCITY_FACTOR);
         anglePIDController.setPositionPIDWrappingEnabled(true);
         anglePIDController.setPositionPIDWrappingMinInput(-180);
@@ -186,8 +186,8 @@ public class SwerveModule {
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
-        SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
-        SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
+        //SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
+        //SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
 
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
