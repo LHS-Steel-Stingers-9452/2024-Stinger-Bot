@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -113,7 +115,6 @@ public class SwerveBase extends SubsystemBase {
     return states;
   }
 
-
   public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[]{
       new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getCanCoderValue()),
@@ -123,10 +124,6 @@ public class SwerveBase extends SubsystemBase {
     };
   return positions;
   }
-
-
-
-
 
   
   @Override
@@ -148,14 +145,11 @@ public class SwerveBase extends SubsystemBase {
           "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
 
-    double loggingStates[] = {
-      swerveModules[0].getState().angle.getDegrees(), swerveModules[0].getState().speedMetersPerSecond,
-      swerveModules[1].getState().angle.getDegrees(), swerveModules[1].getState().speedMetersPerSecond,
-      swerveModules[2].getState().angle.getDegrees(), swerveModules[2].getState().speedMetersPerSecond,
-      swerveModules[3].getState().angle.getDegrees(), swerveModules[3].getState().speedMetersPerSecond,
-    };
+    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
-    SmartDashboard.putNumberArray("SwerveModule States", loggingStates);
-    
+    //Measured outputs
+    publisher.set(getStates());
+  
   }
 }
