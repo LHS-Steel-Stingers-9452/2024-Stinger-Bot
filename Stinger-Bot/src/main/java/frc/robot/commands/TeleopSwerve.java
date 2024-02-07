@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.SwerveBase;
@@ -60,13 +61,17 @@ public class TeleopSwerve extends Command {
     double rotationVal =
             rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
+    SmartDashboard.putNumber("vX", translationVal);
+    SmartDashboard.putNumber("vY", strafeVal);
+    SmartDashboard.putNumber("omega", rotationVal);
 
     //apply new values to drive function in swerveBase file
     swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxDriveSpeed)),
-      (rotationVal)*Swerve.maxAngleVelocity,
-      (!robotCentricSup.getAsBoolean())
-    );
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
+      (rotationVal)*Swerve.maxSpeed,
+      (!robotCentricSup.getAsBoolean()),
+      (true)
+      );
   }
 
   // Called once the command ends or is interrupted.
