@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 //import edu.wpi.first.units.Mult;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PWM.PeriodMultiplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -91,6 +93,9 @@ public class SwerveModule {
     public void driveConfig() {
         driveMotor.restoreFactoryDefaults();
         //only update can bus usage if effecting performance
+        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
+        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);
@@ -114,6 +119,9 @@ public class SwerveModule {
     public void angleMotorConfig(){
         angleMotor.restoreFactoryDefaults();
         //only update can bus usage if effecting performance
+        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
+        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
         angleMotor.setInverted(true);
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
         angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);
@@ -147,6 +155,7 @@ public class SwerveModule {
          */
         canCoderConfiguration.MagnetSensor.MagnetOffset = ((angleOffset.getDegrees()/180.00) - 1); 
         canCoderConfigurator.apply(canCoderConfiguration);
+
     }
 
     private void resetToAbsolute(){
