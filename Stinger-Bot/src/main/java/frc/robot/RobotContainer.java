@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopSwerve;
@@ -25,13 +28,15 @@ public class RobotContainer {
 
     //initialize subsytems
     swerveBase = new SwerveBase();
- 
+
     teleopSwerve = new TeleopSwerve(
       swerveBase,
+      //inverts controls because joysticks are back-right (+) while robot is front-left (+)
       () -> -driverController.getLeftY(),
-      () -> driverController.getLeftX(),
-      () -> driverController.getRightX(),
-      () -> driverController.leftBumper().getAsBoolean());
+      () -> -driverController.getLeftX(),
+      () -> -driverController.getRightX(),
+      () -> driverController.leftBumper().getAsBoolean()
+      );
 
     
     swerveBase.setDefaultCommand(teleopSwerve);
@@ -42,6 +47,10 @@ public class RobotContainer {
   //Use for Mapping button bindings
   private void configureBindings() {
     //driver buttton to zero gyro
+    driverController.a().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
+
+    
+  
   }
 
   public Command getAutonomousCommand() {
