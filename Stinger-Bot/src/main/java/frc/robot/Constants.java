@@ -24,6 +24,8 @@ public class Constants {
         //Gyro ID
         public static final int PIGEON_ID = 13;
 
+        public static final boolean invertGyro = false;
+
         //DriveTrain Constants
         public static final double TRACK_WIDTH = Units.inchesToMeters(24.75);
         public static final double WHEELBASE  = Units.inchesToMeters(24.75);
@@ -50,19 +52,22 @@ public class Constants {
 
         );
         //meters/sec
-        public static final double maxDriveSpeed = 4.0; //values are subject to change upon testing
-        public static final double maxAngleVelocity = 4.0; 
+        public static final double maxSpeed = 4.0; //values are subject to change upon testing 
+        //public static final double maxAngleVelocity = 4.0; 
 
         public static final int driveCurrentLimit = 70;
         public static final int angleCurrentLimit = 30;
 
-        public static final boolean openLoop = true;
-/* closed loop
+        public static final boolean openLoop = true; // toggle by preference
+
+        public static final double voltageComp = 12.0; // from template
+ 
         //feed forward values, need to be obtiaed though WPI charactarization tool
-        public static final int driveKS;
-        public static final int driveKV;
-        public static final int driveKA;
-*/
+        public static final double driveKS = 0.667; // from template
+        public static final double driveKV = 2.44;
+        public static final double driveKA = 0.27;
+
+
         //Drive Motor PID Values
         public static final double driveP = .10;
         public static final double driveI = 0.0;
