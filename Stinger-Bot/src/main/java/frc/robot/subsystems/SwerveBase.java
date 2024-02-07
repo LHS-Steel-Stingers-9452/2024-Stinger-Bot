@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 //import frc.robot.subsystems.SwerveModule;
 
@@ -22,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 public class SwerveBase extends SubsystemBase {
   /** Creates a new SwerveBase. */
   private final Pigeon2 pidgeotto;
@@ -31,9 +33,10 @@ public class SwerveBase extends SubsystemBase {
 
   private Field2d field;
 
+
   public SwerveBase() {
     pidgeotto = new Pigeon2(Swerve.PIGEON_ID);
-    pidgeotto.setYaw(0);
+    zeroGyro();
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Swerve.Mod0.constants),
@@ -48,26 +51,36 @@ public class SwerveBase extends SubsystemBase {
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
+
   }
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative){
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
 
+    //Converts joystick inputs to either field relative or chassis speeds using kinematics
     SwerveModuleState [] swerveModuleStates = 
       Swerve.KINEMATICS.toSwerveModuleStates(
         fieldRelative 
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            translation.getX(), translation.getY(), rotation, getYaw())
-        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+          //Swapped getY() and getX()
+            translation.getY(), translation.getX(), rotation, getYaw())
+        : new ChassisSpeeds(translation.getY(), translation.getX(), rotation));
 
     //Swerve version of normalizing wheel speeds
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Swerve.maxDriveSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Swerve.maxSpeed);
 
-    //Fix later
     for (SwerveModule module : swerveModules){
-      module.setDesiredState(swerveModuleStates[module.moduleNumber]);
+      module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
     }
   }
 
+  /* Used by SwerveControllerCommand in Auto */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Swerve.maxSpeed);
+
+    for (SwerveModule mod : swerveModules) {
+      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+    }
+  }
 
 
   public void resetOdometry(Pose2d newPose){
@@ -83,13 +96,13 @@ public class SwerveBase extends SubsystemBase {
   }
 
   public Rotation2d getYaw(){
-    /* 
-    return (false) 
-    ? Rotation2d.fromDegrees(360 - pidgeotto.getYaw().getValue())
-    : Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
-    */
-    return Rotation2d.fromDegrees(360 - pidgeotto.getYaw().getValue());
+    //test
+    return (Swerve.invertGyro)
+        ? Rotation2d.fromRotations(360 - pidgeotto.getYaw().getValue())
+        : Rotation2d.fromRotations(pidgeotto.getYaw().getValue());
   }
+
+
 
   public SwerveModuleState[] getStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -99,6 +112,7 @@ public class SwerveBase extends SubsystemBase {
     }
     return states;
   }
+
 
   public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[]{
@@ -111,11 +125,19 @@ public class SwerveBase extends SubsystemBase {
   }
 
 
+
+
+
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     swerveOdometry.update(getYaw(), getPositions());
     field.setRobotPose(getPose());
+
+    //display gyro for fun
+    SmartDashboard.putString("Gyro", getYaw().toString());
+
 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
@@ -125,5 +147,15 @@ public class SwerveBase extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
+
+    double loggingStates[] = {
+      swerveModules[0].getState().angle.getDegrees(), swerveModules[0].getState().speedMetersPerSecond,
+      swerveModules[1].getState().angle.getDegrees(), swerveModules[1].getState().speedMetersPerSecond,
+      swerveModules[2].getState().angle.getDegrees(), swerveModules[2].getState().speedMetersPerSecond,
+      swerveModules[3].getState().angle.getDegrees(), swerveModules[3].getState().speedMetersPerSecond,
+    };
+
+    SmartDashboard.putNumberArray("SwerveModule States", loggingStates);
+    
   }
 }
