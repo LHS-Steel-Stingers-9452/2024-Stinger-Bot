@@ -177,25 +177,16 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition(){
-        return new SwerveModulePosition(
-            /* 
-            Use if rotation units don't work
-            Converts from Rotations to Distance traveled
-            driveEncoder.getPosition() * (Swerve.WHEEL_DIAMETER * Math.PI),
-            */
-            driveEncoder.getPosition(),
-            getAngle()
-        );
+        return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
     }
 
-    //If necessary add closed loop option
     public void setDesiredState(SwerveModuleState desiredModuleState, boolean isOpenLoop){
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
-        //SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
-        //SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
+        SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
+        SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
 
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
@@ -217,6 +208,8 @@ public class SwerveModule {
     }
 
     private void setAngle(SwerveModuleState desiredState){
+        //Is this why turn motors move initially upon deployment?
+        //Only place that make turn motors move
         Rotation2d angle =
             (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxSpeed * 0.01))
             ? lastAngle
