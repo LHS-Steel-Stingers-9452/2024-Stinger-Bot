@@ -15,7 +15,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopSwerve;
 
 public class RobotContainer {
-  //declare Controllers
+  //Controllers
   private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
 
   private final SwerveBase swerveBase;
@@ -34,7 +34,6 @@ public class RobotContainer {
       () -> -driverController.getRightX(),
       () -> driverController.leftBumper().getAsBoolean()
       );
-
     
     swerveBase.setDefaultCommand(teleopSwerve);
 
