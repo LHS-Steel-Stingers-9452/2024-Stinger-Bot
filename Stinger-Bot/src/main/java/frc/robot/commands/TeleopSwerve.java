@@ -64,7 +64,6 @@ public class TeleopSwerve extends Command {
     //SmartDashboard.putNumber("vY", strafeVal);
     //SmartDashboard.putNumber("omega", rotationVal);
 
-    //apply new values to drive function in swerveBase file
     swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxSpeed,
