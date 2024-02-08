@@ -36,7 +36,7 @@ public class SwerveBase extends SubsystemBase {
 
   private Field2d field;
 
-
+  //ready to test
   public SwerveBase() {
     pidgeotto = new Pigeon2(Swerve.PIGEON_ID);
     //added for safe measure
@@ -51,22 +51,22 @@ public class SwerveBase extends SubsystemBase {
     };
 
     //Odometry
-    swerveOdometry = new SwerveDriveOdometry(Swerve.KINEMATICS, getGyroYaw(), getPositions());
+    swerveOdometry = new SwerveDriveOdometry(Swerve.kinematics, getGyroYaw(), getPositions());
 
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
-
   }
 
+  //ready to test
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
 
     //Converts joystick inputs to either field relative or chassis speeds using kinematics
     SwerveModuleState [] swerveModuleStates = 
-      Swerve.KINEMATICS.toSwerveModuleStates(
+      Swerve.kinematics.toSwerveModuleStates(
         fieldRelative 
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            translation.getX(), translation.getY(), rotation, getHeading())
+            translation.getX(), translation.getY(), rotation, getHeading())// if not working replace with getYaw()
         : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
     //Swerve version of normalizing wheel speeds
@@ -86,6 +86,7 @@ public class SwerveBase extends SubsystemBase {
     }
   }
 
+  //ready to test
   public SwerveModuleState[] getStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -95,7 +96,8 @@ public class SwerveBase extends SubsystemBase {
     return states;
   }
 
-   public SwerveModulePosition[] getPositions(){
+  //ready to test
+  public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
     for (SwerveModule module : swerveModules){
       positions[module.moduleNumber] = module.getPosition();
@@ -103,14 +105,17 @@ public class SwerveBase extends SubsystemBase {
   return positions;
   }
 
-   public Pose2d getPose(){
+  //ready to test
+  public Pose2d getPose(){
     return swerveOdometry.getPoseMeters();
   }
-
-public void setPose(Pose2d pose){
+  
+  //ready to test
+  public void setPose(Pose2d pose){
   swerveOdometry.resetPosition((getGyroYaw()), getPositions(), pose);
 }
 
+//ready to test. if fails replace with getYaw()
 public Rotation2d getHeading(){
     /* 
     return (Swerve.invertGyro)
@@ -121,6 +126,7 @@ public Rotation2d getHeading(){
     return getPose().getRotation();
   }
 
+//ready to test
 public void setHeading(Rotation2d heading){
   swerveOdometry.resetPosition(
     getGyroYaw(), 
@@ -129,6 +135,7 @@ public void setHeading(Rotation2d heading){
     heading));
   }
 
+  //ready to test
   public void zeroGyro(){
     //old set zero
     //pidgeotto.setYaw(0);
@@ -141,6 +148,7 @@ public void setHeading(Rotation2d heading){
       ));
   }
 
+  //ready to test
   public Rotation2d getGyroYaw(){
     return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
   }
@@ -157,10 +165,6 @@ public void setHeading(Rotation2d heading){
     swerveOdometry.update(getGyroYaw(), getPositions());
     field.setRobotPose(getPose());
 
-    //display gyro for fun
-    SmartDashboard.putString("Gyro", getHeading().toString());
-
-
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Cancoder", module.getCanCoderValue().getDegrees());
@@ -169,6 +173,15 @@ public void setHeading(Rotation2d heading){
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
+
+  /*
+  display gyro to test zero heading
+  displays gyro yaw in degrees
+  startup value should be 0 because of zeroGyro upon deployment
+  CCW+
+  0 is facing towards directly towards opponent's alliance station
+  */
+    SmartDashboard.putNumber("Gyro", getGyroYaw().getDegrees());
 /* 
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();

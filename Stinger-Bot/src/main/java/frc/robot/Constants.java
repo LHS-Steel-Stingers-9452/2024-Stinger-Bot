@@ -15,8 +15,6 @@ public class Constants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         //public static final int OPERATOR_CONTROLLER_PORT = 1;
         public static final double DEADBANDRANGE = 0.05;
-
-        //public static final SlewRateLimiter translationFilter = new SlewRateLimiter(3);
         public static final double SLEW_RATE = 4;
     }
 
@@ -27,38 +25,44 @@ public class Constants {
         public static final boolean invertGyro = false;
 
         //DriveTrain Constants
-        public static final double TRACK_WIDTH = Units.inchesToMeters(24.75);
-        public static final double WHEELBASE  = Units.inchesToMeters(24.75);
-        public static final double WHEEL_DIAMETER = Units.inchesToMeters(4.00);
-        public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+        //ready
+        public static final double trackWidth = Units.inchesToMeters(24.75);
+        public static final double wheelbase  = Units.inchesToMeters(24.75);
+        public static final double whealDiameter = Units.inchesToMeters(4.00);
+        public static final double wheelCircumference = whealDiameter * Math.PI;
 
-        public static final double DRIVE_GEAR_RATIO = 6.75/1.0; //6.75:1
-        public static final double ANGLE_GEAR_RATIO = (150.0/7.0)/1.0; //150/7:1
+        //ready
+        public static final double driveGearRatio = 6.75 / 1.0; //6.75:1
+        public static final double angleGearRatio = (150.0/7.0) / 1.0; //150/7:1
 
         //Encoder converstion factors
-        public static final double DRIVE_ENCODER_POSITION_FACTOR = WHEEL_CIRCUMFERENCE / DRIVE_GEAR_RATIO;//Distance traveled
-        public static final double DRIVE_ENCODER_VELOCITY_FACTOR = DRIVE_ENCODER_POSITION_FACTOR / 60.0;//M/S
+        public static final double driveEncoderPositionFactor = driveGearRatio * wheelCircumference; 
+        //Rotations to meters [limear distnce in meters]
+        public static final double driveEncoderVelocityFactor = driveEncoderPositionFactor / 60;
+        //RPM to meters per sec
+        public static final double integratedAngleEncoderPositionFactor = angleGearRatio * 2 * Math.PI;
+        //Rotations to radians
+        public static final double integratedAngleEncoderVelocityFactor = integratedAngleEncoderPositionFactor / 60;
+        //RPM to radian per sec
+        public static final double anglePositionFactor = 2*Math.PI / angleGearRatio;//Radians per shaft rotation
 
-        public static final double INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR = WHEEL_CIRCUMFERENCE / ANGLE_GEAR_RATIO;//Distance traveled
-        //public static final double INTEGRATED_ANGLE_ENCODER_VELOCITY_FACTOR = INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR / 60.0;//M/S
-
-        public static final double ANGLE_POSITION_FACTOR = 360.0 / ANGLE_GEAR_RATIO;//Degrees per shaft rotation
-
-        public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-            new Translation2d(WHEELBASE/2, TRACK_WIDTH/2),
-            new Translation2d(WHEELBASE/2, -TRACK_WIDTH/2),
-            new Translation2d(-WHEELBASE/2, TRACK_WIDTH/2),
-            new Translation2d(-WHEELBASE/2, -TRACK_WIDTH/2)
+        //ready
+        public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(wheelbase/2, trackWidth/2),
+            new Translation2d(wheelbase/2, -trackWidth/2),
+            new Translation2d(-wheelbase/2, trackWidth/2),
+            new Translation2d(-wheelbase/2, -trackWidth/2)
 
         );
         //meters/sec
+        //ready
         public static final double maxSpeed = 4.0; //values are subject to change upon testing 
-        //public static final double maxAngleVelocity = 4.0; 
+        public static final double maxAngleVelocity = 4.0; 
 
-        public static final int driveCurrentLimit = 70;
+        public static final int driveCurrentLimit = 70;//subject to change
         public static final int angleCurrentLimit = 30;
 
-        public static final boolean openLoop = true; // toggle by preference
+        public static final boolean openLoop = true; // toggle by preference default at true
 
         public static final double voltageComp = 12.0; // from template
  
@@ -75,7 +79,7 @@ public class Constants {
         public static final double driveFF = 0.0;
 
         //Angle Motor PID Values
-        public static final double angleP = 0.0;
+        public static final double angleP = 0.00;
         public static final double angleI = 0.00;
         public static final double angleD = 0.00;
         public static final double angleFF = 0.00;
@@ -122,26 +126,6 @@ public class Constants {
         }
     }
 /*
-    public static final class IntakeConstants{
-        public static final int intakeMotorID;
-        public static final double maxMotorVelocity;
-
-        public static final int freeCurrentLimit;
-        public static final int stallCurrentLimit;
-    }
-
-    public static final class LauncherConstants{
-        public static final int topLaunchMotorID;
-        public static final int bottomLauncherMotorID;
-
-        public static final double maxMotorVelocityPercent;
-
-        public static final int freeCurrentLimit;
-        public static final int stallCurrentLimit;
-    }
-
-    public static final class ArmConstants{}
-
     public static final class AutoConstants{}
 */
 }
