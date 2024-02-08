@@ -91,16 +91,16 @@ public class SwerveModule {
     public void driveConfig() {
         //ready
         driveMotor.restoreFactoryDefaults();
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
 
         //ready
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);//ready
-        driveMotor.enableVoltageCompensation(Swerve.voltageComp);//from template
+        //driveMotor.enableVoltageCompensation(Swerve.voltageComp);//from template
         //ready
         driveEncoder.setPositionConversionFactor(Swerve.driveEncoderPositionFactor);//limear distnce in meters
         driveEncoder.setVelocityConversionFactor(Swerve.driveEncoderVelocityFactor);//meters per sec
@@ -124,16 +124,16 @@ public class SwerveModule {
     public void angleMotorConfig(){
         //ready
         angleMotor.restoreFactoryDefaults();
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
 
         //ready
         angleMotor.setInverted(true);
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);//ready
-        angleMotor.enableVoltageCompensation(Swerve.voltageComp);//from template
+       // angleMotor.enableVoltageCompensation(Swerve.voltageComp);//from template
 
         integratedAngleEncoder.setPositionConversionFactor(Swerve.anglePositionFactor);//Radians per shaft rotation
 
