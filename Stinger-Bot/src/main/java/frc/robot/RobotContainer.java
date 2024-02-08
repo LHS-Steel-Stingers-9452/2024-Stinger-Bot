@@ -43,7 +43,7 @@ public class RobotContainer {
   //Use for Mapping button bindings
   private void configureBindings() {
     //driver buttton to zero gyro
-    driverController.a().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
+    driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
     
   
