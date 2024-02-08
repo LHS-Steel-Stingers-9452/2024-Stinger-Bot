@@ -22,9 +22,6 @@ public class RobotContainer {
   private final TeleopSwerve teleopSwerve;
 
   public RobotContainer() {
-    //initialize drive button inputs
-
-    //Zero gyro button?
 
     //initialize subsytems
     swerveBase = new SwerveBase();

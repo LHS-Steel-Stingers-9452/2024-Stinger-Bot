@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve;
 //import frc.robot.subsystems.SwerveModule;
 
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,6 +39,8 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(Swerve.PIGEON_ID);
+    //added for safe measure
+    pidgeotto.getConfigurator().apply(new Pigeon2Configuration());
     zeroGyro();
 
     swerveModules = new SwerveModule[] {
@@ -48,7 +51,7 @@ public class SwerveBase extends SubsystemBase {
     };
 
     //Odometry
-    swerveOdometry = new SwerveDriveOdometry(Swerve.KINEMATICS, getYaw(), getPositions());
+    swerveOdometry = new SwerveDriveOdometry(Swerve.KINEMATICS, getGyroYaw(), getPositions());
 
     field = new Field2d();
     SmartDashboard.putData("Field", field);
@@ -63,9 +66,8 @@ public class SwerveBase extends SubsystemBase {
       Swerve.KINEMATICS.toSwerveModuleStates(
         fieldRelative 
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
-          //Swapped getY() and getX()
-            translation.getY(), translation.getX(), rotation, getYaw())
-        : new ChassisSpeeds(translation.getY(), translation.getX(), rotation));
+            translation.getX(), translation.getY(), rotation, getHeading())
+        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
     //Swerve version of normalizing wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Swerve.maxSpeed);
@@ -84,28 +86,6 @@ public class SwerveBase extends SubsystemBase {
     }
   }
 
-
-  public void resetOdometry(Pose2d newPose){
-    swerveOdometry.resetPosition(pidgeotto.getRotation2d(), getPositions(), newPose);
-  }
-
-  public void zeroGyro(){
-    pidgeotto.setYaw(0);
-  }
-
-  public Pose2d getPose(){
-    return swerveOdometry.getPoseMeters();
-  }
-
-  public Rotation2d getYaw(){
-    //test
-    return (Swerve.invertGyro)
-        ? Rotation2d.fromRotations(360 - pidgeotto.getYaw().getValue())
-        : Rotation2d.fromRotations(pidgeotto.getYaw().getValue());
-  }
-
-
-
   public SwerveModuleState[] getStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -115,25 +95,70 @@ public class SwerveBase extends SubsystemBase {
     return states;
   }
 
-  public SwerveModulePosition[] getPositions(){
-    SwerveModulePosition[] positions = new SwerveModulePosition[]{
-      new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[1].getPosition().distanceMeters, swerveModules[1].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[2].getPosition().distanceMeters, swerveModules[2].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[3].getPosition().distanceMeters, swerveModules[3].getCanCoderValue())
-    };
+   public SwerveModulePosition[] getPositions(){
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+    for (SwerveModule module : swerveModules){
+      positions[module.moduleNumber] = module.getPosition();
+    }
   return positions;
   }
 
+   public Pose2d getPose(){
+    return swerveOdometry.getPoseMeters();
+  }
+
+public void setPose(Pose2d pose){
+  swerveOdometry.resetPosition((getGyroYaw()), getPositions(), pose);
+}
+
+public Rotation2d getHeading(){
+    /* 
+    return (Swerve.invertGyro)
+        ? Rotation2d.fromRotations(360 - pidgeotto.getYaw().getValue())
+        : Rotation2d.fromRotations(pidgeotto.getYaw().getValue());
+        */
+    //test 02/07/2024 4:43PM
+    return getPose().getRotation();
+  }
+
+public void setHeading(Rotation2d heading){
+  swerveOdometry.resetPosition(
+    getGyroYaw(), 
+    getPositions(), 
+    new Pose2d(getPose().getTranslation(), 
+    heading));
+  }
+
+  public void zeroGyro(){
+    //old set zero
+    //pidgeotto.setYaw(0);
+
+    swerveOdometry.resetPosition(
+      getGyroYaw(), 
+      getPositions(), 
+      new Pose2d(getPose().getTranslation(), 
+      new Rotation2d()
+      ));
+  }
+
+  public Rotation2d getGyroYaw(){
+    return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
+  }
+
+  public void resetToAbsolute(){
+    for(SwerveModule module : swerveModules){
+      module.resetToAbsolute();
+    }
+  }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    swerveOdometry.update(getYaw(), getPositions());
+    swerveOdometry.update(getGyroYaw(), getPositions());
     field.setRobotPose(getPose());
 
     //display gyro for fun
-    SmartDashboard.putString("Gyro", getYaw().toString());
+    SmartDashboard.putString("Gyro", getHeading().toString());
 
 
     for (SwerveModule module : swerveModules) {
@@ -150,6 +175,6 @@ public class SwerveBase extends SubsystemBase {
 
     //Measured outputs
     publisher.set(getStates());
-  */
+*/
   }
 }

@@ -135,7 +135,7 @@ public class SwerveModule {
        anglePIDController.setD(Swerve.angleD);
        anglePIDController.setFF(Swerve.angleFF);
         angleMotor.burnFlash();
-        //Reset As A Saftery Measure
+
         resetToAbsolute();
     }
 
@@ -157,8 +157,8 @@ public class SwerveModule {
 
     }
 
-    private void resetToAbsolute(){
-        double angelAbsolutePosition = getCanCoderValue().getDegrees() - angleOffset.getDegrees();
+    public void resetToAbsolute(){
+        double angelAbsolutePosition = getCanCoderValue().getRotations() - angleOffset.getRotations();
         integratedAngleEncoder.setPosition(angelAbsolutePosition);//integrated ecnoder is reset and given canCoder value; absolute position
     }
 
@@ -174,6 +174,7 @@ public class SwerveModule {
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(driveEncoder.getVelocity(), getAngle());
+
     }
 
     public SwerveModulePosition getPosition(){
@@ -181,6 +182,7 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredModuleState, boolean isOpenLoop){
+
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
