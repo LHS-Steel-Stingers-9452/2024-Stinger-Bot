@@ -32,7 +32,7 @@ public class RobotContainer {
       () -> -driverController.getLeftY(),
       () -> -driverController.getLeftX(),
       () -> -driverController.getRightX(),
-      () -> driverController.leftBumper().getAsBoolean()
+      () -> driverController.rightBumper().getAsBoolean()
       );
     
     swerveBase.setDefaultCommand(teleopSwerve);
