@@ -5,12 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import frc.robot.Constants;
-//import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 //import frc.robot.subsystems.SwerveModule;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,8 +36,6 @@ public class SwerveBase extends SubsystemBase {
   //ready to test
   public SwerveBase() {
     pidgeotto = new Pigeon2(Swerve.PIGEON_ID);
-    //added for safe measure
-    pidgeotto.getConfigurator().apply(new Pigeon2Configuration());
     zeroGyro();
 
     swerveModules = new SwerveModule[] {
@@ -78,6 +73,7 @@ public class SwerveBase extends SubsystemBase {
   }
 
   /* Used by SwerveControllerCommand in Auto */
+  /* 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Swerve.maxSpeed);
 
@@ -85,6 +81,7 @@ public class SwerveBase extends SubsystemBase {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);
     }
   }
+  */
 
   //ready to test
   public SwerveModuleState[] getStates(){
