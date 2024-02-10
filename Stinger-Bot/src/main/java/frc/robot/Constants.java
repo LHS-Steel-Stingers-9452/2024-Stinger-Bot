@@ -14,7 +14,7 @@ public class Constants {
     public final static class ControllerConstants{
         public static final int DRIVER_CONTROLLER_PORT = 0;
         //public static final int OPERATOR_CONTROLLER_PORT = 1;
-        public static final double DEADBANDRANGE = 0.05;
+        public static final double DEADBANDRANGE = 0.1;
         public static final double SLEW_RATE = 4;
     }
 
@@ -72,15 +72,13 @@ public class Constants {
 
         //Drive Motor PID Values
         public static final double driveP = 0.00;
-        public static final double driveI = 0.0;
-        public static final double driveD = 0.0;
-        public static final double driveFF = 0.0;
+        public static final double driveI = 0.00;
+        public static final double driveD = 0.00;
         
         //Angle Motor PID Values
         public static final double angleP = 0.0026;
-        public static final double angleI = 0.00;//no
-        public static final double angleD = 0.00;//no
-        public static final double angleFF = 0.00;
+        public static final double angleI = 0.00;
+        public static final double angleD = 0.00;
 
         public static final class Mod0{
             //Offset values to be updated

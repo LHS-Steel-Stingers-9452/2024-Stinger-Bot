@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import static frc.robot.Constants.Swerve.driveKV;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 
@@ -98,7 +101,6 @@ public class SwerveModule {
         drivePIDController.setP(Swerve.driveP);
         drivePIDController.setI(Swerve.driveI);
         drivePIDController.setD(Swerve.driveD);
-        drivePIDController.setFF(Swerve.driveFF);
 
         driveMotor.burnFlash();
         driveEncoder.setPosition(0.0);
@@ -123,7 +125,6 @@ public class SwerveModule {
        anglePIDController.setP(Swerve.angleP);
        anglePIDController.setI(Swerve.angleI);
        anglePIDController.setD(Swerve.angleD);
-       anglePIDController.setFF(Swerve.angleFF);
         angleMotor.burnFlash();
 
         resetToAbsolute();
@@ -177,7 +178,6 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredModuleState, boolean isOpenLoop){
-
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
@@ -208,15 +208,8 @@ public class SwerveModule {
             : desiredState.angle;
         //MathUtil.inputModulus();
         //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
-        //Close loop
-        anglePIDController.setReference(angle.getRadians(), ControlType.kPosition);
-        /* 
-        anglePIDController.setReference(angle.getRotations(), 
-        ControlType.kPosition, 
-        0, 
-        //omega to radians/sec                              Module KV: (maxVolts) / ((degreesPerRotation) * (maxMotorSpeedRPM / gearRatio) * (minutesPerSecond)
-        Math.toDegrees((desiredState.angle.getRadians()/60)) * (Units.rotationsToDegrees((((5676 * 7) / 372)) / 60)));
-        */
+        //Close loop angle.getRadians(), ControlType.kVelocity
+        anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition, 0);
         lastAngle = angle;
         }
 }

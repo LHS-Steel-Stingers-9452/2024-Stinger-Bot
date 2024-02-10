@@ -37,7 +37,8 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(PIGEON_ID);
-    zeroGyro();
+    //zeroGyro();
+    pidgeotto.setYaw(0);
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Mod0.constants),
@@ -99,9 +100,9 @@ public class SwerveBase extends SubsystemBase {
       new SwerveModulePosition(swerveModules[2].getPosition().distanceMeters, swerveModules[2].getCanCoderValue()),
       new SwerveModulePosition(swerveModules[3].getPosition().distanceMeters, swerveModules[3].getCanCoderValue())
     };
-    }
     return positions;
-  }
+    }
+    
 
   public Pose2d getPose(){
     return swerveOdometry.getPoseMeters();
