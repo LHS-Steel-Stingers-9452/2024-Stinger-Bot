@@ -56,18 +56,16 @@ public class Constants {
         );
         //meters/sec
         //ready
-        public static final double maxSpeed = 4.0; //values are subject to change upon testing 
-        public static final double maxAngleVelocity = 4.0; 
+        public static final double maxSpeed = 4.5; //values are subject to change upon testing 
+        public static final double maxAngleVelocity = 4.5; // calculate actual max speed/velocity
 
-        public static final int driveCurrentLimit = 70;//subject to change
+        public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 30;
 
-        public static final boolean openLoop = true; // toggle by preference default at true
-
-        public static final double voltageComp = 12.0; // from template
+        public static final double voltageComp = 12.0;
  
         //feed forward values, need to be obtiaed though WPI charactarization tool
-        public static final double driveKS = 0.667; // from template
+        public static final double driveKS = 0.667; // overcome friction
         public static final double driveKV = 2.44;
         public static final double driveKA = 0.27;
 
@@ -77,11 +75,11 @@ public class Constants {
         public static final double driveI = 0.0;
         public static final double driveD = 0.0;
         public static final double driveFF = 0.0;
-
+        
         //Angle Motor PID Values
-        public static final double angleP = 0.00;
-        public static final double angleI = 0.00;
-        public static final double angleD = 0.00;
+        public static final double angleP = 0.0026;
+        public static final double angleI = 0.00;//no
+        public static final double angleD = 0.00;//no
         public static final double angleFF = 0.00;
 
         public static final class Mod0{
