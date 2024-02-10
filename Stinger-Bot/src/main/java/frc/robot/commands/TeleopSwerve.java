@@ -39,13 +39,16 @@ public class TeleopSwerve extends Command {
   BooleanSupplier robotCentricSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
-    addRequirements(swerveBase);
-
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
+
+    addRequirements(swerveBase);
   }
+
+  @Override
+  public void initialize(){}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
