@@ -40,6 +40,11 @@ public class RobotContainer {
     configureBindings();
   }
 
+/* 
+  public Command resetGyro(){
+    return new InstantCommand(() -> swerveBase.zeroGyro());
+  }
+*/
   //Use for Mapping button bindings
   private void configureBindings() {
     //driver buttton to zero gyro
