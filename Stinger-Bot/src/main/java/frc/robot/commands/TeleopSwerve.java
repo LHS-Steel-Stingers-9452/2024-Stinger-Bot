@@ -60,15 +60,15 @@ public class TeleopSwerve extends Command {
     double rotationVal =
             rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
 
-    //SmartDashboard.putNumber("vX", translationVal);
-    //SmartDashboard.putNumber("vY", strafeVal);
-    //SmartDashboard.putNumber("omega", rotationVal);
+    SmartDashboard.putNumber("vX(Teleop)", translationVal);
+    SmartDashboard.putNumber("vY(Teleop)", strafeVal);
+    SmartDashboard.putNumber("omega(Teleop)", rotationVal);
 
     swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,
       (!robotCentricSup.getAsBoolean()),
-      (true)
+      (false)
       );
 
   }
