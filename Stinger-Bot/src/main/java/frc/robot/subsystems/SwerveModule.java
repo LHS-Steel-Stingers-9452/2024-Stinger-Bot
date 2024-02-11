@@ -24,8 +24,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import static frc.robot.Constants.Swerve.driveKV;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 
@@ -161,8 +159,10 @@ public class SwerveModule {
 
     public Rotation2d getCanCoderValue(){
         //multiply by 360 to go from a domain of [0, 1) to [0, 360). This turns the absolute position into degrees
-        return Rotation2d.fromDegrees(canCoder.getAbsolutePosition().getValue() * 360);
-        
+        //return Rotation2d.fromDegrees(canCoder.getAbsolutePosition().getValue() * 360);
+
+        return Rotation2d.fromRotations(canCoder.getAbsolutePosition().getValue());
+        //Rotation2D.formRotations will automaticly convert from [0, 1) to [0, 360) when needed
     }
 
     public SwerveModuleState getState(){
@@ -177,28 +177,26 @@ public class SwerveModule {
         );
     }
 
-    public void setDesiredState(SwerveModuleState desiredModuleState, boolean isOpenLoop){
+    public void setDesiredState(SwerveModuleState desiredModuleState){
+        /* 
         SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
+        */
+        desiredModuleState = CustomModuleState.optimize(desiredModuleState, getState().angle);
 
-        setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setAngle(desiredModuleState);
+        setSpeed(desiredModuleState);
     }
 
-    private void setSpeed(SwerveModuleState desiredModuleState, boolean isOpenLoop){
+    private void setSpeed(SwerveModuleState desiredModuleState){
         //only run closed loop, make sure isOpenLoop == false or delete if statement below
-        if (isOpenLoop){
-            //calculates percent output
-            driveMotor.set(desiredModuleState.speedMetersPerSecond / Swerve.maxSpeed);
-        } else {
-            //keep this 
-            double velocity = desiredModuleState.speedMetersPerSecond;
-            drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
-        }
+        
+        double velocity = desiredModuleState.speedMetersPerSecond;
+        drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
     }
 
     private void setAngle(SwerveModuleState desiredState){
@@ -209,7 +207,7 @@ public class SwerveModule {
         //MathUtil.inputModulus();
         //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
         //Close loop angle.getRadians(), ControlType.kVelocity
-        anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition, 0);
+        anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
         }
 }
