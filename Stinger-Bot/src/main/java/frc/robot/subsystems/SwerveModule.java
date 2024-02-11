@@ -89,7 +89,7 @@ public class SwerveModule {
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);//ready
+        driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);
         driveMotor.enableVoltageCompensation(Swerve.voltageComp);//usefull for consitency, treats as if battery were always at 12 volts
 
         driveEncoder.setPositionConversionFactor(Swerve.driveEncoderPositionFactor);//linear distnce in meters
@@ -118,7 +118,7 @@ public class SwerveModule {
         angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);
         angleMotor.enableVoltageCompensation(Swerve.voltageComp);
 
-        integratedAngleEncoder.setPositionConversionFactor(Swerve.anglePositionFactor);//Radians per shaft rotation
+        integratedAngleEncoder.setPositionConversionFactor(Swerve.anglePositionFactor);//Degrees per shaft rotation
 
        anglePIDController.setP(Swerve.angleP);
        anglePIDController.setI(Swerve.angleI);
@@ -139,36 +139,30 @@ public class SwerveModule {
         canCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         canCoderConfigurator.apply(canCoderConfiguration);
      
-        /*
-         * Maps angle offsets from degrees to a domain of [-1,1] as supported by the CAN coder
-         */
-        //canCoderConfiguration.MagnetSensor.MagnetOffset = ((angleOffset.getDegrees()/180.00) - 1); 
-        //canCoderConfigurator.apply(canCoderConfiguration);
-        //Bring back later if necessary 02/08/202ssss
+        /* 
+        canCoderConfiguration.MagnetSensor.MagnetOffset = (angleOffset.getRotations());
+        canCoderConfigurator.apply(canCoderConfiguration);
+        */
     
     }
 
     public void resetToAbsolute(){
-        //radian units to match anglePositionConversionFactor
-        double angelAbsolutePosition = getCanCoderValue().getRadians() - angleOffset.getRadians();
+        //degrees units to match anglePositionConversionFactor
+        double angelAbsolutePosition = getCanCoderValue().getDegrees() - angleOffset.getDegrees();
         integratedAngleEncoder.setPosition(angelAbsolutePosition);//integrated ecnoder is reset and given canCoder value; absolute position
     }
 
     private Rotation2d getAngle(){
-        return Rotation2d.fromRadians(integratedAngleEncoder.getPosition());
+        return Rotation2d.fromDegrees(integratedAngleEncoder.getPosition());
     } 
 
     public Rotation2d getCanCoderValue(){
-        //multiply by 360 to go from a domain of [0, 1) to [0, 360). This turns the absolute position into degrees
-        //return Rotation2d.fromDegrees(canCoder.getAbsolutePosition().getValue() * 360);
-
         return Rotation2d.fromRotations(canCoder.getAbsolutePosition().getValue());
-        //Rotation2D.formRotations will automaticly convert from [0, 1) to [0, 360) when needed
+        //Rotation2D.fromRotations() will automaticly convert from [0, 1) to [0, 360) when needed at the request of getDegrees()
     }
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(driveEncoder.getVelocity(), getAngle());
-
     }
 
     public SwerveModulePosition getPosition(){
@@ -180,10 +174,6 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState desiredModuleState){
         /* 
-        SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
-
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
         */
@@ -207,8 +197,7 @@ public class SwerveModule {
             : desiredState.angle;
         //MathUtil.inputModulus();
         //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
-        //Close loop angle.getRadians(), ControlType.kVelocity
-        anglePIDController.setReference(angle.getRadians(), ControlType.kPosition);
+        anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
         }
 }
