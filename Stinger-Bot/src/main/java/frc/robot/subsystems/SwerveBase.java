@@ -55,7 +55,7 @@ public class SwerveBase extends SubsystemBase {
 
   }
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative){
 
     //Converts joystick inputs to either field relative or chassis speeds using kinematics
     SwerveModuleState [] swerveModuleStates = 
@@ -69,7 +69,7 @@ public class SwerveBase extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
 
     for (SwerveModule module : swerveModules){
-      module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
+      module.setDesiredState(swerveModuleStates[module.moduleNumber]);
     }
   }
 
