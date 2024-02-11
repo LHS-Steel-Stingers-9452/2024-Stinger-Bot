@@ -130,12 +130,13 @@ public class SwerveModule {
 
     public void angleEncoderConfig(){
         canCoderConfigurator = canCoder.getConfigurator();
+        canCoderConfigurator.apply(canCoderConfiguration);
+        //restores factory defaults
 
         canCoderConfiguration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         canCoderConfigurator.apply(canCoderConfiguration);
 
-        //doesn't work? invert if needed
-        canCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        canCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         canCoderConfigurator.apply(canCoderConfiguration);
      
         /*
@@ -207,7 +208,7 @@ public class SwerveModule {
         //MathUtil.inputModulus();
         //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
         //Close loop angle.getRadians(), ControlType.kVelocity
-        anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
+        anglePIDController.setReference(angle.getRadians(), ControlType.kPosition);
         lastAngle = angle;
         }
 }
