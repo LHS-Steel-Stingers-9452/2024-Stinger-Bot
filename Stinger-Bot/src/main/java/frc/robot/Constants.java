@@ -37,7 +37,7 @@ public class Constants {
 
         //Encoder converstion factors
         public static final double driveEncoderPositionFactor = driveGearRatio * wheelCircumference; 
-        //Rotations to meters [limear distnce in meters]
+        //Rotations to meters [linear distnce in meters]
         public static final double driveEncoderVelocityFactor = driveEncoderPositionFactor / 60;
         //RPM to meters per sec
         public static final double integratedAngleEncoderPositionFactor = angleGearRatio * 2 * Math.PI;
@@ -76,7 +76,7 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.0026;
+        public static final double angleP = 0.0016;
         public static final double angleI = 0.00;
         public static final double angleD = 0.00;
 
