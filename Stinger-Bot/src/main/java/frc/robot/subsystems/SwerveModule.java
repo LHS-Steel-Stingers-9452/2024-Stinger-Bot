@@ -14,28 +14,22 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-//import edu.wpi.first.units.Mult;
-
-//import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
-//import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-
-//import edu.wpi.first.math.util.Units;
-
 
 /** Add your docs here. */
 public class SwerveModule {
     public int moduleNumber;
-
-    //encoder/module configuration values(on top because they are physical factors)
     private Rotation2d lastAngle;
     private Rotation2d angleOffset;
 
@@ -43,22 +37,24 @@ public class SwerveModule {
     private final CANSparkMax driveMotor;
     private final CANSparkMax angleMotor;
 
-    //encoders
+    //integrated encoders
     private final RelativeEncoder driveEncoder;
     private final RelativeEncoder integratedAngleEncoder;
+
+    //absolute encoder
     private final CANcoder canCoder;
     private CANcoderConfigurator canCoderConfigurator;
     private CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
     
-    //controllers
+    //PID controllers
     private final SparkPIDController drivePIDController;
     private final SparkPIDController anglePIDController;
 
-/* 
-    //feed forward WEIRD: use for close-loop
+
+    //feed forward: used for closed-loop
     private final SimpleMotorFeedforward driveFeedforward = 
         new SimpleMotorFeedforward(Swerve.driveKS, Swerve.driveKV, Swerve.driveKA);
-*/
+
     public SwerveModule(int moduleNumber, SwerveModuleConstants swerveConstants){
         //initialize variables here
         this.moduleNumber = moduleNumber;
@@ -75,80 +71,85 @@ public class SwerveModule {
         drivePIDController = driveMotor.getPIDController();
         anglePIDController = angleMotor.getPIDController();
         
-        //calling swerve module config functions
         driveConfig();
         angleMotorConfig();
         angleEncoderConfig();
 
-        //obtains last angle based on module state
         lastAngle = getState().angle;
 
     }
-
+    //ready units are now meters and radians 
     public void driveConfig() {
         driveMotor.restoreFactoryDefaults();
-        //only update can bus usage if effecting performance
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
+
+        //invert if not turning the same direction
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
         driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);
-        //Conversion factors and continous PID wrapping
-        driveEncoder.setPositionConversionFactor(Swerve.DRIVE_ENCODER_POSITION_FACTOR);
-        driveEncoder.setVelocityConversionFactor(Swerve.DRIVE_ENCODER_VELOCITY_FACTOR);
-        drivePIDController.setPositionPIDWrappingEnabled(true);
-        drivePIDController.setPositionPIDWrappingMinInput(-180);
-        drivePIDController.setPositionPIDWrappingMaxInput(180);
+        driveMotor.enableVoltageCompensation(Swerve.voltageComp);//usefull for consitency, treats as if battery were always at 12 volts
+
+        driveEncoder.setPositionConversionFactor(Swerve.driveEncoderPositionFactor);//linear distnce in meters
+        driveEncoder.setVelocityConversionFactor(Swerve.driveEncoderVelocityFactor);//meters per sec
+
+        //only use P value
         drivePIDController.setP(Swerve.driveP);
         drivePIDController.setI(Swerve.driveI);
         drivePIDController.setD(Swerve.driveD);
-        drivePIDController.setFF(Swerve.driveFF);
-        //setFeedforward  use for closed loop
-        //voltage compensation?
+
         driveMotor.burnFlash();
-        //Reset As A Saftery Measure
         driveEncoder.setPosition(0.0);
 
         
     }
-
+    // ready untis are now meters and radians
     public void angleMotorConfig(){
         angleMotor.restoreFactoryDefaults();
-        //only update can bus usage if effecting performance
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
+        //angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
+
         angleMotor.setInverted(true);
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
         angleMotor.setSmartCurrentLimit(Swerve.angleCurrentLimit);
-        //Converstion factors and continous PID wrapping
-        integratedAngleEncoder.setPositionConversionFactor(Swerve.INTEGRATED_ANGLE_ENCODER_POSITION_FACTOR);
-        integratedAngleEncoder.setVelocityConversionFactor(Swerve.INTEGRATED_ANGLE_ENCODER_VELOCITY_FACTOR);
-        anglePIDController.setPositionPIDWrappingEnabled(true);
-        anglePIDController.setPositionPIDWrappingMinInput(-180);
-        anglePIDController.setPositionPIDWrappingMaxInput(180);
+        angleMotor.enableVoltageCompensation(Swerve.voltageComp);
+
+        integratedAngleEncoder.setPositionConversionFactor(Swerve.anglePositionFactor);//Degrees per shaft rotation
+
        anglePIDController.setP(Swerve.angleP);
        anglePIDController.setI(Swerve.angleI);
        anglePIDController.setD(Swerve.angleD);
-       anglePIDController.setFF(Swerve.angleFF);
-        //setFeedforward use for closed loop
-        //voltage compensation?
         angleMotor.burnFlash();
-        //Reset As A Saftery Measure
+
         resetToAbsolute();
     }
 
     public void angleEncoderConfig(){
-        //canCoder config practice
         canCoderConfigurator = canCoder.getConfigurator();
+        canCoderConfigurator.apply(canCoderConfiguration);
+        //restores factory defaults
+
         canCoderConfiguration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         canCoderConfigurator.apply(canCoderConfiguration);
 
-        canCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        canCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         canCoderConfigurator.apply(canCoderConfiguration);
-
-        canCoderConfiguration.MagnetSensor.MagnetOffset = angleOffset.getRotations();
+     
+        /* 
+        canCoderConfiguration.MagnetSensor.MagnetOffset = (angleOffset.getRotations());
         canCoderConfigurator.apply(canCoderConfiguration);
+        */
+    
     }
 
-    private void resetToAbsolute(){
+    public void resetToAbsolute(){
+        //degrees units to match anglePositionConversionFactor
         double angelAbsolutePosition = getCanCoderValue().getDegrees() - angleOffset.getDegrees();
-        integratedAngleEncoder.setPosition(angelAbsolutePosition);//integrated ecnoder is reset and given canCoder value
+        integratedAngleEncoder.setPosition(angelAbsolutePosition);//integrated ecnoder is reset and given canCoder value; absolute position
     }
 
     private Rotation2d getAngle(){
@@ -157,7 +158,7 @@ public class SwerveModule {
 
     public Rotation2d getCanCoderValue(){
         return Rotation2d.fromRotations(canCoder.getAbsolutePosition().getValue());
-        
+        //Rotation2D.fromRotations() will automaticly convert from [0, 1) to [0, 360) when needed at the request of getDegrees()
     }
 
     public SwerveModuleState getState(){
@@ -166,36 +167,36 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            /* 
-            Use if rotation units don't work
-            Converts from Rotations to Distance traveled
-            driveEncoder.getPosition() * (Swerve.WHEEL_DIAMETER * Math.PI),
-            */
             driveEncoder.getPosition(),
             getAngle()
         );
     }
 
-    //If necessary add closed loop option
     public void setDesiredState(SwerveModuleState desiredModuleState){
-        SwerveModuleState desiredState = new SwerveModuleState(desiredModuleState.speedMetersPerSecond, getState().angle);
+        /* 
+        SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
+        SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
+        */
+        desiredModuleState = CustomModuleState.optimize(desiredModuleState, getState().angle);
 
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-        setAngle(desiredState);
-        setSpeed(desiredState);
+        setAngle(desiredModuleState);
+        setSpeed(desiredModuleState);
     }
 
-    
     private void setSpeed(SwerveModuleState desiredModuleState){
-        driveMotor.set(desiredModuleState.speedMetersPerSecond / Swerve.maxDriveSpeed);
+        //only run closed loop, make sure isOpenLoop == false or delete if statement below
+        
+        double velocity = desiredModuleState.speedMetersPerSecond;
+        drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
     }
 
     private void setAngle(SwerveModuleState desiredState){
         Rotation2d angle =
-            (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxAngleVelocity * 0.01))
+            (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxSpeed * 0.01))
             ? lastAngle
             : desiredState.angle;
-
+        //MathUtil.inputModulus();
+        //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
         anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
         }
