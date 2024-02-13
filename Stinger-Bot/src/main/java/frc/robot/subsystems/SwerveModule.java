@@ -85,14 +85,13 @@ public class SwerveModule {
         //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
         //driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
 
-        //invert if not turning the same direction
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         driveMotor.setSmartCurrentLimit(Swerve.driveCurrentLimit);
         driveMotor.enableVoltageCompensation(Swerve.voltageComp);//usefull for consitency, treats as if battery were always at 12 volts
 
-        driveEncoder.setPositionConversionFactor(Swerve.driveEncoderPositionFactor);//linear distnce in meters
+        driveEncoder.setPositionConversionFactor(Swerve.driveEncoderPositionFactor);// distance in meters
         driveEncoder.setVelocityConversionFactor(Swerve.driveEncoderVelocityFactor);//meters per sec
 
         //only use P value
@@ -184,7 +183,7 @@ public class SwerveModule {
     }
 
     private void setSpeed(SwerveModuleState desiredModuleState){
-        //only run closed loop, make sure isOpenLoop == false or delete if statement below
+        //only run closed loop
         
         double velocity = desiredModuleState.speedMetersPerSecond;
         drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
@@ -195,7 +194,6 @@ public class SwerveModule {
             (Math.abs(desiredState.speedMetersPerSecond) <= (Swerve.maxSpeed * 0.01))
             ? lastAngle
             : desiredState.angle;
-        //MathUtil.inputModulus();
         //PID wrapping MathUtil.inputModulus(angle.getRadians(), -Math.PI, Math.PI)
         anglePIDController.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
