@@ -22,6 +22,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -155,7 +157,9 @@ public void setHeading(Rotation2d heading){
   public void periodic() {
     // This method will be called once per scheduler run
     swerveOdometry.update(getGyroYaw(), getPositions());
-    field.setRobotPose(getPose());
+    //field.setRobotPose(getPose());
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    //Returns the Robot location of the field
 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
@@ -176,6 +180,11 @@ public void setHeading(Rotation2d heading){
   0 is facing towards directly towards opponent's alliance station
   */
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
+
+    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+
+      publisher.set(getStates());
 
   }
 }
