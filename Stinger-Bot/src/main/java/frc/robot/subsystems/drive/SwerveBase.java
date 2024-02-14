@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve.Mod0;
@@ -22,8 +22,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
+//import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -54,7 +54,6 @@ public class SwerveBase extends SubsystemBase {
 
     field = new Field2d();
     SmartDashboard.putData("Field", field);
-
   }
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative){
@@ -180,11 +179,5 @@ public void setHeading(Rotation2d heading){
   0 is facing towards directly towards opponent's alliance station
   */
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
-
-    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-      .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-
-      publisher.set(getStates());
-
   }
 }
