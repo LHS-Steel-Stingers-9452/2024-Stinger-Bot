@@ -38,7 +38,7 @@ public class SwerveBase extends SubsystemBase {
   private Field2d field;
 
   public SwerveBase() {
-    pidgeotto = new Pigeon2(PIGEON_ID);
+    pidgeotto = new Pigeon2(pigeonID);
     //zeroGyro();
     pidgeotto.setYaw(0);
 
