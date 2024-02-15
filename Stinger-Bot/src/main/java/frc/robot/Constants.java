@@ -20,18 +20,14 @@ public class Constants {
 
     public static final class Swerve{
         //Gyro ID
-        public static final int PIGEON_ID = 13;
-
-        public static final boolean invertGyro = false;
+        public static final int pigeonID = 13;
 
         //DriveTrain Constants
-        //ready
         public static final double trackWidth = Units.inchesToMeters(24.75);
         public static final double wheelbase  = Units.inchesToMeters(24.75);
         public static final double whealDiameter = Units.inchesToMeters(4.00);
         public static final double wheelCircumference = whealDiameter * Math.PI;
 
-        //ready
         public static final double driveGearRatio = (6.75 / 1.0); //6.75:1
         public static final double angleGearRatio = (150.0/7.0) / 1.0; //150/7:1
 
@@ -47,7 +43,6 @@ public class Constants {
         //RPM to degrees per sec
         public static final double anglePositionFactor = (360 / angleGearRatio);//Degrees per shaft rotation
 
-        //ready
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             new Translation2d(wheelbase/2, trackWidth/2),
             new Translation2d(wheelbase/2, -trackWidth/2),
@@ -55,8 +50,7 @@ public class Constants {
             new Translation2d(-wheelbase/2, -trackWidth/2)
 
         );
-        //meters/sec
-        //ready
+
         public static final double maxSpeed = 4.5; //values are subject to change upon testing 
         public static final double maxAngleVelocity = 4.5; // calculate actual max speed/velocity
 
@@ -122,7 +116,54 @@ public class Constants {
             
         }
     }
-/*
+    public static final class Intake{
+        public static final int intakeID = 15;
+        public static final int intakeCurrentLimit = 0;
+    }
+
+    public static final class Transfer{
+        public static final int transferID = 16;
+
+        public static final int transferCurrentLimit = 0;
+    }
+
+    public static final class Launcher{
+        public static final int leftLaunchID = 17;
+        public static final int rightLaunchID = 18;
+
+        public static final int launcherP = 0;
+        public static final int launcherI = 0;
+        public static final int launcherD = 0;
+    }
+
+    public static final class Arm{
+        public static final int leftArmID = 19;
+        public static final int rightArmID = 20;
+
+        public static final double armGearRatio;
+
+        public static final double armEncoderPositionFactor = 360;
+        //Rotation to degrees [not accounting for gearRatio]
+
+       public static final double driveEncoderVelocityFactor;
+        //RPM to ___
+
+        public static final int armP = 0;
+        public static final int armI = 0;
+        public static final int armD = 0;
+
+        public static final double lowPosition;
+        public static final double midPosition;
+        public static final double highPosition;
+    }
+
+    public static final class Climber{
+        public static final int leftClimbID = 21;
+        public static final int rightClimbID = 22;
+
+        public static final int climberCurrentLimit = 0;
+    }
+
     public static final class AutoConstants{}
-*/
+
 }
