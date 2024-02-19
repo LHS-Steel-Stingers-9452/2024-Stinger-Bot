@@ -11,11 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 public class Constants {
-    public final static class ControllerConstants{
-        public static final int DRIVER_CONTROLLER_PORT = 0;
-        //public static final int OPERATOR_CONTROLLER_PORT = 1;
-        public static final double DEADBANDRANGE = 0.15;
-        public static final double SLEW_RATE = 4;
+    public static final class ControllerConstants{
+        public static final int driverControllerPort = 0;
+        public static final int operatorControllerPort = 1;
+        public static final double deadbandRange = 0.15;
+        public static final double slewRate = 4;
     }
 
     public static final class Swerve{
@@ -116,50 +116,71 @@ public class Constants {
             
         }
     }
-    public static final class Intake{
+    
+    public static final class IntakeConstants{
         public static final int intakeID = 15;
-        public static final int intakeCurrentLimit = 0;
+
+        public static final int voltageComp = 12;
+
+        public static final int posSlewRate = 3;
+        public static final int negSlewRate = -3;
+
+        public static final double intakeSpeed = 0;
+        public static final double spitSpeed = 0;
+
+
+
     }
 
-    public static final class Transfer{
+    public static final class TransferConstants{
         public static final int transferID = 16;
 
         public static final int transferCurrentLimit = 0;
     }
 
-    public static final class Launcher{
-        public static final int leftLaunchID = 17;
-        public static final int rightLaunchID = 18;
+    public static final class LauncherConstants{
+        public static final int leftMotorID = 17;
+        public static final int rightMotorID = 18;
 
         public static final int launcherP = 0;
         public static final int launcherI = 0;
         public static final int launcherD = 0;
+
+        public static final int launchS = 0;
+        public static final int launchV = 0;
+
+        //Max RPS is 6000RPM/60 = 100 RPS
+        public static final double lowPositionSpeed = 0.0;
+        public static final double midPositionSpeed = 0.0;
+        public static final double highPositionSpeed = 0.0;
+
+        public static final double ffOvercomeGrav = 0;
     }
 
-    public static final class Arm{
-        public static final int leftArmID = 19;
-        public static final int rightArmID = 20;
+    public static final class ArmConstants{
+        public static final int leftArmID = 0;
+        public static final int rightArmID = 0;
 
-        public static final double armGearRatio;
+        public static final double armGearRatio = 0;
 
         public static final double armEncoderPositionFactor = 360;
         //Rotation to degrees [not accounting for gearRatio]
 
-       public static final double driveEncoderVelocityFactor;
+       //public static final double driveEncoderVelocityFactor;
         //RPM to ___
 
         public static final int armP = 0;
         public static final int armI = 0;
         public static final int armD = 0;
 
-        public static final double lowPosition;
-        public static final double midPosition;
-        public static final double highPosition;
+        public static final double lowPosition = 0;
+        public static final double midPosition = 0;
+        public static final double highPosition = 0;
     }
 
-    public static final class Climber{
-        public static final int leftClimbID = 21;
-        public static final int rightClimbID = 22;
+    public static final class ClimberConstants{
+        public static final int leftClimbID = 0;
+        public static final int rightClimbID = 0;
 
         public static final int climberCurrentLimit = 0;
     }
