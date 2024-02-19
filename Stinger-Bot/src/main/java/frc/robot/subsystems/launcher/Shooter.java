@@ -6,7 +6,7 @@ package frc.robot.subsystems.launcher;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Launcher;
+import frc.robot.Constants.LauncherConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -31,8 +31,8 @@ public class Shooter extends SubsystemBase {
   private VelocityVoltage velocityRequest;
 
   public Shooter() {
-    leftMotor = new TalonFX(Launcher.leftMotorID);
-    rightMotor = new TalonFX(Launcher.rightMotorID);
+    leftMotor = new TalonFX(LauncherConstants.leftMotorID);
+    rightMotor = new TalonFX(LauncherConstants.rightMotorID);
 
     velocityRequest = new VelocityVoltage(0).withSlot(0);
 
@@ -84,11 +84,11 @@ public class Shooter extends SubsystemBase {
     //restore factory defaults
 
     leftMotor.setInverted(false);
-    leftMotorConfig.Slot0.kP = Launcher.launcherP;
-    leftMotorConfig.Slot0.kI = Launcher.launcherI;
-    leftMotorConfig.Slot0.kD = Launcher.launcherD;
-    leftMotorConfig.Slot0.kS = Launcher.launchS;
-    leftMotorConfig.Slot0.kV = Launcher.launchV;
+    leftMotorConfig.Slot0.kP = LauncherConstants.launcherP;
+    leftMotorConfig.Slot0.kI = LauncherConstants.launcherI;
+    leftMotorConfig.Slot0.kD = LauncherConstants.launcherD;
+    leftMotorConfig.Slot0.kS = LauncherConstants.launchS;
+    leftMotorConfig.Slot0.kV = LauncherConstants.launchV;
 
     leftMotorConfigurator.apply(leftMotorConfig);
   }
@@ -99,11 +99,11 @@ public class Shooter extends SubsystemBase {
     //restore factory defaults
 
     rightMotor.setInverted(false);
-    rightMotorConfig.Slot0.kP = Launcher.launcherP;
-    rightMotorConfig.Slot0.kI = Launcher.launcherI;
-    rightMotorConfig.Slot0.kD = Launcher.launcherD;
-    rightMotorConfig.Slot0.kS = Launcher.launchS;
-    rightMotorConfig.Slot0.kV = Launcher.launchV;
+    rightMotorConfig.Slot0.kP = LauncherConstants.launcherP;
+    rightMotorConfig.Slot0.kI = LauncherConstants.launcherI;
+    rightMotorConfig.Slot0.kD = LauncherConstants.launcherD;
+    rightMotorConfig.Slot0.kS = LauncherConstants.launchS;
+    rightMotorConfig.Slot0.kV = LauncherConstants.launchV;
 
     rightMotorConfigurator.apply(rightMotorConfig);
   }
