@@ -51,17 +51,18 @@ public class Shooter extends SubsystemBase {
     rightMotor.setControl(new NeutralOut());
   }
 
+  //Units from RPS to RPM on display
   public double getLeftMotorSpeed(){
-    return leftMotor.getVelocity().getValueAsDouble();
+    return (leftMotor.getVelocity().getValueAsDouble() * 60);
+  }
+
+  public double getRightMotorSpeed(){
+    return (rightMotor.getVelocity().getValueAsDouble() * 60);
+
   }
 
   public boolean isLeftMotorAtSpeed(double desiredVelocity, double tolerance){
     return Math.abs(getLeftMotorSpeed() - desiredVelocity) <= tolerance;
-
-  }
-
-  public double getRightMotorSpeed(){
-    return rightMotor.getVelocity().getValueAsDouble();
 
   }
 
@@ -72,8 +73,8 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("lead launcher speed(RPS)", getLeftMotorSpeed());
-    SmartDashboard.putNumber("follow Launcher speed(RPS)", getRightMotorSpeed());
+    SmartDashboard.putNumber("lead launcher speed(RPM)", getLeftMotorSpeed());
+    SmartDashboard.putNumber("follow Launcher speed(RPM)", getRightMotorSpeed());
     
   }
 

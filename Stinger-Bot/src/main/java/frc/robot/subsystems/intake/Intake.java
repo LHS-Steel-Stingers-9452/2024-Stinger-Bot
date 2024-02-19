@@ -22,8 +22,6 @@ public class Intake extends SubsystemBase {
   private final SparkPIDController intakePIDController; 
    
 
-  
-
   public Intake() {
     intakeMotor = new CANSparkMax(IntakeConstants.intakeID, MotorType.kBrushless);
     encoder = intakeMotor.getEncoder();
@@ -62,11 +60,10 @@ public class Intake extends SubsystemBase {
     intakeMotor.enableVoltageCompensation(IntakeConstants.voltageComp);
     //encoder.setVelocityConversionFactor(1/60);
     //Converts from RPM to RPS
-/* 
+
     intakePIDController.setP(IntakeConstants.intakeP);
     intakePIDController.setI(IntakeConstants.intakeI);
     intakePIDController.setD(IntakeConstants.intakeD);
-*/
     intakeMotor.burnFlash();
   }
 }

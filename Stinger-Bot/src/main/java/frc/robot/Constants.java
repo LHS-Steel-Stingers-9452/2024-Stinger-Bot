@@ -121,28 +121,40 @@ public class Constants {
         public static final int intakeID = 15;
 
         public static final int voltageComp = 12;
+        public static final int currentLimit = 40;
 
-        public static final double intakeSpeed = 0;
-        public static final double spitSpeed = 0;
+        //5676 RPM -> 5676/60 = 94.6 RPS (max)  try 10 RPS * 60 = 60 RPM
+        public static final double intakeSpeed = 60;
+        public static final double intSpitSpeed = -60;
 
+        //To do: tune
         public static final double intakeP = 0;
-        public static final double intakeI = 0;
+        public static final double intakeI = 0;//always at zero
         public static final double intakeD = 0; 
-
-
-
     }
+
 
     public static final class TransferConstants{
         public static final int transferID = 16;
 
-        public static final int transferCurrentLimit = 0;
+        public static final int transferCurrentLimit = 30;
+        //Untis RPS 10RPS to match 60RPM on intake
+        public static final double transferSeed = 10;
+        public static final double tranSpitSpeed = -10;
+
+        public static final double ffOvercomeGrav = 0;
+
+         //To do: tune
+        public static final double transferP = 0;
+        public static final double transferI = 0;// always at zero to match intake
+        public static final double transferD = 0;
     }
 
     public static final class LauncherConstants{
         public static final int leftMotorID = 17;
         public static final int rightMotorID = 18;
 
+         //To do: tune
         public static final int launcherP = 0;
         public static final int launcherI = 0;
         public static final int launcherD = 0;
@@ -151,7 +163,7 @@ public class Constants {
         public static final int launchV = 0;
 
         //Max RPS is 6000RPM/60 = 100 RPS
-        public static final double lowPositionSpeed = 0.0;
+        public static final double lowPositionSpeed = 0.0;// start low
         public static final double midPositionSpeed = 0.0;
         public static final double highPositionSpeed = 0.0;
 
@@ -163,6 +175,9 @@ public class Constants {
         public static final int rightArmID = 0;
 
         public static final double armGearRatio = 0;
+
+        //public static final double integratedAngleEncoderPositionFactor = angleGearRatio * 360;
+        //Rotations to degrees
 
         public static final double armEncoderPositionFactor = 360;
         //Rotation to degrees [not accounting for gearRatio]
