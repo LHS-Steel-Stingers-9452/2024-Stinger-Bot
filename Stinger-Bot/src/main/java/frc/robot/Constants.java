@@ -122,11 +122,12 @@ public class Constants {
 
         public static final int voltageComp = 12;
 
-        public static final int posSlewRate = 3;
-        public static final int negSlewRate = -3;
-
         public static final double intakeSpeed = 0;
         public static final double spitSpeed = 0;
+
+        public static final double intakeP = 0;
+        public static final double intakeI = 0;
+        public static final double intakeD = 0; 
 
 
 

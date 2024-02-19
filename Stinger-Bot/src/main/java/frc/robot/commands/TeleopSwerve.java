@@ -27,9 +27,9 @@ public class TeleopSwerve extends Command {
 
   private BooleanSupplier robotCentricSup;
 
-  private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
-  private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
-  private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.SLEW_RATE);
+  private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
+  private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.slewRate);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
   //limiters to soften control inputs
 
   public TeleopSwerve( SwerveBase swerveBase,
@@ -55,13 +55,13 @@ public class TeleopSwerve extends Command {
   public void execute() {
     //apply filters to control inputs
     double translationVal =
-           translationFilter.calculate(MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+           translationFilter.calculate(MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange));
 
     double strafeVal =
-            strafeFilter.calculate(MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+            strafeFilter.calculate(MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange));
 
     double rotationVal =
-            rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.DEADBANDRANGE));
+            rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange));
 
     SmartDashboard.putNumber("vX(Teleop)", translationVal);
     SmartDashboard.putNumber("vY(Teleop)", strafeVal);
@@ -77,6 +77,7 @@ public class TeleopSwerve extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //set neural output function here to stop motors
   }
 
   // Returns true when the command should end.

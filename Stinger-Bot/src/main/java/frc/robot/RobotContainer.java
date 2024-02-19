@@ -10,20 +10,32 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.drive.SwerveBase;
 
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.launcher.Shooter;
+
 public class RobotContainer {
   //Controllers
-  private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+  private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorControllerPort);
 
   private final SwerveBase swerveBase;
   private final TeleopSwerve teleopSwerve;
+
+  private final Intake intakeSub;
+
+  private final Shooter launcherSub;
 
   public RobotContainer() {
 
     //initialize subsytems
     swerveBase = new SwerveBase();
+
+    intakeSub = new Intake();
 
     teleopSwerve = new TeleopSwerve(
       swerveBase,
@@ -36,6 +48,10 @@ public class RobotContainer {
     
     swerveBase.setDefaultCommand(teleopSwerve);
 
+    //test shooter kraken motors 02/17/2024
+    launcherSub = new Shooter();
+    
+
     configureBindings();
   }
 
@@ -45,9 +61,14 @@ public class RobotContainer {
   }
 */
   //Use for Mapping button bindings
-  private void configureBindings() {
+  private void configureBindings(){
     //driver buttton to zero gyro
     driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
+
+    //operator controller bindings
+
+    
+    
 
     
   
