@@ -11,30 +11,28 @@ import frc.robot.Constants.IntakeConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
+//import com.revrobotics.SparkPIDController;
+//import com.revrobotics.CANSparkBase.ControlType;
 
 
 public class Intake extends SubsystemBase {
   /** Creates a new intake. */
   private final CANSparkMax intakeMotor;
   private final RelativeEncoder encoder;
-  private final SparkPIDController intakePIDController; 
-   
+  //private final SparkPIDController intakePIDController; 
 
   public Intake() {
     intakeMotor = new CANSparkMax(IntakeConstants.intakeID, MotorType.kBrushless);
     encoder = intakeMotor.getEncoder();
-    intakePIDController = intakeMotor.getPIDController();
+    //intakePIDController = intakeMotor.getPIDController();
 
 
     configIntakeMotor();
   }
 
-
+  //values range fomr -1 to 1
   public void setIntakeMotorSpeed(double intakeSpeed){
-    intakePIDController.setReference(intakeSpeed, ControlType.kVelocity);
-    //intakeMotor.set(intakeSpeed);
+    intakeMotor.set(intakeSpeed);
   }
 
   public void stopIntake(){
@@ -48,8 +46,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler
+    //This method will be called once per scheduler
     SmartDashboard.putNumber("Intake Speed (RPM)", getIntakeSpeed());
+    SmartDashboard.putNumber("Intake Speed (RPS)", (getIntakeSpeed() * (1/60)));
   }
 
 
@@ -58,12 +57,6 @@ public class Intake extends SubsystemBase {
     intakeMotor.setInverted(false);
     intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     intakeMotor.enableVoltageCompensation(IntakeConstants.voltageComp);
-    //encoder.setVelocityConversionFactor(1/60);
-    //Converts from RPM to RPS
-
-    intakePIDController.setP(IntakeConstants.intakeP);
-    intakePIDController.setI(IntakeConstants.intakeI);
-    intakePIDController.setD(IntakeConstants.intakeD);
     intakeMotor.burnFlash();
   }
 }
