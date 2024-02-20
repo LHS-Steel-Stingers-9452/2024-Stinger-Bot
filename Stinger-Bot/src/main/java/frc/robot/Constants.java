@@ -121,33 +121,21 @@ public class Constants {
         public static final int intakeID = 15;
 
         public static final int voltageComp = 12;
-        public static final int currentLimit = 40;
-
-        //5676 RPM -> 5676/60 = 94.6 RPS (max)  try 10 RPS * 60 = 60 RPM
-        public static final double intakeSpeed = 60;
-        public static final double intSpitSpeed = -60;
-
-        //To do: tune
-        public static final double intakeP = 0;
-        public static final double intakeI = 0;//always at zero
-        public static final double intakeD = 0; 
+        
+        public static final double intakeSpeed = .25;
+        public static final double intakeSpitSpeed = -25;
     }
 
 
     public static final class TransferConstants{
         public static final int transferID = 16;
 
-        public static final int transferCurrentLimit = 30;
-        //Untis RPS 10RPS to match 60RPM on intake
-        public static final double transferSeed = 10;
-        public static final double tranSpitSpeed = -10;
+        public static final int transferCurrentLimit = 00;
+        
+        public static final double transferSeed = 0.25;
+        public static final double tranSpitSpeed = -0.25;
 
-        public static final double ffOvercomeGrav = 0;
-
-         //To do: tune
-        public static final double transferP = 0;
-        public static final double transferI = 0;// always at zero to match intake
-        public static final double transferD = 0;
+        public static final double speedTolerance = 0.0;//to be determined
     }
 
     public static final class LauncherConstants{
@@ -155,19 +143,26 @@ public class Constants {
         public static final int rightMotorID = 18;
 
          //To do: tune
-        public static final int launcherP = 0;
-        public static final int launcherI = 0;
-        public static final int launcherD = 0;
+        public static final double launcherP = 0.5;
+        public static final double launcherI = 0.00;
+        public static final double launcherD = 0.00;
 
-        public static final int launchS = 0;
-        public static final int launchV = 0;
+        public static final double launchS = 0.15;//tested
+        public static final double launchV = 0;
 
-        //Max RPS is 6000RPM/60 = 100 RPS
-        public static final double lowPositionSpeed = 0.0;// start low
+        //Note: .5 duty cycle == 50RPS  
+
+        //run WPI characterization tool
+
+        //Units: RPS
+        public static final double lowPositionSpeed = 40.0;// sweet spot
         public static final double midPositionSpeed = 0.0;
         public static final double highPositionSpeed = 0.0;
 
-        public static final double ffOvercomeGrav = 0;
+        public static final double intakeFromShooterSpeed = 20.0;//20 RPS 
+
+        public static final double ffOvercomeGrav = 0.5;
+
     }
 
     public static final class ArmConstants{
