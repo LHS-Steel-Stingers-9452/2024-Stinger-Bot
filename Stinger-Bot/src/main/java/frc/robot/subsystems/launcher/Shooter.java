@@ -22,11 +22,12 @@ public class Shooter extends SubsystemBase {
   private final TalonFX leftMotor;
   private final TalonFX rightMotor;
 
+  private TalonFXConfigurator leftMotorConfigurator;
+  private TalonFXConfigurator rightMotorConfigurator;
+
   private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
   private TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 
-  private TalonFXConfigurator leftMotorConfigurator;
-  private TalonFXConfigurator rightMotorConfigurator;
 
   private VelocityVoltage velocityRequest;
 
@@ -41,7 +42,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterSpeed(double speed, double feedForwardVal){
-    //leadMotor.set(speed);
+    //leftMotor.set(speed);
     leftMotor.setControl(velocityRequest.withVelocity(speed).withFeedForward(feedForwardVal));
     rightMotor.setControl(velocityRequest.withVelocity(speed).withFeedForward(feedForwardVal));
   }
@@ -51,13 +52,12 @@ public class Shooter extends SubsystemBase {
     rightMotor.setControl(new NeutralOut());
   }
 
-  //Units from RPS to RPM on display
   public double getLeftMotorSpeed(){
-    return (leftMotor.getVelocity().getValueAsDouble() * 60);
+    return (leftMotor.getVelocity().getValueAsDouble());
   }
 
   public double getRightMotorSpeed(){
-    return (rightMotor.getVelocity().getValueAsDouble() * 60);
+    return (rightMotor.getVelocity().getValueAsDouble());
 
   }
 
@@ -73,8 +73,8 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("lead launcher speed(RPM)", getLeftMotorSpeed());
-    SmartDashboard.putNumber("follow Launcher speed(RPM)", getRightMotorSpeed());
+    SmartDashboard.putNumber("left launcher speed(RPS)", getLeftMotorSpeed());
+    SmartDashboard.putNumber("right Launcher speed(RPS)", getRightMotorSpeed());
     
   }
 
