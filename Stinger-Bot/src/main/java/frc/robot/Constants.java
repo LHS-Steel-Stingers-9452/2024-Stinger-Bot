@@ -166,8 +166,8 @@ public class Constants {
     }
 
     public static final class ArmConstants{
-        public static final int leftArmID = 0;
-        public static final int rightArmID = 0;
+        public static final int leadID = 19;
+        public static final int followID = 20;
 
         public static final double armGearRatio = 0;
 
@@ -197,5 +197,10 @@ public class Constants {
     }
 
     public static final class AutoConstants{}
+
+    public static final class DIOConstants {
+        public static final int encoderDioPort = 0;
+        public static final int photoSensDioPort = 1;
+    }
 
 }
