@@ -54,8 +54,8 @@ public class Intake extends SubsystemBase {
 
   public void configIntakeMotor(){
     intakeMotor.restoreFactoryDefaults();
-    intakeMotor.setInverted(false);
-    intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    intakeMotor.setInverted(true);
+    intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     intakeMotor.enableVoltageCompensation(IntakeConstants.voltageComp);
     intakeMotor.burnFlash();
   }

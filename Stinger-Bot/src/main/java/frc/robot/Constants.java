@@ -122,8 +122,8 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = .25;
-        public static final double intakeSpitSpeed = -25;
+        public static final double intakeSpeed = .3;
+        public static final double intakeSpitSpeed = -.3;
     }
 
 

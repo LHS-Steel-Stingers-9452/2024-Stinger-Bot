@@ -66,9 +66,9 @@ public class Transfer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.getNumber("transfer Speed(RPS)", getTransferSpeed());
-    SmartDashboard.getNumber("transfer Speed(RPM)", getTransferSpeed() * 60);
-    SmartDashboard.getNumber("transfer current", transferMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
+    SmartDashboard.putNumber("transfer Speed(RPM)", getTransferSpeed() * 60);
+    SmartDashboard.putNumber("transfer current", transferMotor.getStatorCurrent().getValueAsDouble());
   }
 
   public void transferConfig(){
