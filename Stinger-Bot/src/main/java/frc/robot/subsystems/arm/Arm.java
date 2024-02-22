@@ -141,14 +141,28 @@ public class Arm extends ProfiledPIDSubsystem {
     double feedforward = armFeedforward.calculate(correctedPosition, setpoint.velocity);
 
     if (RobotConstants.isArmTurningMode){
-      
-
+      SmartDashboard.putNumber("Arm corrected FF position", correctedPosition);
+      SmartDashboard.putNumber("Arm PID output", output);
+      SmartDashboard.putNumber("Arm Feed Forward Output", feedforward);
     }
+
+    leadMotor.setControl(voltageOutput.withOutput(output + feedforward));
   }
 
+  /**
+     * Returns the measurement of the process variable used by the
+     * ProfiledPIDController.
+     * 
+     * The PIDSubsystem will automatically call this method from its periodic()
+     * block, and pass the returned value to the control loop.
+     * 
+     * @return the measurement of the process variable, in this case, the Arm angle,
+     *         in radians corrected to 0.0 at the STOWED position
+  */
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
+    
     return 0;
   }
 
