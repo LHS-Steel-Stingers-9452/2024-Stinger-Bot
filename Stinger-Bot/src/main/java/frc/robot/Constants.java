@@ -11,6 +11,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 public class Constants {
+    public static final class RobotConstants{
+        public static final boolean isTuningMode = true;//in tunning mode
+        public static final boolean isDrivingTuningMode = false;//need
+        public static final boolean isArmTurningMode = true;//in process
+        public static final boolean isIntakeTuningMode = false;//done
+        public static final boolean isTransferTuningMode = false;//done
+        public static final boolean isShooterTuningMode = false;//need
+    }
+
     public static final class ControllerConstants{
         public static final int driverControllerPort = 0;
         public static final int operatorControllerPort = 1;
@@ -122,8 +131,8 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = .3;
-        public static final double intakeSpitSpeed = -.3;
+        public static final double intakeSpeed = .5;
+        public static final double intakeSpitSpeed = -.5;
     }
 
 
@@ -171,22 +180,19 @@ public class Constants {
 
         public static final double armGearRatio = 0;
 
-        //public static final double integratedAngleEncoderPositionFactor = angleGearRatio * 360;
-        //Rotations to degrees
+        public static final double encoderMin;
+        public static final double encoderMax;
 
-        public static final double armEncoderPositionFactor = 360;
-        //Rotation to degrees [not accounting for gearRatio]
+        public static final double armKS = 0;
+        public static final double armKG = 0;
+        public static final double armKV = 0;
+        public static final double armKA = 0;
 
-       //public static final double driveEncoderVelocityFactor;
-        //RPM to ___
 
         public static final int armP = 0;
         public static final int armI = 0;
         public static final int armD = 0;
 
-        public static final double lowPosition = 0;
-        public static final double midPosition = 0;
-        public static final double highPosition = 0;
     }
 
     public static final class ClimberConstants{

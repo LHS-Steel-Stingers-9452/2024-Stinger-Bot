@@ -33,7 +33,6 @@ public class RobotContainer {
   private final Shooter launcherSub;
 
   private TeleopSwerve teleopSwerve;
-  private IntakeNoteReg intakeNoteReg;
 
 
 
