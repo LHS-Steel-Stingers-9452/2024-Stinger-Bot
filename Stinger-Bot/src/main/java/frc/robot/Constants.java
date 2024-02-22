@@ -184,7 +184,7 @@ public class Constants {
         public static final int armI = 0;
         public static final int armD = 0;
 
-        public static final double lowPosition = 0;
+        public static final double lowPosition = 0.0;
         public static final double midPosition = 0;
         public static final double highPosition = 0;
     }
@@ -198,9 +198,12 @@ public class Constants {
 
     public static final class AutoConstants{}
 
+
     public static final class DIOConstants {
         public static final int encoderDioPort = 0;
         public static final int photoSensDioPort = 1;
+
+
     }
 
 }

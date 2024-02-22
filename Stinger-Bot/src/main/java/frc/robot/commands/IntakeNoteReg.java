@@ -44,6 +44,8 @@ public class IntakeNoteReg extends Command {
 
     intakeSub.setIntakeMotorSpeed(intakeSpeed);
     transferSub.setTransferSpeed(transferSpeed);
+
+    //add led colors here
   }
 
   // Called once the command ends or is interrupted.

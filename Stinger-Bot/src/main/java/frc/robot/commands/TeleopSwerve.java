@@ -73,6 +73,8 @@ public class TeleopSwerve extends Command {
       (!robotCentricSup.getAsBoolean())
       );
 
+      //default drive colors here 
+
   }
   // Called once the command ends or is interrupted.
   @Override
