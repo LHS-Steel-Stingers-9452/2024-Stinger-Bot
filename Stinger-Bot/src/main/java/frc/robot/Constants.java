@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Util.Setpoints;
+import frc.robot.Util.Setpoints.GameState;
 public class Constants {
     public static final class RobotConstants{
         public static final boolean isTuningMode = true;//in tunning mode
@@ -18,6 +20,19 @@ public class Constants {
         public static final boolean isIntakeTuningMode = false;//done
         public static final boolean isTransferTuningMode = false;//done
         public static final boolean isShooterTuningMode = false;//need
+
+        /**Shooter and Arm Setpoints */
+        //Stowed and intake will mostlikely be the same
+        public static final Setpoints STOWED = new Setpoints(0, 0, 0, 0, GameState.STOWED);
+        public static final Setpoints INTAKE = new Setpoints(0, 0, 0, 0, GameState.INTAKE);
+
+        public static final Setpoints SPEAKER = new Setpoints(0, 0, 0, 0, GameState.SPEAKER);
+
+        //amp will be close to horizontal position
+        public static final Setpoints AMP = new Setpoints(0, 0, 0, 0, GameState.AMP);
+        public static final Setpoints PODIUM = new Setpoints(0, 0, 0, 0, GameState.PODIUM);
+        public static final Setpoints WING = new Setpoints(0, 0, 0, 0, GameState.WING);
+        public static final Setpoints TRAP = new Setpoints(0, 0, 0, 0, GameState.TRAP);
     }
 
     public static final class ControllerConstants{
@@ -175,24 +190,52 @@ public class Constants {
     }
 
     public static final class ArmConstants{
+        /*
+        * Calibrating the Arm Angle
+        * 
+        * - Turn the robot off and push the Arm against its hard stop in the STOWED position <br>
+        * - Turn the robot on and connect to the robot (Do not enable) <br>
+        * - Open Shuffleboard and find the box with the value for "Arm Angle Uncorrected" <br>
+        * - Copy this value into the constant named kARM_STARTING_OFFSET in the "ArmConstants" section of Constants.java <br>
+        * - The value should be > 0.0 (i.e. not negative). If it is 0.0 or less, then there is an encoder issue.
+        * - The value should be between 30-120 degrees. Anything over 200 likely means the encoder zero point is not in the right spot)<br>
+        * - You want to make sure the value you choose is just slightly smaller than the lowest number that appears in "Arm Angle Uncorrected".
+        * - Otherwise you may get negative readings for the Arm Current Angle, and error checking may prevent the Arm motors from moving.
+        * - Move the Arm to the horizontal position and again check the value in the "Arm Angle Uncorrected" box. <br>
+        * - Copy this value into the constant named kARM_HORIZONTAL_OFFSET. (It should be between 90-160 degrees).<br>
+        * - Save the file and deploy code to the robot. Make sure the Arm starts in the STOWED position. <br>
+        * - If the value for Arm Current Angle is a negative value do not enable, and try to do the offsets again <br>
+        * - If it is still negative, then there is an issue with the encoder. <br>
+        */
         public static final int leadID = 19;
         public static final int followID = 20;
 
-        public static final double armGearRatio = 0;
+        //measured when the arm is in the STOWED position
+        public static final double armStartingOffset = 0.0;//TBD
+        //measured when the arm is horizontal
+        public static final double armHorizontalOffset = 0.0;//TBD
 
-        public static final double encoderMin;
-        public static final double encoderMax;
+        //feedforward gains
+        //tbd current values were obtained through means of an online calculator
+        public static final double armKS = 0; // The Static Gain, in volts
+        public static final double armKG = 0.40; // The Gravity Gain, in volts
+        public static final double armKV = 1.3; // The Velocity Gain, in volt seconds per radian
+        public static final double armKA = 0.02; // The acceleration gain, in volt seconds^2 per radian
 
-        public static final double armKS = 0;
-        public static final double armKG = 0;
-        public static final double armKV = 0;
-        public static final double armKA = 0;
-
-
+        //PID Control gains in volts
         public static final int armP = 0;
         public static final int armI = 0;
         public static final int armD = 0;
 
+        //Profiled PID constants
+        public static final double armCruise; // Radians per second
+        public static final double armAcceleration; // Radians per second^2
+
+        public static final double encoderDutyCycleMin = 1.0/1025.0; //~0
+        public static final double encoderDutyCycleMax = 1024.0/1025.0; //~1
+
+        // Motor Neutral dead-band : Range 0.001 -> 0.25
+        public static final double neutralDeadBand = 0.005; //-> 1.25
     }
 
     public static final class ClimberConstants{

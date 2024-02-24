@@ -70,7 +70,7 @@ public class Arm extends ProfiledPIDSubsystem {
             ArmConstants.armI,
             ArmConstants.armD,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(ArmConstants.armCruise, armAcceleration)));
+            new TrapezoidProfile.Constraints(ArmConstants.armCruise, ArmConstants.armAcceleration)));
 
     //Start arm at rest in stowed/intakepositon position
     updateArmSetPoint(RobotConstants.STOWED);
@@ -82,16 +82,30 @@ public class Arm extends ProfiledPIDSubsystem {
     var leadMotorConfig = new TalonFXConfiguration();
     var followMotorMotorConfig = new TalonFXConfiguration();
 
-    //set the output mode to brake
+    //Set the output mode to brake
+    leadMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    followMotorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    //set th motors Neutral Deadband
+    //Set the motor's Neutral Deadband
+    leadMotorConfig.MotorOutput.DutyCycleNeutralDeadband = ArmConstants.neutralDeadBand;
+    leadMotorConfig.MotorOutput.DutyCycleNeutralDeadband = ArmConstants.neutralDeadBand;
 
-    //set the turning direction
+    /* Set the turning direction */
+    leadMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     /*
-     * Appply the configurations to the motors
-     * and set one to follow the other in the same direction
+     * Apply the configurations to the motors, and set one to follow the other in
+     * the same direction
      */
+    leadMotor.getConfigurator().apply(leadMotorConfig);
+    followMotor.getConfigurator().apply(followMotorMotorConfig);
+    followMotor.setControl(new Follower(leadMotor.getDeviceID(), false));
+
+    // optimize StatusSignal rates for the Talons
+    //m_armLeader.getSupplyVoltage().setUpdateFrequency(4);
+    //m_armLeader.optimizeBusUtilization();
+    //m_armFollower.getSupplyVoltage().setUpdateFrequency(4);
+    //m_armFollower.optimizeBusUtilization();
 
 
     //Put controls for the PID controller on the dashboard
@@ -112,7 +126,7 @@ public class Arm extends ProfiledPIDSubsystem {
       SmartDashboard.putNumber("Arm Setpoint", armSetPoint);
       SmartDashboard.putNumber("Raw Arm Encoder", getAbsPos());
       SmartDashboard.putNumber("Arm Angle Uncorrected", dutyCycleToDegrees(getAbsPos()));
-      SmartDashboard.putNumber("Current Arm Angle", armSetPointDegrees());
+      SmartDashboard.putNumber("Current Arm Angle (Degrees)", getArmDegrees());
       SmartDashboard.putNumber("Arm Error", getArmError());
 
     }
@@ -162,10 +176,140 @@ public class Arm extends ProfiledPIDSubsystem {
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    
-    return 0;
+    return getArmRadians();
   }
 
+  /**
+   * Update the PID controller's current Arm setpoint and tolerance
+   * 
+   * @param setpoints - the desired psoition as a Setpoints object
+   */
 
-  
+   public void updateArmSetPoint(Setpoints setpoints){
+    //convert degrees to radians and set the profile goal
+    armSetPoint = setpoints.arm;
+    tolerance = setpoints.tolerance;
+    //Arm setpoint must be passed in radians
+    tpState.position = degreesToRadians(setpoints.arm);
+    setGoal(tpState);
+
+    //Display requested Arm State to dashboard
+    Setpoints.displayArmState(setpoints.state);
+   }
+
+   /**
+    * Update the PID controller's current Arm setpoint in degrees
+
+    * @param degrees - the desired Arm position in degrees
+    */
+   public void updateArmInDegrees(double degrees){
+    //Convert degrees to radians and set the profile goals
+    armSetPoint = degrees;
+    tpState.position = degreesToRadians(degrees);
+    setGoal(tpState);
+  }
+
+  public double getDegrees(){
+    //Get the SmartDashboard
+    return tempDegree.get();
+  }
+
+  /**
+   * Override the enalbe() method so we can set the goal to the current position
+   * 
+   * The super method resets the controller and sets its current setpoint to the 
+   * current position, but does not reset the goal, which will cause the Arm
+   * to jump from the current position to the old goal.
+   */
+  @Override
+  public void enable(){
+    super.enable();
+    armSetPoint = getArmDegrees();
+    setGoal(armSetPoint);
+  }
+
+  /**
+   * Get the current Arm position error (in degrees)
+   */
+  public double getArmError(){
+    return Math.abs(armSetPoint - getArmDegrees());
+  }
+
+  /**Check if Arm is at the setpoint or within tolerance*/
+  public boolean isArmAtSetPoint(){
+    return getArmError() < tolerance;
+  }
+
+  /**Drive the Arm directly by providing a supply voltage value*/
+  public void setArmVoltage(double voltage){
+    leadMotor.setControl(voltageOutput.withOutput(voltage));
+  }
+
+  /**Set the lead motor to the Neutral state (no output) */
+  public void stopMotors() {
+    leadMotor.setControl(new NeutralOut());
+  }
+
+  /**Returns the current enocder absolute value in DutyCycle units (~0 -> ~1) */
+  public double getAbsPos(){
+    return absoluteEncoder.getAbsolutePosition();
+  }
+
+  /**Converts DutyCycle units to Degrees */
+  public double dutyCycleToDegrees(double dutyCyclePos){
+    return dutyCyclePos * 360;
+  }
+
+  /**Converts the current encoder reading to Degrees, and corrects relative to a
+   * STOWED position of zero
+   */
+  public double getArmDegrees(){
+    return dutyCycleToDegrees(getAbsPos()) - ArmConstants.armStartingOffset;
+  }
+
+  /**Converts DutyCycle units to Radians */
+  public double dutyCycleToRadians(double dutyCyclePos){
+    return dutyCyclePos * 2.0 * Math.PI;
+  }
+
+  /**Converts Degrees to Radians */
+  public double degreesToRadians(double degrees){
+    return (degrees * Math.PI) / 180.0;
+  }
+
+  /**Convert the current encoder reading to Degrees, and corrects relative
+   * to a STOWED position of zero
+   */
+  public double getArmRadians(){
+    return dutyCycleToRadians(getAbsPos()) - degreesToRadians(ArmConstants.armStartingOffset);
+  }
+
+  /**
+   * Takes a position in radians relative to STOWED, and corrects it
+   * to be relative to a HORIZONTAL position of zero.
+   * This is used for Feedforward only, where we accoint for gravity using a cosine function
+   */
+  public double correctedArmRadiansForFeedFWD(double position){
+    return position - degreesToRadians(ArmConstants.armHorizontalOffset - ArmConstants.armStartingOffset);
+  }
+
+  /*
+   * Command Factories
+   */
+
+   /**To position for Intake, move Arm to INTAKE position */
+  public Command prepareForIntakeCommand(){
+    return new RunCommand(() -> this.updateArmSetPoint(RobotConstants.INTAKE), this)
+    .util(() -> this.isArmAtSetPoint());
+  }
+
+  /**To tune the lookup table using SmartDashboard */
+  public Command tuneArmSetPointCommand() {
+    return new RunCommand(()-> this.updateArmInDegrees(tuneArmSetPoint.get()), this)
+        .until(()->this.isArmAtSetPoint());
+}
+
+public Command moveToDegreeCommand(){
+  return new RunCommand(() -> this.updateArmInDegrees(this.getDegrees()));
+}
 }
