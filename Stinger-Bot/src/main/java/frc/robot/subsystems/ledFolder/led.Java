@@ -1,11 +1,20 @@
+package frc.robot.subsystems.ledFolder;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
-@Override
-Public void robotInit() {
+public class led extends SubsystemBase {
+   private AddressableLED m_led;
+   private AddressableLEDBuffer m_led;
+   // Store what the last hue of the first pixle is
+   private int m_rainbowFirstPixelHue;
+
+public led(){
     // PWM port 9
     // Must be PWM header, not MXP or DIO
-    m_led = AddressableLED(9);
+    m_led = new AddressableLED(9);
 
     // Reuse buffer
     // Default to a length of 60, start empty output
@@ -16,14 +25,16 @@ Public void robotInit() {
     // Set the data
     m_led.setData(m_ledBuffer);
     m_led.start();
-}
+   
+} 
 
+public void setLEDRed(){
  for (var i = 0; i < m_ledBuffer.getLength.();++) {
     // Sets the specific LED to the RGB values for red
     m_ledBuffer.setRGB(i, 255, 0, 0);
- }
-
- m_led.setData(m_ledBuffer);
+   }
+   m_led.setData(m_ledBuffer);
+}
 
  private void rainbow() {
     //For every pixel
@@ -39,11 +50,4 @@ Public void robotInit() {
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
  }
-
- @Override
- public void robotPeriodic() {
-    // Fill the buffer with a rainbow
-    rainbow();
-    // Set the LEDs
-    m_led.setData(m_ledBuffer);
- }
+}
