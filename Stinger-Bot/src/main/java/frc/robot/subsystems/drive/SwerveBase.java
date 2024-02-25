@@ -156,7 +156,7 @@ public void setHeading(Rotation2d heading){
   public void periodic() {
     // This method will be called once per scheduler run
     swerveOdometry.update(getGyroYaw(), getPositions());
-    //field.setRobotPose(getPose());
+    field.setRobotPose(getPose());
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     //Returns the Robot location of the field
 
