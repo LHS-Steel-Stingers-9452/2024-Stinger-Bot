@@ -61,13 +61,13 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  public boolean isLeftMotorAtSpeed(double desiredVelocity, double tolerance){
-    return Math.abs(getLeftMotorSpeed() - desiredVelocity) <= tolerance;
+  public boolean isLeftMotorAtSpeed(double desiredVelocity){
+    return Math.abs(getLeftMotorSpeed() - desiredVelocity) <= LauncherConstants.speedTolerance;
 
   }
 
-  public boolean isRightMotorAtSpeed(double desiredVelocity, double tolerance){
-    return Math.abs(getRightMotorSpeed() - desiredVelocity) <= tolerance;
+  public boolean isRightMotorAtSpeed(double desiredVelocity){
+    return Math.abs(getRightMotorSpeed() - desiredVelocity) <= LauncherConstants.speedTolerance;
   }
 
   @Override
@@ -88,7 +88,6 @@ public class Shooter extends SubsystemBase {
     leftMotorConfig.Slot0.kP = LauncherConstants.launcherP;
     leftMotorConfig.Slot0.kI = LauncherConstants.launcherI;
     leftMotorConfig.Slot0.kD = LauncherConstants.launcherD;
-    leftMotorConfig.Slot0.kS = LauncherConstants.launchS;
     leftMotorConfig.Slot0.kV = LauncherConstants.launchV;
 
     leftMotorConfigurator.apply(leftMotorConfig);
@@ -103,7 +102,6 @@ public class Shooter extends SubsystemBase {
     rightMotorConfig.Slot0.kP = LauncherConstants.launcherP;
     rightMotorConfig.Slot0.kI = LauncherConstants.launcherI;
     rightMotorConfig.Slot0.kD = LauncherConstants.launcherD;
-    rightMotorConfig.Slot0.kS = LauncherConstants.launchS;
     rightMotorConfig.Slot0.kV = LauncherConstants.launchV;
 
     rightMotorConfigurator.apply(rightMotorConfig);
