@@ -5,32 +5,30 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.TransferConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.SparkPIDController;
-//import com.revrobotics.CANSparkBase.ControlType;
 
 
 public class Intake extends SubsystemBase {
   /** Creates a new intake. */
   private final CANSparkMax intakeMotor;
   private final RelativeEncoder encoder;
-  //private final SparkPIDController intakePIDController; 
 
   public Intake() {
     intakeMotor = new CANSparkMax(IntakeConstants.intakeID, MotorType.kBrushless);
     encoder = intakeMotor.getEncoder();
-    //intakePIDController = intakeMotor.getPIDController();
-
 
     configIntakeMotor();
   }
 
-  //values range fomr -1 to 1
+  //values range from -1 to 1
   public void setIntakeMotorSpeed(double intakeSpeed){
     intakeMotor.set(intakeSpeed);
   }
