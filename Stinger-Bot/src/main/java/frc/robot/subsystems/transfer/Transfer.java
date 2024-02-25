@@ -5,16 +5,20 @@
 package frc.robot.subsystems.transfer;
 
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DIOConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-//import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.NeutralOut;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -23,15 +27,15 @@ public class Transfer extends SubsystemBase {
 
   private final TalonFX transferMotor;
 
+  private DigitalInput photoSensor;
+
   private TalonFXConfigurator transferConfigurator;
   private TalonFXConfiguration transferConfig = new TalonFXConfiguration();
-
-  //private CurrentLimitsConfigs transferLimitCurrentConfigs;
 
   public Transfer() {
     transferMotor = new TalonFX(TransferConstants.transferID);
 
-    //transferLimitCurrentConfigs = new CurrentLimitsConfigs();
+    photoSensor = new DigitalInput(DIOConstants.photoSensDioPort);
 
     transferConfig();
   }
@@ -48,17 +52,12 @@ public class Transfer extends SubsystemBase {
     return transferMotor.getVelocity().getValueAsDouble();
   }
 
-  //Use currentLimiting while waiting on photo sensor
+  //Use photo sensor
   public boolean isNoteInTransfer(){
-    double current = transferMotor.getStatorCurrent().getValueAsDouble();
-    double currentLimit = TransferConstants.transferCurrentLimit;
-    double currentSpeed = getTransferSpeed();
-    double speedTolerance = TransferConstants.speedTolerance;
-
-    if (current >= currentLimit && Math.abs(currentSpeed) <= speedTolerance) {
+    if (photoSensor.get()) {
+      return false;
+    } else{
       return true;
-    } else {
-        return false;
     }
 
   }
@@ -67,17 +66,18 @@ public class Transfer extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
-    SmartDashboard.putNumber("transfer Speed(RPM)", getTransferSpeed() * 60);
-    SmartDashboard.putNumber("transfer current", transferMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
+    SmartDashboard.putBoolean("photoSensor.get()", photoSensor.get());
+    
   }
 
   public void transferConfig(){
+    //restore factory defaults
     transferConfigurator = transferMotor.getConfigurator();
     transferConfigurator.apply(transferConfig);
-    
-    //restore factory defaults
 
     transferMotor.setInverted(true);
+    transferMotor.setNeutralMode(NeutralModeValue.Brake);
 
     //transferLimitCurrentConfigs.withStatorCurrentLimit(TransferConstants.transferCurrentLimit);
     //transferLimitCurrentConfigs.withStatorCurrentLimitEnable(true);
