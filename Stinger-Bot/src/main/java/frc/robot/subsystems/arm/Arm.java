@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -72,11 +71,11 @@ public class Arm extends ProfiledPIDSubsystem {
             // The motion profile constraints
             new TrapezoidProfile.Constraints(ArmConstants.armCruise, ArmConstants.armAcceleration)));
 
-    //Start arm at rest in stowed/intakepositon position
+    //Start arm at rest in STOWED position
     updateArmSetPoint(RobotConstants.STOWED);
 
     //Config Duty Cycle Range for the encoders
-    absoluteEncoder.setDutyCycleRange(ArmConstants.encoderMin, ArmConstants.encoderMax);
+    absoluteEncoder.setDutyCycleRange(ArmConstants.encoderDutyCycleMin, ArmConstants.encoderDutyCycleMax);
 
     //config for motors
     var leadMotorConfig = new TalonFXConfiguration();
@@ -117,9 +116,6 @@ public class Arm extends ProfiledPIDSubsystem {
     //Make sure the parent controller gets to do its own updates
     super.periodic();
 
-    //Validate current encoder reading; stop motors if out of range
-    //code here
-
     SmartDashboard.putBoolean("Is Arm at Setpoint?", isArmAtSetPoint());
 
     if (RobotConstants.isTuningMode){
@@ -128,7 +124,6 @@ public class Arm extends ProfiledPIDSubsystem {
       SmartDashboard.putNumber("Arm Angle Uncorrected", dutyCycleToDegrees(getAbsPos()));
       SmartDashboard.putNumber("Current Arm Angle (Degrees)", getArmDegrees());
       SmartDashboard.putNumber("Arm Error", getArmError());
-
     }
   }
 
@@ -142,8 +137,6 @@ public class Arm extends ProfiledPIDSubsystem {
    * @param output the output of the ProfiledPIDController
    * @param setpoint the setpoint state of hte ProfiledPIDController
    */
-
-
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     // Use the output (and optionally the setpoint) here
@@ -171,7 +164,7 @@ public class Arm extends ProfiledPIDSubsystem {
      * block, and pass the returned value to the control loop.
      * 
      * @return the measurement of the process variable, in this case, the Arm angle,
-     *         in radians corrected to 0.0 at the STOWED position
+     * in radians corrected to 0.0 at the STOWED position
   */
   @Override
   public double getMeasurement() {
@@ -182,7 +175,7 @@ public class Arm extends ProfiledPIDSubsystem {
   /**
    * Update the PID controller's current Arm setpoint and tolerance
    * 
-   * @param setpoints - the desired psoition as a Setpoints object
+   * @param setpoints - the desired position as a Setpoints object
    */
 
    public void updateArmSetPoint(Setpoints setpoints){
@@ -199,7 +192,6 @@ public class Arm extends ProfiledPIDSubsystem {
 
    /**
     * Update the PID controller's current Arm setpoint in degrees
-
     * @param degrees - the desired Arm position in degrees
     */
    public void updateArmInDegrees(double degrees){
@@ -300,7 +292,7 @@ public class Arm extends ProfiledPIDSubsystem {
    /**To position for Intake, move Arm to INTAKE position */
   public Command prepareForIntakeCommand(){
     return new RunCommand(() -> this.updateArmSetPoint(RobotConstants.INTAKE), this)
-    .util(() -> this.isArmAtSetPoint());
+    .until(() -> this.isArmAtSetPoint());
   }
 
   /**To tune the lookup table using SmartDashboard */
