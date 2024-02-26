@@ -22,17 +22,19 @@ public class Constants {
         public static final boolean isShooterTuningMode = false;//need
 
         /**Shooter and Arm Setpoints */
-        //Stowed and intake will mostlikely be the same
-        public static final Setpoints STOWED = new Setpoints(0, 0, 0, 0, GameState.STOWED);
-        public static final Setpoints INTAKE = new Setpoints(0, 0, 0, 0, GameState.INTAKE);
+        public static final Setpoints STOWED = new Setpoints(1, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
 
-        public static final Setpoints SPEAKER = new Setpoints(0, 0, 0, 0, GameState.SPEAKER);
+        public static final Setpoints SPEAKER = new Setpoints(1, 1, 30, 30, GameState.SPEAKER);//1 degree with 30RPS
 
         //amp will be close to horizontal position
-        public static final Setpoints AMP = new Setpoints(0, 0, 0, 0, GameState.AMP);
+        public static final Setpoints AMP = new Setpoints(88, 0.4, 20, 20, GameState.AMP);//88deg, .4 tolerance, 20RPS
+
+
+
         public static final Setpoints PODIUM = new Setpoints(0, 0, 0, 0, GameState.PODIUM);
         public static final Setpoints WING = new Setpoints(0, 0, 0, 0, GameState.WING);
-        public static final Setpoints TRAP = new Setpoints(0, 0, 0, 0, GameState.TRAP);
+
+        //public static final Setpoints TRAP = new Setpoints(0, 0, 0, 0, GameState.TRAP);
     }
 
     public static final class ControllerConstants{
@@ -85,8 +87,8 @@ public class Constants {
  
         //feed forward values, need to be obtiaed though WPI charactarization tool
         public static final double driveKS = 0.667; // overcome friction
-        public static final double driveKV = 2.44;
-        public static final double driveKA = 0.27;
+        public static final double driveKV = 2.44;//might need tune
+        public static final double driveKA = 0.27;//might need tune
 
 
         //Drive Motor PID Values
@@ -104,7 +106,7 @@ public class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(323.61);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(323.61);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 
@@ -114,7 +116,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(31.02);
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(31.02);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -124,7 +126,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(301.37);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(301.37); //tune
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -134,7 +136,7 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(350.41);
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(350.41); //tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             
@@ -153,8 +155,6 @@ public class Constants {
 
     public static final class TransferConstants{
         public static final int transferID = 16;
-
-        public static final int transferCurrentLimit = 00;
         
         public static final double transferSeed = 0.25;
         public static final double tranSpitSpeed = -0.25;
@@ -167,25 +167,17 @@ public class Constants {
         public static final int rightMotorID = 18;
 
          //To do: tune
-        public static final double launcherP = 0.5;
+        public static final double launcherP = 0.00;
         public static final double launcherI = 0.00;
         public static final double launcherD = 0.00;
+        public static final double launchV = 0.0;
 
-        public static final double launchS = 0.15;//tested
-        public static final double launchV = 0;
+        public static final double testSpeakerSpeed  = 30;
+        public static final double intakeFromShooterSpeed = -20.0;//20 RPS 
 
-        //Note: .5 duty cycle == 50RPS  
+        public static final double speedTolerance = 0.0;//to be determined
 
-        //run WPI characterization tool
-
-        //Units: RPS
-        public static final double lowPositionSpeed = 40.0;// sweet spot
-        public static final double midPositionSpeed = 0.0;
-        public static final double highPositionSpeed = 0.0;
-
-        public static final double intakeFromShooterSpeed = 20.0;//20 RPS 
-
-        public static final double ffOvercomeGrav = 0.5;
+        public static final double ffOvercomeGrav = 0.0;
 
     }
 
@@ -228,8 +220,8 @@ public class Constants {
         public static final int armD = 0;
 
         //Profiled PID constants
-        public static final double armCruise; // Radians per second
-        public static final double armAcceleration; // Radians per second^2
+        public static final double armCruise = 4.00; // Radians per second
+        public static final double armAcceleration = 10.00; // Radians per second^2
 
         public static final double encoderDutyCycleMin = 1.0/1025.0; //~0
         public static final double encoderDutyCycleMax = 1024.0/1025.0; //~1
