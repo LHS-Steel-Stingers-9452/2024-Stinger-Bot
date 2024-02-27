@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve.Mod0;
 import frc.robot.Constants.Swerve.Mod1;
@@ -111,6 +109,7 @@ public class SwerveBase extends SubsystemBase {
     return swerveOdometry.getPoseMeters();
   }
 
+  //used to reset odometry
   public void setPose(Pose2d pose){
   swerveOdometry.resetPosition((getGyroYaw()), getPositions(), pose);
 }
@@ -127,15 +126,6 @@ public void setHeading(Rotation2d heading){
     );
   }
 
-
-public Command resetGyro(){
-  return new InstantCommand(() -> swerveOdometry.resetPosition(
-    getGyroYaw(), 
-    getPositions(), 
-    new Pose2d(getPose().getTranslation(), new Rotation2d())
-  ));
-  }
-/* 
   public void zeroGyro(){
     swerveOdometry.resetPosition(
       getGyroYaw(), 
@@ -143,7 +133,7 @@ public Command resetGyro(){
       new Pose2d(getPose().getTranslation(), new Rotation2d())
       );
   }
-*/
+
   public Rotation2d getGyroYaw(){
     return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
   }
@@ -158,8 +148,11 @@ public Command resetGyro(){
   chassis speed x and y rotation veloc and rotational veloc in rotation and r/s
   hyp of x and y
 */
-  public ChassisSpeeds getRobotVelocity()
-    {
+  /**
+   * Gets the current robot-relative velocity (x, y and omega) of the robot
+   * @return A ChassisSpeeds object of the current robot-relative velocity
+   */
+  public ChassisSpeeds getRobotVelocity(){
       return kinematics.toChassisSpeeds(getStates());
     }
   

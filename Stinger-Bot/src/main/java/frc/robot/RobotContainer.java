@@ -17,7 +17,7 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.TransferConstants;
-import frc.robot.Util.Setpoints.GameState;
+//import frc.robot.Util.Setpoints.GameState;
 import frc.robot.commands.IntakeNoteReg;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.manualIntakeControl;
@@ -76,7 +76,7 @@ public class RobotContainer {
     /* Driver Controls */
 
     //driver buttton to zero gyro
-    driverController.povUp().onTrue(swerveBase.resetGyro());
+    driverController.povUp().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
     //bring down arm to stow/intake position then run intake command until note is detected
     driverController.leftBumper().whileTrue((armSub.prepareForIntakeCommand()
