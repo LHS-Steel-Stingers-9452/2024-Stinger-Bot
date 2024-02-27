@@ -22,7 +22,8 @@ public class Constants {
         public static final boolean isShooterTuningMode = false;//need
 
         /**Shooter and Arm Setpoints */
-        public static final Setpoints STOWED = new Setpoints(1, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
+        public static final Setpoints STOWED = new Setpoints(2, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
+        public static final Setpoints INTAKE = new Setpoints(1, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
 
         public static final Setpoints SPEAKER = new Setpoints(1, 1, 30, 30, GameState.SPEAKER);//1 degree with 30RPS
 
@@ -156,6 +157,7 @@ public class Constants {
     public static final class TransferConstants{
         public static final int transferID = 16;
         
+        //transfer
         public static final double transferSeed = 0.25;
         public static final double tranSpitSpeed = -0.25;
 
@@ -163,22 +165,13 @@ public class Constants {
     }
 
     public static final class LauncherConstants{
-        public static final int leftMotorID = 17;
-        public static final int rightMotorID = 18;
+        public static final int leftMotorID = 19;
+        public static final int rightMotorID = 20;
 
-         //To do: tune
-        public static final double launcherP = 0.00;
-        public static final double launcherI = 0.00;
-        public static final double launcherD = 0.00;
-        public static final double launchV = 0.0;
+        //Duty cycle
+        public static final double intakeFromShooterSpeed = -.20;
 
-        public static final double testSpeakerSpeed  = 30;
-        public static final double intakeFromShooterSpeed = -20.0;//20 RPS 
-
-        public static final double speedTolerance = 0.0;//to be determined
-
-        public static final double ffOvercomeGrav = 0.0;
-
+        public static final double shooterTolerence = 10.0;//to be determined
     }
 
     public static final class ArmConstants{
@@ -199,8 +192,8 @@ public class Constants {
         * - If the value for Arm Current Angle is a negative value do not enable, and try to do the offsets again <br>
         * - If it is still negative, then there is an issue with the encoder. <br>
         */
-        public static final int leadID = 19;
-        public static final int followID = 20;
+        public static final int leadID = 27;
+        public static final int followID = 28;
 
         //measured when the arm is in the STOWED position
         public static final double armStartingOffset = 0.0;//TBD
