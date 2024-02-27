@@ -4,42 +4,64 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Util.Setpoints;
 import frc.robot.Util.Setpoints.GameState;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.launcher.Shooter;
 
 public class prepToShoot extends Command {
 
-    Setpoints m_setpoints;
-    Arm m_armSubsystem;
-    boolean m_isDone;
+    Setpoints commandSetpoints;
+    Arm armSub;
+    Shooter shooterSub;
+    BooleanSupplier haveNote;
+    boolean isDone;
+    boolean runShooter;
 
     /** Constructor - Creates a new prepareToShoot. */
-    public prepToShoot(Setpoints setpoints, Arm armSub) {
+    public prepToShoot(Setpoints setpoints, BooleanSupplier haveNote, Arm armSub, Shooter shooterSub) {
     
-        m_setpoints = setpoints;
-        m_armSubsystem = armSub;
+       this.commandSetpoints = setpoints;
+        this.armSub = armSub;
+        this.shooterSub = shooterSub;
+        this.haveNote = haveNote;
 
-        addRequirements(armSub);
+        addRequirements(armSub, shooterSub);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_isDone = false;
-        if (!m_armSubsystem.isEnabled()) m_armSubsystem.enable();
+        isDone = false;
+        if (!armSub.isEnabled()) armSub.enable();
+
+        //Is setpoint @zero? if so don't check speed
+        runShooter = (commandSetpoints.leftShooter != 0.0 || commandSetpoints.rightShooter != 0.0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
 
-         m_armSubsystem.updateArmSetPoint(m_setpoints);
+        //send setpoints, using method overloading then run shooter
+        shooterSub.setShooterSetpoints(commandSetpoints);
+        shooterSub.runShooter();
+
+
+        if (haveNote.getAsBoolean() || commandSetpoints.state == GameState.STOWED) {
+            armSub.updateArmSetPoint(commandSetpoints);
+        }
+
+        if (armSub.isArmAtSetPoint() && (runShooter && shooterSub.areWheelsAtSpeed())){
+            isDone = true;
+        }
 
         // Exit once Arm is at setpoint and Shooter setpoint is != 0 and Shooter is up to speed 
-        if (m_armSubsystem.isArmAtSetPoint()) {
-            m_isDone = true;
+        if (armSub.isArmAtSetPoint()) {
+            isDone = true;
         }
     }
 
@@ -47,8 +69,9 @@ public class prepToShoot extends Command {
     @Override
     public void end(boolean interrupted) {
         // Don't turn off anything unless we have been commanded to STOWED position
-        if (m_setpoints.state == GameState.STOWED) {
-            m_armSubsystem.disable();
+        if (commandSetpoints.state == GameState.STOWED) {
+            armSub.disable();
+            shooterSub.stopShooter();
         }
 
     }
@@ -56,6 +79,6 @@ public class prepToShoot extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_isDone;
+        return isDone;
     }
 }
