@@ -5,10 +5,20 @@
 package frc.robot.subsystems.launcher;
 
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.Util.Setpoints;
+import frc.robot.Util.TunableNumber;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -19,32 +29,79 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Launcher. */
-  private final TalonFX leftMotor;
-  private final TalonFX rightMotor;
+  private final TalonFX leftMotor = new TalonFX(LauncherConstants.leftMotorID);
+  private final TalonFX rightMotor = new TalonFX(LauncherConstants.rightMotorID);
 
-  private TalonFXConfigurator leftMotorConfigurator;
-  private TalonFXConfigurator rightMotorConfigurator;
+  private static TunableNumber shooterKP = new TunableNumber("Shooter KP", 0);
+  private static TunableNumber shooterKI = new TunableNumber("Shooter KI", 0);
+  private static TunableNumber shooterKD = new TunableNumber("Shooter KD", 0);
+  private static TunableNumber shooterKV = new TunableNumber("Shooter KV", 0);
 
-  private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
-  private TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
+  //Setpoint in RPS
+  private static TunableNumber leftShooterSetpointVal = new TunableNumber("L shooter setpoint", 0);
+  private static TunableNumber rightShooterSetpointVal = new TunableNumber("R shooter setpoint", 0);
 
 
-  private VelocityVoltage velocityRequest;
+  private TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+
+  private final VelocityVoltage velocityVoltageL = new VelocityVoltage(0);
+  private final VelocityVoltage velocityVoltageR = new VelocityVoltage(0);
+
+  public enum kShooterSide {
+    kLEFT,
+    kRIGHT
+  };
 
   public Shooter() {
-    leftMotor = new TalonFX(LauncherConstants.leftMotorID);
-    rightMotor = new TalonFX(LauncherConstants.rightMotorID);
 
-    velocityRequest = new VelocityVoltage(0).withSlot(0);
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    motorConfig.Voltage.PeakForwardVoltage = 12.0;
+    motorConfig.Voltage.PeakReverseVoltage = 0.0;
 
-    configLeft();
-    configRight(); 
+
+    /* Update Shooter Gains from TunableNumbers */
+    motorConfig.Slot0.kP = shooterKP.get();
+    motorConfig.Slot0.kI = shooterKI.get();
+    motorConfig.Slot0.kD = shooterKD.get();
+    motorConfig.Slot0.kV = shooterKV.get();
+
+    /* Apply configs */
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leftMotor.getConfigurator().apply(motorConfig);
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    rightMotor.getConfigurator().apply(motorConfig);
+
+    // optimize StatusSignal rates for the Talons
+    leftMotor.getVelocity().setUpdateFrequency(50);
+    leftMotor.optimizeBusUtilization();
+    rightMotor.getVelocity().setUpdateFrequency(50);
+    rightMotor.optimizeBusUtilization();  
   }
 
-  public void setShooterSpeed(double speed, double feedForwardVal){
+  //for manual control
+  public void setShooterSpeed(double speed){
     //leftMotor.set(speed);
-    leftMotor.setControl(velocityRequest.withVelocity(speed).withFeedForward(feedForwardVal));
-    rightMotor.setControl(velocityRequest.withVelocity(speed).withFeedForward(feedForwardVal));
+    leftMotor.set(speed);
+    rightMotor.set(speed);
+  }
+
+  /**
+  * @param targetVelocity the velocity in RPS of the shooter Right
+  * @param targetVelocityL the velocity in RPS of the shooter Left
+  */
+  public void runShooter(double targetVelocityL, double targetVelocityR) {
+    // Save Velocity setpoints
+    leftShooterSetpointVal.set(targetVelocityL);
+    rightShooterSetpointVal.set(targetVelocityR);
+    leftMotor.setControl(velocityVoltageL.withVelocity(targetVelocityL));
+    rightMotor.setControl(velocityVoltageR.withVelocity(targetVelocityR));
+  }
+
+  public void runShooter() {
+    // Get Velocity setpoint from TunableNumber
+    leftMotor.setControl(velocityVoltageL.withVelocity(leftShooterSetpointVal.get()));
+    rightMotor.setControl(velocityVoltageR.withVelocity(rightShooterSetpointVal.get()));
   }
 
   public void stopShooter(){
@@ -52,58 +109,84 @@ public class Shooter extends SubsystemBase {
     rightMotor.setControl(new NeutralOut());
   }
 
-  public double getLeftMotorSpeed(){
-    return (leftMotor.getVelocity().getValueAsDouble());
+  /**
+  * @param int side - the side of the shooter to query (0 = left, 1 = right)
+  * @return the velocity of the specified shooter side in RPS
+  */
+  public double getShooterVelocity(kShooterSide side) {
+    switch(side) {
+    case kLEFT:
+      return leftMotor.getVelocity().getValueAsDouble();
+    case kRIGHT:
+      return rightMotor.getVelocity().getValueAsDouble();
+    default:
+        return 0.0;
+    }
   }
 
-  public double getRightMotorSpeed(){
-    return (rightMotor.getVelocity().getValueAsDouble());
-
+    /**
+     * @return true if the error of the shooter is within the tolerance
+     */
+    public boolean areWheelsAtSpeed() {
+      double leftErr = Math.abs(leftShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kLEFT));
+      double rightErr = Math.abs(rightShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kRIGHT));
+      return (leftErr + rightErr / 2.0) < LauncherConstants.shooterTolerence;
   }
 
-  public boolean isLeftMotorAtSpeed(double desiredVelocity){
-    return Math.abs(getLeftMotorSpeed() - desiredVelocity) <= LauncherConstants.speedTolerance;
-
-  }
-
-  public boolean isRightMotorAtSpeed(double desiredVelocity){
-    return Math.abs(getRightMotorSpeed() - desiredVelocity) <= LauncherConstants.speedTolerance;
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("left launcher speed(RPS)", getLeftMotorSpeed());
-    SmartDashboard.putNumber("right Launcher speed(RPS)", getRightMotorSpeed());
-    
+    SmartDashboard.putBoolean("Shooter at Speed?", areWheelsAtSpeed());
+
+    if (RobotConstants.isShooterTuningMode) {
+      // Put actual velocities to smart dashboard
+      SmartDashboard.putNumber("Shooter Velocity L", getShooterVelocity(kShooterSide.kLEFT));
+      SmartDashboard.putNumber("Shooter Velocity R", getShooterVelocity(kShooterSide.kRIGHT));
+    }
   }
 
-  public void configLeft(){
-    leftMotorConfigurator = leftMotor.getConfigurator();
+  /**
+  * Update Shooter Gains from TunableNumbers
+  */
+  public void updateGains() {
+    var slot0 = new Slot0Configs();
 
-    leftMotorConfigurator.apply(leftMotorConfig);
-    //restore factory defaults
+    slot0.kP = shooterKP.get();
+    slot0.kI = shooterKI.get();
+    slot0.kD = shooterKD.get();
+    slot0.kV = shooterKV.get();
 
-    leftMotor.setInverted(false);
-    leftMotorConfig.Slot0.kP = LauncherConstants.launcherP;
-    leftMotorConfig.Slot0.kI = LauncherConstants.launcherI;
-    leftMotorConfig.Slot0.kD = LauncherConstants.launcherD;
-    leftMotorConfig.Slot0.kV = LauncherConstants.launchV;
-
-    leftMotorConfigurator.apply(leftMotorConfig);
+    leftMotor.getConfigurator().apply(slot0);
+    rightMotor.getConfigurator().apply(slot0);
   }
 
-  public void configRight(){
-    rightMotorConfigurator = rightMotor.getConfigurator();
-    rightMotorConfigurator.apply(rightMotorConfig);
-    //restore factory defaults
-
-    rightMotor.setInverted(false);
-    rightMotorConfig.Slot0.kP = LauncherConstants.launcherP;
-    rightMotorConfig.Slot0.kI = LauncherConstants.launcherI;
-    rightMotorConfig.Slot0.kD = LauncherConstants.launcherD;
-    rightMotorConfig.Slot0.kV = LauncherConstants.launchV;
-
-    rightMotorConfigurator.apply(rightMotorConfig);
+  /**
+  * @param setpoints - Reference to a Setpoints class instance
+  */
+  public void setShooterSetpoints(Setpoints setpoints) {
+    leftShooterSetpointVal.set(setpoints.leftShooter);
+    rightShooterSetpointVal.set(setpoints.rightShooter);
   }
+
+  /*
+  * Command Factories
+  */
+  public Command runShooterCommand(double velocityL, double velocityR) {
+    return new RunCommand(()->this.runShooter(velocityL, velocityR), this);
+  }
+
+  public Command runShooterCommand() {
+      return new RunCommand(()->this.runShooter(), this);
+  }
+
+    public Command stopShooterCommand() {
+      return new InstantCommand(()->this.stopShooter(), this);
+  }
+
+  public Command updateShooterGainsCommand() {
+      return new InstantCommand(()->this.updateGains(), this);
+  }
+  
+
 }
