@@ -291,7 +291,7 @@ public class Arm extends ProfiledPIDSubsystem {
 
    /**To position for Intake, move Arm to INTAKE position */
   public Command prepareForIntakeCommand(){
-    return new RunCommand(() -> this.updateArmSetPoint(RobotConstants.STOWED), this)
+    return new RunCommand(() -> this.updateArmSetPoint(RobotConstants.INTAKE), this)
     .until(() -> this.isArmAtSetPoint());
   }
 
