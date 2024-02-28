@@ -1,15 +1,16 @@
-package org.usfirst.frc.team190.robot;
+package frc.robot.subsystems.camera;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.UsbCamera;
+
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.TimedRobot;
 
-public class Robot extends IterativeRobot {
-
+public class Camera extends TimedRobot {
+  
   public void robotInit() {
     new Thread(() -> {
       UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
