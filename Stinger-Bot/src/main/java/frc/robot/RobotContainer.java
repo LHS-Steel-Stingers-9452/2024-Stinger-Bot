@@ -79,28 +79,24 @@ public class RobotContainer {
     driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
     //bring down arm to stow/intake position then run intake command until note is detected
-    driverController.leftBumper().whileTrue((armSub.prepareForIntakeCommand()
+    driverController.leftBumper().onTrue((armSub.prepareForIntakeCommand()
             .andThen(new IntakeNoteReg(
               intakeSub, 
               IntakeConstants.intakeSpeed, 
               transferSub, 
               TransferConstants.transferSeed))));
-    /*
-    driverController.leftBumper().onTrue((armSub.prepareForIntakeCommand()
-      .andThen(new IntakeNoteReg(
-        intakeSub, 
-        IntakeConstants.intakeSpeed, 
-        transferSub, 
-        TransferConstants.transferSeed))));
-    */
   }
 
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
   //manual shooter based on right operator trigger axis value [raw speed]
-  operatorController.rightTrigger().whileTrue(
+  /* 
+  operatorController.rightTrigger(0.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(0.65)));
+    */
+  operatorController.rightTrigger(0.3).whileTrue(
+    new InstantCommand(() -> shooterSub.setShooterSpeed(operatorController.getRightTriggerAxis())));
 
     //Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));

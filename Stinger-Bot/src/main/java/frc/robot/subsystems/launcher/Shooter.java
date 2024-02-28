@@ -81,7 +81,6 @@ public class Shooter extends SubsystemBase {
 
   //for manual control
   public void setShooterSpeed(double speed){
-    //leftMotor.set(speed);
     leftMotor.set(speed);
     rightMotor.set(speed);
   }
