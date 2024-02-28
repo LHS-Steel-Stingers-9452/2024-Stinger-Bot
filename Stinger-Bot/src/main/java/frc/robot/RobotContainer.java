@@ -32,7 +32,7 @@ import frc.robot.subsystems.transfer.Transfer;
 public class RobotContainer {
   //Controllers
   private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverControllerPort);
-  private final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorControllerPort);
+  public final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorControllerPort);
 
   private final SwerveBase swerveBase;
   private final Intake intakeSub;
@@ -76,7 +76,7 @@ public class RobotContainer {
     /* Driver Controls */
 
     //driver buttton to zero gyro
-    driverController.povUp().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
+    driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
     //bring down arm to stow/intake position then run intake command until note is detected
     driverController.leftBumper().whileTrue((armSub.prepareForIntakeCommand()
@@ -100,27 +100,27 @@ public class RobotContainer {
 
   //manual shooter based on right operator trigger axis value [raw speed]
   operatorController.rightTrigger().whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(operatorController.getRightTriggerAxis())));
+    new InstantCommand(() -> shooterSub.setShooterSpeed(0.65)));
 
     //Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));
 
-    //intake from shooter [run shooter in reverse]
+    //Intake from shooter [run shooter in reverse]
     operatorController.leftBumper().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.intakeFromShooterSpeed)));
 
     /* Arm related commands */
     //Arm default command [manual arm movment using left stick and left Y joystick axis]
-    armSub.setDefaultCommand(new ArmDefault(armSub, operatorController.leftStick(), ()-> -operatorController.getRightY()));
+    //armSub.setDefaultCommand(new ArmDefault(armSub, operatorController.leftStick(), ()-> -operatorController.getRightY()));
 
     //stow arm if not already
-    operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
+    //operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
     
     //bindings to set arm and shooter setpoints
-    operatorController.y().onTrue(new prepToShoot(RobotConstants.AMP, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
-    operatorController.b().onTrue(new prepToShoot(RobotConstants.WING, ()-> transferSub.isNoteInTransfer(),  armSub, shooterSub));
-    operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
-    operatorController.x().onTrue(new prepToShoot(RobotConstants.PODIUM, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
+    //operatorController.y().onTrue(new prepToShoot(RobotConstants.AMP, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
+    //operatorController.b().onTrue(new prepToShoot(RobotConstants.WING, ()-> transferSub.isNoteInTransfer(),  armSub, shooterSub));
+    //operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
+    //operatorController.x().onTrue(new prepToShoot(RobotConstants.PODIUM, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
 
     //Dpad up: manually intake note without photo sensor
     operatorController.povUp().whileTrue(
@@ -144,7 +144,7 @@ public class RobotContainer {
       SmartDashboard.putData("Stop Shooter", shooterSub.stopShooterCommand());
       SmartDashboard.putData("Arm to Angle", armSub.moveToDegreeCommand());
     }
-    SmartDashboard.putData("Move Arm To Setpoint", armSub.tuneArmSetPointCommand());
+    //SmartDashboard.putData("Move Arm To Setpoint", armSub.tuneArmSetPointCommand());
   }
 
   public Command getAutonomousCommand() {

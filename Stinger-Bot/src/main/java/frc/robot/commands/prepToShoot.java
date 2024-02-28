@@ -39,6 +39,7 @@ public class prepToShoot extends Command {
         if (!armSub.isEnabled()) armSub.enable();
 
         //Is setpoint @zero? if so don't check speed
+        //check that values are not zero
         runShooter = (commandSetpoints.leftShooter != 0.0 || commandSetpoints.rightShooter != 0.0);
     }
 
@@ -55,13 +56,10 @@ public class prepToShoot extends Command {
             armSub.updateArmSetPoint(commandSetpoints);
         }
 
-        if (armSub.isArmAtSetPoint() && (runShooter && shooterSub.areWheelsAtSpeed())){
+        // Exit once Arm is at setpoint and Shooter setpoint is != 0 and Shooter is up to speed
+        if (armSub.isArmAtSetPoint() && (runShooter && shooterSub.areWheelsAtSpeed())){//If not zero and wheels are at speed return true
             isDone = true;
-        }
-
-        // Exit once Arm is at setpoint and Shooter setpoint is != 0 and Shooter is up to speed 
-        if (armSub.isArmAtSetPoint()) {
-            isDone = true;
+            
         }
     }
 

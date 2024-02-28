@@ -66,8 +66,6 @@ public class Transfer extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
     SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
-    SmartDashboard.putBoolean("photoSensor.get()", photoSensor.get());
-    
   }
 
   public void transferConfig(){
@@ -75,7 +73,7 @@ public class Transfer extends SubsystemBase {
     transferConfigurator = transferMotor.getConfigurator();
     transferConfigurator.apply(transferConfig);
 
-    transferMotor.setInverted(true);
+    transferMotor.setInverted(false);
     transferMotor.setNeutralMode(NeutralModeValue.Brake);
 
     //transferLimitCurrentConfigs.withStatorCurrentLimit(TransferConstants.transferCurrentLimit);

@@ -42,7 +42,7 @@ public class Constants {
         public static final int driverControllerPort = 0;
         public static final int operatorControllerPort = 1;
         public static final double deadbandRange = 0.15;
-        public static final double slewRate = 4;
+        public static final double slewRate = 4.2;
     }
 
     public static final class Swerve{
@@ -50,8 +50,8 @@ public class Constants {
         public static final int pigeonID = 13;
 
         //DriveTrain Constants
-        public static final double trackWidth = Units.inchesToMeters(24.75);
-        public static final double wheelbase  = Units.inchesToMeters(24.75);
+        public static final double trackWidth = Units.inchesToMeters(20.75);
+        public static final double wheelbase  = Units.inchesToMeters(20.75);
         public static final double whealDiameter = Units.inchesToMeters(4.00);
         public static final double wheelCircumference = whealDiameter * Math.PI;
 
@@ -107,7 +107,7 @@ public class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(323.61);//tune
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(324.66);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 
@@ -117,7 +117,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(31.02);//tune
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(30.58);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -127,7 +127,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(301.37); //tune
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(81.91); //tune
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -137,7 +137,7 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(350.41); //tune
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(212.08); //tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             
@@ -149,8 +149,8 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = .5;
-        public static final double intakeSpitSpeed = -.5;
+        public static final double intakeSpeed = .45;
+        public static final double intakeSpitSpeed = -.45;
     }
 
 
@@ -165,8 +165,8 @@ public class Constants {
     }
 
     public static final class LauncherConstants{
-        public static final int leftMotorID = 19;
-        public static final int rightMotorID = 20;
+        public static final int leftMotorID = 17;
+        public static final int rightMotorID = 18;
 
         //Duty cycle
         public static final double intakeFromShooterSpeed = -.20;
@@ -192,8 +192,8 @@ public class Constants {
         * - If the value for Arm Current Angle is a negative value do not enable, and try to do the offsets again <br>
         * - If it is still negative, then there is an issue with the encoder. <br>
         */
-        public static final int leadID = 27;
-        public static final int followID = 28;
+        public static final int leadID = 19;
+        public static final int followID = 20;
 
         //measured when the arm is in the STOWED position
         public static final double armStartingOffset = 0.0;//TBD

@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
     motorConfig.Slot0.kV = shooterKV.get();
 
     /* Apply configs */
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftMotor.getConfigurator().apply(motorConfig);
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rightMotor.getConfigurator().apply(motorConfig);
