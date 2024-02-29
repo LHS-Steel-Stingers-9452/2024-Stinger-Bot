@@ -13,6 +13,7 @@ import frc.robot.Constants.TransferConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -26,17 +27,20 @@ public class Transfer extends SubsystemBase {
 
   private final TalonFX transferMotor;
 
-  private DigitalInput photoSensor;
+  //private DigitalInput photoSensor;
 
   boolean m_isNoteInTransfer = false;
 
   private TalonFXConfigurator transferConfigurator;
   private TalonFXConfiguration transferConfig = new TalonFXConfiguration();
 
+  private CurrentLimitsConfigs transferLimitCurrentConfigs;
+
   public Transfer() {
     transferMotor = new TalonFX(TransferConstants.transferID);
+    transferLimitCurrentConfigs = new CurrentLimitsConfigs();
 
-    photoSensor = new DigitalInput(DIOConstants.photoSensDioPort);
+    //photoSensor = new DigitalInput(DIOConstants.photoSensDioPort);
 
     transferConfig();
   }
@@ -54,17 +58,19 @@ public class Transfer extends SubsystemBase {
   }
 
   //Use photo sensor
+  /* 
   public boolean isNoteInTransfer(){
     return m_isNoteInTransfer;
 
   }
+  */
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     
-    m_isNoteInTransfer = photoSensor.get() ? false : true;
-    SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
+   // m_isNoteInTransfer = photoSensor.get() ? false : true;
+    //SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
     //SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
   }
 
@@ -76,9 +82,9 @@ public class Transfer extends SubsystemBase {
     transferMotor.setInverted(false);
     transferMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    //transferLimitCurrentConfigs.withStatorCurrentLimit(TransferConstants.transferCurrentLimit);
-    //transferLimitCurrentConfigs.withStatorCurrentLimitEnable(true);
-    //transferConfigurator.apply(transferLimitCurrentConfigs);
+    transferLimitCurrentConfigs.withStatorCurrentLimit(30);
+    transferLimitCurrentConfigs.withStatorCurrentLimitEnable(true);
+    transferConfigurator.apply(transferLimitCurrentConfigs);
 
     
   }

@@ -15,25 +15,23 @@ import frc.robot.Util.Setpoints.GameState;
 public class Constants {
     public static final class RobotConstants{
         public static final boolean isTuningMode = true;//in tunning mode
-        public static final boolean isDrivingTuningMode = false;//need
         public static final boolean isArmTurningMode = true;//in process
-        public static final boolean isIntakeTuningMode = false;//done
-        public static final boolean isTransferTuningMode = false;//done
         public static final boolean isShooterTuningMode = false;//need
 
         /**Shooter and Arm Setpoints */
-        public static final Setpoints STOWED = new Setpoints(2, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
-        public static final Setpoints INTAKE = new Setpoints(1, 0.4, 0, 0, GameState.INTAKE);//1 degree with 2 tolerance
+        public static final Setpoints STOWED = new Setpoints(61, 0.6, 00, 00, GameState.STOWED);//1 degree with 2 tolerance
+        public static final Setpoints INTAKE = new Setpoints(61, 0.6, 0, 0, GameState.INTAKE);//1 degree with 2 tolerance
 
         public static final Setpoints SPEAKER = new Setpoints(1, 1, 50, 50, GameState.SPEAKER);//1 degree with 30RPS
+        //speed  should be 50
 
         //amp will be close to horizontal position
-        public static final Setpoints AMP = new Setpoints(88, 0.4, 25, 25, GameState.AMP);//88deg, .4 tolerance, 20RPS
+        public static final Setpoints AMP = new Setpoints(130, 0.4, 25, 25, GameState.AMP);//88deg, .4 tolerance, 20RPS
 
 
 
-        public static final Setpoints PODIUM = new Setpoints(0, 0, 0, 0, GameState.PODIUM);
-        public static final Setpoints WING = new Setpoints(0, 0, 0, 0, GameState.WING);
+        //public static final Setpoints PODIUM = new Setpoints(0, 0, 0, 0, GameState.PODIUM);
+        //public static final Setpoints WING = new Setpoints(0, 0, 0, 0, GameState.WING);
 
         //public static final Setpoints TRAP = new Setpoints(0, 0, 0, 0, GameState.TRAP);
     }
@@ -42,7 +40,7 @@ public class Constants {
         public static final int driverControllerPort = 0;
         public static final int operatorControllerPort = 1;
         public static final double deadbandRange = 0.15;
-        public static final double slewRate = 4.2;
+        public static final double slewRate = 4;
     }
 
     public static final class Swerve{
@@ -98,7 +96,7 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.0026;//0.0026
+        public static final double angleP = 0.002;//0.0016
         public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
@@ -196,9 +194,9 @@ public class Constants {
         public static final int followID = 20;
 
         //measured when the arm is in the STOWED position
-        public static final double armStartingOffset = 0.0;//TBD
+        public static final double armStartingOffset = 60.9;//aCTUAL IS 61.9
         //measured when the arm is horizontal
-        public static final double armHorizontalOffset = 0.0;//TBD
+        public static final double armHorizontalOffset = 153.4;//154.4
 
         //feedforward gains
         //tbd current values were obtained through means of an online calculator

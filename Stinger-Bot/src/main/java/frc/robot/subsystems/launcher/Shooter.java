@@ -32,10 +32,10 @@ public class Shooter extends SubsystemBase {
   private final TalonFX leftMotor = new TalonFX(LauncherConstants.leftMotorID);
   private final TalonFX rightMotor = new TalonFX(LauncherConstants.rightMotorID);
 
-  private static TunableNumber shooterKP = new TunableNumber("Shooter KP", 0);
+  private static TunableNumber shooterKP = new TunableNumber("Shooter KP", 0.05);
   private static TunableNumber shooterKI = new TunableNumber("Shooter KI", 0);
   private static TunableNumber shooterKD = new TunableNumber("Shooter KD", 0);
-  private static TunableNumber shooterKV = new TunableNumber("Shooter KV", 0);
+  private static TunableNumber shooterKV = new TunableNumber("Shooter KV", 0.113);
 
   //Setpoint in RPS
   private static TunableNumber leftShooterSetpointVal = new TunableNumber("L shooter setpoint", 0);

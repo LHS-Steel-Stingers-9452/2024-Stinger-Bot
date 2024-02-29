@@ -62,6 +62,7 @@ public class Arm extends ProfiledPIDSubsystem {
    * Constructor
    */
   public Arm() {
+    
     super(
         /*Creates the Trapezoidal motion profile controller */
         new ProfiledPIDController(
@@ -76,6 +77,9 @@ public class Arm extends ProfiledPIDSubsystem {
 
     //Config Duty Cycle Range for the encoders
     absoluteEncoder.setDutyCycleRange(ArmConstants.encoderDutyCycleMin, ArmConstants.encoderDutyCycleMax);
+
+    //absoluteEncoder.reset();
+    
 
     //config for motors
     var leadMotorConfig = new TalonFXConfiguration();
@@ -98,13 +102,13 @@ public class Arm extends ProfiledPIDSubsystem {
      */
     leadMotor.getConfigurator().apply(leadMotorConfig);
     followMotor.getConfigurator().apply(followMotorMotorConfig);
-    followMotor.setControl(new Follower(leadMotor.getDeviceID(), false));
+    followMotor.setControl(new Follower(leadMotor.getDeviceID(), true));
 
     // optimize StatusSignal rates for the Talons
-    //m_armLeader.getSupplyVoltage().setUpdateFrequency(4);
-    //m_armLeader.optimizeBusUtilization();
-    //m_armFollower.getSupplyVoltage().setUpdateFrequency(4);
-    //m_armFollower.optimizeBusUtilization();
+    //leadMotor.getSupplyVoltage().setUpdateFrequency(4);
+    //leadMotor.optimizeBusUtilization();
+    //followMotor.getSupplyVoltage().setUpdateFrequency(4);
+    //followMotor.optimizeBusUtilization();
 
 
     //Put controls for the PID controller on the dashboard

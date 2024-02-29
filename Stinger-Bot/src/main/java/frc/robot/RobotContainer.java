@@ -87,11 +87,13 @@ public class RobotContainer {
               IntakeConstants.intakeSpeed, 
               transferSub, 
               TransferConstants.transferSeed))));
-
     */
-
-    driverController.leftTrigger().onTrue(
-      new IntakeNoteReg(intakeSub, IntakeConstants.intakeSpeed, transferSub, TransferConstants.transferSeed));
+    
+    //Dpad up: manually intake note without photo sensor
+    driverController.leftBumper().whileTrue(
+      new manualIntakeControl(
+        intakeSub, IntakeConstants.intakeSpeed,
+        transferSub, TransferConstants.transferSeed));
   }
 
   private void configureOperatorBindings(){
@@ -119,15 +121,11 @@ public class RobotContainer {
     //armSub.setDefaultCommand(new ArmDefault(armSub, operatorController.leftStick(), ()-> -operatorController.getRightY()));
 
     //stow arm if not already
-    //operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
+    operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, armSub, shooterSub));
     
     //bindings to set arm and shooter setpoints
-    //operatorController.y().onTrue(new prepToShoot(RobotConstants.AMP, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
-    //operatorController.b().onTrue(new prepToShoot(RobotConstants.WING, ()-> transferSub.isNoteInTransfer(),  armSub, shooterSub));
-    //operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
-    //operatorController.x().onTrue(new prepToShoot(RobotConstants.PODIUM, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
-
-
+    operatorController.y().onTrue(new prepToShoot(RobotConstants.AMP, armSub, shooterSub));
+    operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, armSub, shooterSub));
 
     //Dpad up: manually intake note without photo sensor
     operatorController.povUp().whileTrue(

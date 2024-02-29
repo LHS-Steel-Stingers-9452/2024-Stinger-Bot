@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     //This method will be called once per scheduler
-    SmartDashboard.putNumber("Intake Speed (RPS)", (getIntakeSpeed() * (1/60)));
+    //SmartDashboard.putNumber("Intake Speed (RPS)", (getIntakeSpeed() * (1/60)));
   }
 
 
@@ -53,6 +53,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setInverted(true);
     intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    intakeMotor.setSmartCurrentLimit(30);
     intakeMotor.enableVoltageCompensation(IntakeConstants.voltageComp);
     intakeMotor.burnFlash();
   }

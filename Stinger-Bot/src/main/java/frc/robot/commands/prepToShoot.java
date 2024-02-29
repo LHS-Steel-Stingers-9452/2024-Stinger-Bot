@@ -17,17 +17,21 @@ public class prepToShoot extends Command {
     Setpoints commandSetpoints;
     Arm armSub;
     Shooter shooterSub;
-    BooleanSupplier haveNote;
+    //BooleanSupplier haveNote;
     boolean isDone;
     boolean runShooter;
 
+    boolean haveNoteBeforeALways = true;
+
     /** Constructor - Creates a new prepareToShoot. */
-    public prepToShoot(Setpoints setpoints, BooleanSupplier haveNote, Arm armSub, Shooter shooterSub) {
+    public prepToShoot(Setpoints setpoints, 
+    //BooleanSupplier haveNote, 
+    Arm armSub, Shooter shooterSub) {
     
        this.commandSetpoints = setpoints;
         this.armSub = armSub;
         this.shooterSub = shooterSub;
-        this.haveNote = haveNote;
+        //this.haveNote = haveNote;
 
         addRequirements(armSub, shooterSub);
     }
@@ -38,8 +42,8 @@ public class prepToShoot extends Command {
         isDone = false;
         if (!armSub.isEnabled()) armSub.enable();
 
-        //Is setpoint @zero? if so don't check speed
-        //check that values are not zero
+        //Is setpoint @zero?, if so don't check speed
+        //[check that values are not zero]
         runShooter = (commandSetpoints.leftShooter != 0.0 || commandSetpoints.rightShooter != 0.0);
     }
 
@@ -48,16 +52,19 @@ public class prepToShoot extends Command {
     public void execute() {
 
         //send setpoints, using method overloading then run shooter
-        shooterSub.setShooterSetpoints(commandSetpoints);
-        shooterSub.runShooter();
+        //shooterSub.setShooterSetpoints(commandSetpoints);
+        //shooterSub.runShooter();
 
-
-        if (haveNote.getAsBoolean() || commandSetpoints.state == GameState.STOWED) {
+        //bring arm to requested position
+        //Don't require a Note if we are trying to stow arm
+        if (haveNoteBeforeALways || commandSetpoints.state == GameState.STOWED) {
             armSub.updateArmSetPoint(commandSetpoints);
         }
 
         // Exit once Arm is at setpoint and Shooter setpoint is != 0 and Shooter is up to speed
-        if (armSub.isArmAtSetPoint() && (runShooter && shooterSub.areWheelsAtSpeed())){//If not zero and wheels are at speed return true
+        if (armSub.isArmAtSetPoint() 
+        //&& (runShooter && shooterSub.areWheelsAtSpeed())
+        ){//If not zero and wheels are at speed return true
             isDone = true;
             
         }

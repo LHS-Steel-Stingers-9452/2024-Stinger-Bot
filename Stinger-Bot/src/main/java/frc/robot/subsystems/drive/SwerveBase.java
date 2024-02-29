@@ -162,16 +162,16 @@ public void setHeading(Rotation2d heading){
     // This method will be called once per scheduler run
     swerveOdometry.update(getGyroYaw(), getPositions());
     //field.setRobotPose(getPose());
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    //SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     //Returns the Robot location of the field
 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Cancoder", module.getCanCoderValue().getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
+      //SmartDashboard.putNumber(
+        //  "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
+      //SmartDashboard.putNumber(
+        //  "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
 
   //need to make sure turning counter clockwise, angle on angle motor, CCW+
