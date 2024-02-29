@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 //import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -21,6 +21,7 @@ import frc.robot.Constants.TransferConstants;
 import frc.robot.commands.IntakeNoteReg;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.manualIntakeControl;
+import frc.robot.commands.manualTransferControl;
 import frc.robot.commands.prepToShoot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmDefault;
@@ -79,31 +80,39 @@ public class RobotContainer {
     driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
     //bring down arm to stow/intake position then run intake command until note is detected
+    /* 
     driverController.leftBumper().onTrue((armSub.prepareForIntakeCommand()
             .andThen(new IntakeNoteReg(
               intakeSub, 
               IntakeConstants.intakeSpeed, 
               transferSub, 
               TransferConstants.transferSeed))));
+
+    */
+
+    driverController.leftTrigger().onTrue(
+      new IntakeNoteReg(intakeSub, IntakeConstants.intakeSpeed, transferSub, TransferConstants.transferSeed));
   }
 
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
-  //manual shooter based on right operator trigger axis value [raw speed]
-  /* 
-  operatorController.rightTrigger(0.3).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(0.65)));
-    */
-  operatorController.rightTrigger(0.3).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(operatorController.getRightTriggerAxis())));
+  //manual shooter control for speaker shot
+  operatorController.rightTrigger(.4).whileTrue(
+    new InstantCommand(() -> shooterSub.setShooterSpeed(.50)));
 
     //Feed Note to shooter [run transfer]
-    operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));
+    //operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));
+    operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
 
     //Intake from shooter [run shooter in reverse]
+    /* 
     operatorController.leftBumper().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.intakeFromShooterSpeed)));
+    */
+
+
+
 
     /* Arm related commands */
     //Arm default command [manual arm movment using left stick and left Y joystick axis]
@@ -118,20 +127,23 @@ public class RobotContainer {
     //operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
     //operatorController.x().onTrue(new prepToShoot(RobotConstants.PODIUM, ()-> transferSub.isNoteInTransfer(), armSub, shooterSub));
 
+
+
     //Dpad up: manually intake note without photo sensor
     operatorController.povUp().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpeed,
         transferSub, TransferConstants.transferSeed));
 
-    //Dpad up: manually outtake note
+    //Dpad up: manually outtake note no photo sensor
     operatorController.povDown().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpitSpeed,
         transferSub, TransferConstants.tranSpitSpeed));
 
-    //saftey stop for launcher
+    //manual stop for launcher and transfer
     operatorController.povLeft().onTrue(new InstantCommand(() -> shooterSub.stopShooter()));
+    operatorController.povLeft().onTrue(new InstantCommand(() -> transferSub.stopTransfer()));
 
 
     if (RobotConstants.isShooterTuningMode) {

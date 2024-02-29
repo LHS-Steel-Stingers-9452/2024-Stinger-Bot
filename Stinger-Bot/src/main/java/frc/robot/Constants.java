@@ -23,12 +23,12 @@ public class Constants {
 
         /**Shooter and Arm Setpoints */
         public static final Setpoints STOWED = new Setpoints(2, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
-        public static final Setpoints INTAKE = new Setpoints(1, 0.4, 0, 0, GameState.STOWED);//1 degree with 2 tolerance
+        public static final Setpoints INTAKE = new Setpoints(1, 0.4, 0, 0, GameState.INTAKE);//1 degree with 2 tolerance
 
-        public static final Setpoints SPEAKER = new Setpoints(1, 1, 30, 30, GameState.SPEAKER);//1 degree with 30RPS
+        public static final Setpoints SPEAKER = new Setpoints(1, 1, 50, 50, GameState.SPEAKER);//1 degree with 30RPS
 
         //amp will be close to horizontal position
-        public static final Setpoints AMP = new Setpoints(88, 0.4, 20, 20, GameState.AMP);//88deg, .4 tolerance, 20RPS
+        public static final Setpoints AMP = new Setpoints(88, 0.4, 25, 25, GameState.AMP);//88deg, .4 tolerance, 20RPS
 
 
 
@@ -98,8 +98,8 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.0026;
-        public static final double angleI = 0.00;
+        public static final double angleP = 0.0026;//0.0026
+        public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
         public static final class Mod0{
