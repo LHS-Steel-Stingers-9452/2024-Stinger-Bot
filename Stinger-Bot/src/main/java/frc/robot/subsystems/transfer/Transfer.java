@@ -28,6 +28,8 @@ public class Transfer extends SubsystemBase {
 
   private DigitalInput photoSensor;
 
+  boolean m_isNoteInTransfer = false;
+
   private TalonFXConfigurator transferConfigurator;
   private TalonFXConfiguration transferConfig = new TalonFXConfiguration();
 
@@ -53,19 +55,17 @@ public class Transfer extends SubsystemBase {
 
   //Use photo sensor
   public boolean isNoteInTransfer(){
-    if (photoSensor.get()) {
-      return false;
-    } else{
-      return true;
-    }
+    return m_isNoteInTransfer;
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
+    
+    m_isNoteInTransfer = photoSensor.get() ? false : true;
     SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
+    //SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
   }
 
   public void transferConfig(){
