@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setInverted(true);
     intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    intakeMotor.setSmartCurrentLimit(30);
+    intakeMotor.setSmartCurrentLimit(30);//current limit
     intakeMotor.enableVoltageCompensation(IntakeConstants.voltageComp);
     intakeMotor.burnFlash();
   }

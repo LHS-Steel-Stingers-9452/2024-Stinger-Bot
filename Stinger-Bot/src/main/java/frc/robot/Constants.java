@@ -19,6 +19,7 @@ public class Constants {
         public static final boolean isShooterTuningMode = false;//need
 
         /**Shooter and Arm Setpoints */
+        //try new setpoints and no pid on shooter
         public static final Setpoints STOWED = new Setpoints(61, 0.6, 00, 00, GameState.STOWED);//1 degree with 2 tolerance
         public static final Setpoints INTAKE = new Setpoints(61, 0.6, 0, 0, GameState.INTAKE);//1 degree with 2 tolerance
 
@@ -105,7 +106,7 @@ public class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(324.66);//tune
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(324.40);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
 
@@ -115,7 +116,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(30.58);//tune
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(30.49);//tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -125,7 +126,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(81.91); //tune
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(82.26); //tune
             public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
             
@@ -135,7 +136,7 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(212.08); //tune
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(211.37); //tune
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             
@@ -147,7 +148,7 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = .45;
+        public static final double intakeSpeed = .5;
         public static final double intakeSpitSpeed = -.45;
     }
 
@@ -156,8 +157,8 @@ public class Constants {
         public static final int transferID = 16;
         
         //transfer
-        public static final double transferSeed = 0.25;
-        public static final double tranSpitSpeed = -0.25;
+        public static final double transferSeed = 0.35;
+        public static final double tranSpitSpeed = -0.35;
 
         public static final double speedTolerance = 0.0;//to be determined
     }

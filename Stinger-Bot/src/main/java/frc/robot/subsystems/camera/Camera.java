@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class Camera extends TimedRobot {
-
+    @Override
     public void robotInit() {
         UsbCamera camera = CameraServer.startAutomaticCapture();
         camera.setResolution(320, 240);
