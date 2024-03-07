@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import org.ejml.equation.Sequence;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 //import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.ControllerConstants;
@@ -103,6 +106,9 @@ public class RobotContainer {
   operatorController.rightTrigger(.4).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.50)));
 
+  operatorController.leftTrigger(.4).whileTrue(
+    new InstantCommand(() -> shooterSub.setShooterSpeed(.35)));
+
     //Feed Note to shooter [run transfer]
     //operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));
     operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
@@ -124,8 +130,8 @@ public class RobotContainer {
     operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, armSub, shooterSub));
     
     //bindings to set arm and shooter setpoints
-    operatorController.y().onTrue(new prepToShoot(RobotConstants.AMP, armSub, shooterSub));
-    operatorController.a().onTrue(new prepToShoot(RobotConstants.SPEAKER, armSub, shooterSub));
+    operatorController.a().onTrue(new prepToShoot(RobotConstants.AMP, armSub, shooterSub));
+    operatorController.y().onTrue(new prepToShoot(RobotConstants.SPEAKER, armSub, shooterSub));
 
     //Dpad up: manually intake note without photo sensor
     operatorController.povUp().whileTrue(
@@ -153,7 +159,12 @@ public class RobotContainer {
     //SmartDashboard.putData("Move Arm To Setpoint", armSub.tuneArmSetPointCommand());
   }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+  private Command preloadAutoAuton(){
+    return new InstantCommand(() -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
+
+
+  public Command getAutonomousCommand() {
+    return preloadAutoAuton();
+}
 }
