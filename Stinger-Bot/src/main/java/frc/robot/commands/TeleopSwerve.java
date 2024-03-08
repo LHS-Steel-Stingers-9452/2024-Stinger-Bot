@@ -86,26 +86,28 @@ public class TeleopSwerve extends Command {
     SmartDashboard.putNumber("vY(Teleop)", strafeVal);
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
 
-  
-    if (isChassisSlow){
-    swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
-      //add division for translation
-      (rotationVal)*Swerve.maxAngleVelocity,
-      //add division for rotation
+    //If left bumper is held slow down chassis
+    if (isChassisSlow) {
+      swerveBase.drive(
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).div(0.5)),
+      ((rotationVal)*Swerve.maxAngleVelocity),
       (!robotCentricSup.getAsBoolean())
       );
-    }else{
-    swerveBase.drive(
+    } else {
+      //If left bumper is not held chassis moves at regular
+      swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,
       (!robotCentricSup.getAsBoolean())
       );
-  }
+    }
 
+  }
+/*
   private double map(double x, double in_min, double in_max, double out_min, double out_max   ){
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
+*/
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
