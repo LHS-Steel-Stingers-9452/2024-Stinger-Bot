@@ -27,6 +27,7 @@ public class TeleopSwerve extends Command {
   private DoubleSupplier rotationSup;
 
   private BooleanSupplier robotCentricSup;
+  private BooleanSupplier slowChassisSup;
 
   //private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
   //private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.slewRate);
@@ -37,13 +38,15 @@ public class TeleopSwerve extends Command {
   DoubleSupplier translationSup,
   DoubleSupplier strafeSup,
   DoubleSupplier rotationSup,
-  BooleanSupplier robotCentricSup) {
+  BooleanSupplier robotCentricSup,
+  BooleanSupplier slowChassisSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
+    this.slowChassisSup = slowChassisSup;
 
     addRequirements(swerveBase);
   }
@@ -76,18 +79,28 @@ public class TeleopSwerve extends Command {
     double rotationVal =
             MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
-    
+    boolean isChassisSlow = 
+            slowChassisSup.getAsBoolean();
 
     SmartDashboard.putNumber("vX(Teleop)", translationVal);
     SmartDashboard.putNumber("vY(Teleop)", strafeVal);
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
 
+  
+    if (isChassisSlow){
+    swerveBase.drive(
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
+      //add division for translation
+      (rotationVal)*Swerve.maxAngleVelocity,
+      //add division for rotation
+      (!robotCentricSup.getAsBoolean())
+      );
+    }else{
     swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,
       (!robotCentricSup.getAsBoolean())
       );
-
   }
 
   private double map(double x, double in_min, double in_max, double out_min, double out_max   ){
