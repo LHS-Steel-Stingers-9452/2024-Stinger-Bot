@@ -67,7 +67,8 @@ public class RobotContainer {
       () -> -driverController.getLeftY(),
       () -> -driverController.getLeftX(),
       () -> -driverController.getRightX(),
-      () -> driverController.rightBumper().getAsBoolean()
+      () -> driverController.rightBumper().getAsBoolean(),
+      () -> driverController.leftBumper().getAsBoolean()//used to decrease speed of chassis
       );
     
     swerveBase.setDefaultCommand(teleopSwerve);
@@ -93,10 +94,12 @@ public class RobotContainer {
     */
     
     //Dpad up: manually intake note without photo sensor
+    /* 
     driverController.leftBumper().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpeed,
         transferSub, TransferConstants.transferSeed));
+    */
   }
 
   private void configureOperatorBindings(){

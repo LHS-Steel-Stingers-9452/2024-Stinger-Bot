@@ -27,6 +27,7 @@ public class TeleopSwerve extends Command {
   private DoubleSupplier rotationSup;
 
   private BooleanSupplier robotCentricSup;
+  private BooleanSupplier slowChassisSup;
 
   //private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
   //private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.slewRate);
@@ -37,13 +38,15 @@ public class TeleopSwerve extends Command {
   DoubleSupplier translationSup,
   DoubleSupplier strafeSup,
   DoubleSupplier rotationSup,
-  BooleanSupplier robotCentricSup) {
+  BooleanSupplier robotCentricSup,
+  BooleanSupplier slowChassisSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
+    this.slowChassisSup = slowChassisSup;
 
     addRequirements(swerveBase);
   }
@@ -76,23 +79,35 @@ public class TeleopSwerve extends Command {
     double rotationVal =
             MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
-    
+    boolean isChassisSlow = 
+            slowChassisSup.getAsBoolean();
 
     SmartDashboard.putNumber("vX(Teleop)", translationVal);
     SmartDashboard.putNumber("vY(Teleop)", strafeVal);
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
 
-    swerveBase.drive(
+    //If left bumper is held slow down chassis
+    if (isChassisSlow) {
+      swerveBase.drive(
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).div(0.5)),
+      ((rotationVal)*Swerve.maxAngleVelocity),
+      (!robotCentricSup.getAsBoolean())
+      );
+    } else {
+      //If left bumper is not held chassis moves at regular
+      swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,
       (!robotCentricSup.getAsBoolean())
       );
+    }
 
   }
-
+/*
   private double map(double x, double in_min, double in_max, double out_min, double out_max   ){
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
+*/
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
