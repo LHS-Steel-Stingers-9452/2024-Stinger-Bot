@@ -68,7 +68,7 @@ public class RobotContainer {
       () -> -driverController.getLeftX(),
       () -> -driverController.getRightX(),
       () -> driverController.rightBumper().getAsBoolean(),
-      () -> driverController.leftBumper().getAsBoolean()
+      () -> driverController.leftBumper().getAsBoolean()//used to decrease speed of chassis
       );
     
     swerveBase.setDefaultCommand(teleopSwerve);
