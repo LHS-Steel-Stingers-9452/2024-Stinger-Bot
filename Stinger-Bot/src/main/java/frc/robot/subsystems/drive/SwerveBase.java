@@ -35,7 +35,7 @@ public class SwerveBase extends SubsystemBase {
   private final SwerveDriveOdometry swerveOdometry;
   private final SwerveModule[] swerveModules;
 
-  private Field2d field;
+  //private Field2d field;
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(pigeonID);
@@ -52,8 +52,8 @@ public class SwerveBase extends SubsystemBase {
     //Odometry
     swerveOdometry = new SwerveDriveOdometry(kinematics, getGyroYaw(), getPositions());
 
-    field = new Field2d();
-    SmartDashboard.putData("Field", field);
+    //field = new Field2d();
+    //SmartDashboard.putData("Field", field);
   }
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative){
@@ -85,6 +85,7 @@ public class SwerveBase extends SubsystemBase {
   }
   */
 
+  //gets module states
   public SwerveModuleState[] getStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -109,6 +110,7 @@ public class SwerveBase extends SubsystemBase {
     return swerveOdometry.getPoseMeters();
   }
 
+  //used to reset odometry
   public void setPose(Pose2d pose){
   swerveOdometry.resetPosition((getGyroYaw()), getPositions(), pose);
 }
@@ -147,8 +149,11 @@ public void setHeading(Rotation2d heading){
   chassis speed x and y rotation veloc and rotational veloc in rotation and r/s
   hyp of x and y
 */
-  public ChassisSpeeds getRobotVelocity()
-    {
+  /**
+   * Gets the current robot-relative velocity (x, y and omega) of the robot
+   * @return A ChassisSpeeds object of the current robot-relative velocity
+   */
+  public ChassisSpeeds getRobotVelocity(){
       return kinematics.toChassisSpeeds(getStates());
     }
   
@@ -157,16 +162,16 @@ public void setHeading(Rotation2d heading){
     // This method will be called once per scheduler run
     swerveOdometry.update(getGyroYaw(), getPositions());
     //field.setRobotPose(getPose());
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    //SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     //Returns the Robot location of the field
 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Cancoder", module.getCanCoderValue().getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
+      //SmartDashboard.putNumber(
+        //  "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
+      //SmartDashboard.putNumber(
+        //  "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
 
   //need to make sure turning counter clockwise, angle on angle motor, CCW+
