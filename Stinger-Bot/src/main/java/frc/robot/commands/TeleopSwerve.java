@@ -89,7 +89,7 @@ public class TeleopSwerve extends Command {
     //If left bumper is held slow down chassis
     if (isChassisSlow) {
       swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).div(0.5)),
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(.25)),
       ((rotationVal)*Swerve.maxAngleVelocity),
       (!robotCentricSup.getAsBoolean())
       );

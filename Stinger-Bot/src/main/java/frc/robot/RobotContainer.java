@@ -94,10 +94,12 @@ public class RobotContainer {
     */
     
     //Dpad up: manually intake note without photo sensor
+    /* 
     driverController.leftBumper().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpeed,
         transferSub, TransferConstants.transferSeed));
+    */
   }
 
   private void configureOperatorBindings(){
