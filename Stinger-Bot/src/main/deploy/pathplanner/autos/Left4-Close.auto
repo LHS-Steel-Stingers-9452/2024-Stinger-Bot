@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8116120072282518,
+      "y": 6.7128307208591815
+    },
+    "rotation": 52.37480888284435
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Two-Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left1C-2C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left2C-3C"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
