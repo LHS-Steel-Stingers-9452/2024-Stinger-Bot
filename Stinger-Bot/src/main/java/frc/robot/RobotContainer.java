@@ -113,16 +113,7 @@ public class RobotContainer {
     new InstantCommand(() -> shooterSub.setShooterSpeed(.35)));
 
     //Feed Note to shooter [run transfer]
-    //operatorController.rightBumper().whileTrue(new InstantCommand(() -> transferSub.setTransferSpeed(TransferConstants.transferSeed)));
     operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
-
-    //Intake from shooter [run shooter in reverse]
-    /* 
-    operatorController.leftBumper().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.intakeFromShooterSpeed)));
-    */
-
-
 
 
     /* Arm related commands */
@@ -148,9 +139,16 @@ public class RobotContainer {
         intakeSub, IntakeConstants.intakeSpitSpeed,
         transferSub, TransferConstants.tranSpitSpeed));
 
-    //manual stop for launcher and transfer
+    //auto intake
+    operatorController.leftBumper().onTrue(
+      new IntakeNoteReg(
+        intakeSub, IntakeConstants.intakeSpeed,
+        transferSub, TransferConstants.transferSeed));
+
+    //manual stop for launcher and transfer and intake now
     operatorController.povLeft().onTrue(new InstantCommand(() -> shooterSub.stopShooter()));
     operatorController.povLeft().onTrue(new InstantCommand(() -> transferSub.stopTransfer()));
+    operatorController.povLeft().onTrue(new InstantCommand(() -> intakeSub.stopIntake()));
 
 
     if (RobotConstants.isShooterTuningMode) {
