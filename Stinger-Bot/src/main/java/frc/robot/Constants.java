@@ -148,8 +148,8 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = .5;
-        public static final double intakeSpitSpeed = -.45;
+        public static final double intakeSpeed = 0.85;
+        public static final double intakeSpitSpeed = -0.7;
     }
 
 
@@ -157,8 +157,8 @@ public class Constants {
         public static final int transferID = 16;
         
         //transfer
-        public static final double transferSeed = 0.35;
-        public static final double tranSpitSpeed = -0.35;
+        public static final double transferSeed = 1.0;
+        public static final double tranSpitSpeed = -1.0;
 
         public static final double speedTolerance = 0.0;//to be determined
     }
@@ -233,7 +233,7 @@ public class Constants {
 
     public static final class DIOConstants {
         public static final int encoderDioPort = 0;
-        public static final int photoSensDioPort = 1;
+        public static final int photoSensDioPort = 9;
     }
 
 }
