@@ -35,7 +35,7 @@ public class SwerveBase extends SubsystemBase {
   private final SwerveDriveOdometry swerveOdometry;
   private final SwerveModule[] swerveModules;
 
-  //private Field2d field;
+  private Field2d field;
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(pigeonID);
@@ -52,8 +52,8 @@ public class SwerveBase extends SubsystemBase {
     //Odometry
     swerveOdometry = new SwerveDriveOdometry(kinematics, getGyroYaw(), getPositions());
 
-    //field = new Field2d();
-    //SmartDashboard.putData("Field", field);
+    field = new Field2d();
+    SmartDashboard.putData("Field", field);
   }
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative){
@@ -161,8 +161,8 @@ public void setHeading(Rotation2d heading){
   public void periodic() {
     // This method will be called once per scheduler run
     swerveOdometry.update(getGyroYaw(), getPositions());
-    //field.setRobotPose(getPose());
-    //SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    field.setRobotPose(getPose());
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     //Returns the Robot location of the field
 
     for (SwerveModule module : swerveModules) {
