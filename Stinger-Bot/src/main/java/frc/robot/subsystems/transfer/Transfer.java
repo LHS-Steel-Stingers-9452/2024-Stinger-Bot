@@ -27,7 +27,7 @@ public class Transfer extends SubsystemBase {
 
   private final TalonFX transferMotor;
 
-  //private DigitalInput photoSensor;
+  private DigitalInput photoSensor;
 
   boolean m_isNoteInTransfer = false;
 
@@ -40,7 +40,7 @@ public class Transfer extends SubsystemBase {
     transferMotor = new TalonFX(TransferConstants.transferID);
     transferLimitCurrentConfigs = new CurrentLimitsConfigs();
 
-    //photoSensor = new DigitalInput(DIOConstants.photoSensDioPort);
+    photoSensor = new DigitalInput(DIOConstants.photoSensDioPort);
 
     transferConfig();
   }
@@ -58,20 +58,20 @@ public class Transfer extends SubsystemBase {
   }
 
   //Use photo sensor
-  /* 
+  
   public boolean isNoteInTransfer(){
     return m_isNoteInTransfer;
 
   }
-  */
+  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     
-   // m_isNoteInTransfer = photoSensor.get() ? false : true;
-    //SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
-    //SmartDashboard.putNumber("transfer Speed(RPS)", getTransferSpeed());
+    m_isNoteInTransfer = photoSensor.get() ? true : false;
+    SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
+    SmartDashboard.putNumber("transfer Speed(RPM)", Math.abs((getTransferSpeed() * 60) *1/9));
   }
 
   public void transferConfig(){
