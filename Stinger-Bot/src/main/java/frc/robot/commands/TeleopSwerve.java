@@ -82,14 +82,16 @@ public class TeleopSwerve extends Command {
     boolean isChassisSlow = 
             slowChassisSup.getAsBoolean();
 
+    /* 
     SmartDashboard.putNumber("vX(Teleop)", translationVal);
     SmartDashboard.putNumber("vY(Teleop)", strafeVal);
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
+    */
 
-    //If left bumper is held slow down chassis
+    //If left bumper is held slow down chassis to a quarter of 4.5 m/s
     if (isChassisSlow) {
       swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).div(0.5)),
+      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
       ((rotationVal)*Swerve.maxAngleVelocity),
       (!robotCentricSup.getAsBoolean())
       );
@@ -103,11 +105,7 @@ public class TeleopSwerve extends Command {
     }
 
   }
-/*
-  private double map(double x, double in_min, double in_max, double out_min, double out_max   ){
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  }
-*/
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
