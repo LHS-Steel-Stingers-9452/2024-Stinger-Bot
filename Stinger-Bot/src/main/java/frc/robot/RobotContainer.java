@@ -6,6 +6,10 @@ package frc.robot;
 
 import org.ejml.equation.Sequence;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,6 +50,8 @@ public class RobotContainer {
 
   private TeleopSwerve teleopSwerve;
 
+  private final SendableChooser<Command> autoChooser;
+
 
 
   public RobotContainer() {
@@ -75,6 +81,10 @@ public class RobotContainer {
 
     configureDriverBindings();
     configureOperatorBindings();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   private void configureDriverBindings(){
@@ -166,6 +176,7 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    return preloadAutoAuton();
+    //return preloadAutoAuton();
+    return autoChooser.getSelected();
 }
 }
