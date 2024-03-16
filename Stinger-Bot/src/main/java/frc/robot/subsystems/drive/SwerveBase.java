@@ -108,7 +108,7 @@ public class SwerveBase extends SubsystemBase {
 
   public void autoDrive(ChassisSpeeds autoChassisSpeeds){
       drive(
-      new Translation2d(autoChassisSpeeds.vxMetersPerSecond, autoChassisSpeeds.vyMetersPerSecond), autoChassisSpeeds.omegaRadiansPerSecond, true);
+      new Translation2d(-autoChassisSpeeds.vxMetersPerSecond, autoChassisSpeeds.vyMetersPerSecond), autoChassisSpeeds.omegaRadiansPerSecond, true);
     //setModuleStates(autoModuleStates);
 
   }

@@ -27,7 +27,7 @@ public class Constants {
         //speed  should be 50
 
         //amp will be close to horizontal position
-        public static final Setpoints AMP = new Setpoints(130, 0.4, 25, 25, GameState.AMP);//88deg, .4 tolerance, 20RPS
+        public static final Setpoints AMP = new Setpoints(144, 0.3, 25, 25, GameState.AMP);//old tolerance was .4
 
 
 
@@ -97,7 +97,7 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.004;//0.002
+        public static final double angleP = 0.0042;//0.00
         public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
@@ -195,14 +195,14 @@ public class Constants {
         public static final int followID = 20;
 
         //measured when the arm is in the STOWED position
-        public static final double armStartingOffset = 60.9;//aCTUAL IS 61.9
+        public static final double armStartingOffset = 58.00;//aCTUAL IS 59-60
         //measured when the arm is horizontal
-        public static final double armHorizontalOffset = 153.4;//154.4
+        public static final double armHorizontalOffset = 146.00;//145
 
         //feedforward gains
         //tbd current values were obtained through means of an online calculator
         public static final double armKS = 0; // The Static Gain, in volts
-        public static final double armKG = 0.40; // The Gravity Gain, in volts
+        public static final double armKG = 0.42; // The Gravity Gain, in volts//.40 origin
         public static final double armKV = 1.3; // The Velocity Gain, in volt seconds per radian
         public static final double armKA = 0.02; // The acceleration gain, in volt seconds^2 per radian
 

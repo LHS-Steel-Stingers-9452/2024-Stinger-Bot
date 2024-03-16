@@ -69,7 +69,7 @@ public class Transfer extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     
-    m_isNoteInTransfer = photoSensor.get() ? true : false;
+    m_isNoteInTransfer = photoSensor.get() ? false : true;
     SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
     SmartDashboard.putNumber("transfer Speed(RPM)", Math.abs((getTransferSpeed() * 60) *1/9));
   }
