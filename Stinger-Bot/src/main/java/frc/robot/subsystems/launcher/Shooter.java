@@ -23,6 +23,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 //import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -104,8 +105,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stopShooter(){
-    leftMotor.setControl(new NeutralOut());
-    rightMotor.setControl(new NeutralOut());
+    //leftMotor.setControl(new NeutralOut());
+    //rightMotor.setControl(new NeutralOut());
+    leftMotor.setControl(new StaticBrake());
+    rightMotor.setControl(new StaticBrake());
   }
 
   /**

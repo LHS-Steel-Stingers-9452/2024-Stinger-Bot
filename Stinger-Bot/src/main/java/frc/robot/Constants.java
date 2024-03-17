@@ -97,7 +97,7 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.0042;//0.00
+        public static final double angleP = 0.0042;//0.0042
         public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
@@ -136,7 +136,7 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(211.72); //tune
+            public static final Rotation2d angleOffset =  Rotation2d.fromDegrees(210.41); //
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID,canCoderID, angleOffset);
             

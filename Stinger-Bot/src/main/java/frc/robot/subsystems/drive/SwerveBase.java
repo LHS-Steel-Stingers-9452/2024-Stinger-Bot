@@ -27,6 +27,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 //import edu.wpi.first.networktables.StructArrayPublisher;
@@ -67,10 +69,10 @@ public class SwerveBase extends SubsystemBase {
             this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                    new PIDConstants(3.5, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(3.8, 0.0, 0.0), // Rotation PID constants
                     4.5, // Max module speed, in m/s
-                    0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                    0.372680629034, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
             () -> {
@@ -86,7 +88,14 @@ public class SwerveBase extends SubsystemBase {
             },
             this // Reference to this subsystem to set requirements
     );
+
+    
   }
+  StructArrayPublisher<SwerveModuleState> swerveDisplay = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+
+   StructArrayPublisher<SwerveModulePosition> swervePos = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyPos", SwerveModulePosition.struct).publish();
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative){
 
@@ -108,7 +117,7 @@ public class SwerveBase extends SubsystemBase {
 
   public void autoDrive(ChassisSpeeds autoChassisSpeeds){
       drive(
-      new Translation2d(-autoChassisSpeeds.vxMetersPerSecond, autoChassisSpeeds.vyMetersPerSecond), autoChassisSpeeds.omegaRadiansPerSecond, true);
+      new Translation2d(autoChassisSpeeds.vxMetersPerSecond, autoChassisSpeeds.vyMetersPerSecond), autoChassisSpeeds.omegaRadiansPerSecond, true);
     //setModuleStates(autoModuleStates);
 
   }
@@ -222,5 +231,14 @@ public void setHeading(Rotation2d heading){
   0 is facing towards directly towards opponent's alliance station
   */
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
+
+    swerveDisplay.set(getStates());
+
+    swervePos.set(getPositions());
+
+    
+
+
+
   }
 }

@@ -78,7 +78,7 @@ public class Arm extends ProfiledPIDSubsystem {
     //Config Duty Cycle Range for the encoders
     absoluteEncoder.setDutyCycleRange(ArmConstants.encoderDutyCycleMin, ArmConstants.encoderDutyCycleMax);
 
-    //absoluteEncoder.reset();
+    absoluteEncoder.reset();//added this to test
     
 
     //config for motors
