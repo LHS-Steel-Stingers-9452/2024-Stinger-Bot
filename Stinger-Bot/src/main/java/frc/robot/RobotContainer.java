@@ -116,10 +116,10 @@ public class RobotContainer {
   /*add vision to determine speed and angle necessary to score in speaker */
 
   //manual shooter control for speaker shot
-  operatorController.rightTrigger(.4).whileTrue(
+  operatorController.rightTrigger(.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
-  operatorController.leftTrigger(.4).whileTrue(
+  operatorController.leftTrigger(.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.20))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
     //Feed Note to shooter [run transfer]
