@@ -117,10 +117,10 @@ public class RobotContainer {
 
   //manual shooter control for speaker shot
   operatorController.rightTrigger(.4).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(.50)));
+    new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
   operatorController.leftTrigger(.4).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(.20)));//original is .35
+    new InstantCommand(() -> shooterSub.setShooterSpeed(.20))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
     //Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
