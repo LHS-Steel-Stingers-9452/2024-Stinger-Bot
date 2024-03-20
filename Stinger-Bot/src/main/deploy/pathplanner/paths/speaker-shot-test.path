@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.35,
+        "x": 2.43,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7121486549660223,
+        "x": 2.93,
         "y": 5.55
       },
       "isLocked": false,
@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.4304615881959033,
+        "x": 1.5,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.1691110253901553,
+        "x": 1.15,
         "y": 5.55
       },
       "nextControl": null,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "autoIntake",
-      "waypointRelativePos": 0.0,
+      "name": "shootNote",
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -43,7 +43,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
