@@ -22,6 +22,12 @@
           "data": {
             "pathName": "Rigth2C-1C"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1C-Speaker"
+          }
         }
       ]
     }
