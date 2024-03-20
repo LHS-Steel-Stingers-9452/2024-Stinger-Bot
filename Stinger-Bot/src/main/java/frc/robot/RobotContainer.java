@@ -7,6 +7,7 @@ package frc.robot;
 import org.ejml.equation.Sequence;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,6 +31,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.manualIntakeControl;
 import frc.robot.commands.manualTransferControl;
 import frc.robot.commands.prepToShoot;
+import frc.robot.commands.autocommands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmDefault;
 import frc.robot.subsystems.drive.SwerveBase;
@@ -66,6 +68,11 @@ public class RobotContainer {
     shooterSub = new Shooter();
 
     armSub = new Arm();
+
+    // Register Named Commands
+    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
+    NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
+
 
     teleopSwerve = new TeleopSwerve(
       swerveBase,
