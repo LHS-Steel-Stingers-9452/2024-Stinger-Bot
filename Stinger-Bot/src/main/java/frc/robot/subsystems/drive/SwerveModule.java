@@ -82,9 +82,6 @@ public class SwerveModule {
     //ready units are now meters and radians 
     public void driveConfig() {
         driveMotor.restoreFactoryDefaults();
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 20);
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
-        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 50);
 
         driveMotor.setInverted(false);
         driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -108,9 +105,6 @@ public class SwerveModule {
     // ready untis are now meters and radians
     public void angleMotorConfig(){
         angleMotor.restoreFactoryDefaults();
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus1, 500);
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus2, 20);
-        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus3, 500);
 
         angleMotor.setInverted(true);
         angleMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -147,9 +141,7 @@ public class SwerveModule {
     }
 
     public void resetToAbsolute(){
-        //degrees units to match anglePositionConversionFactor
-        double angelAbsolutePosition = getCanCoderValue().getDegrees() - angleOffset.getDegrees();
-        integratedAngleEncoder.setPosition(angelAbsolutePosition);//integrated ecnoder is reset and given canCoder value; absolute position
+        integratedAngleEncoder.setPosition(getOffsetCanCoderValue().getRotations());//integrated ecnoder is reset and given canCoder value; absolute position
     }
 
     private Rotation2d getAngle(){
@@ -159,6 +151,11 @@ public class SwerveModule {
     public Rotation2d getCanCoderValue(){
         return Rotation2d.fromRotations(canCoder.getAbsolutePosition().getValue());
         //Rotation2D.fromRotations() will automaticly convert from [0, 1) to [0, 360) when needed at the request of getDegrees()
+    }
+
+     public Rotation2d getOffsetCanCoderValue(){
+                double angelAbsolutePosition = getCanCoderValue().getDegrees() - angleOffset.getDegrees();
+        return Rotation2d.fromDegrees(angelAbsolutePosition);
     }
 
     public SwerveModuleState getState(){

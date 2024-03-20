@@ -14,8 +14,8 @@ import frc.robot.Util.Setpoints;
 import frc.robot.Util.Setpoints.GameState;
 public class Constants {
     public static final class RobotConstants{
-        public static final boolean isTuningMode = true;//in tunning mode
-        public static final boolean isArmTurningMode = true;//in process
+        public static final boolean isTuningMode = false;//in tunning mode
+        public static final boolean isArmTurningMode = false;//in process
         public static final boolean isShooterTuningMode = false;//need
 
         /**Shooter and Arm Setpoints */
@@ -77,8 +77,8 @@ public class Constants {
 
         );
 
-        public static final double maxSpeed = 4.5; //values are subject to change upon testing 
-        public static final double maxAngleVelocity = 4.5; // calculate actual max speed/velocity
+        public static final double maxSpeed = 4.6; //values are subject to change upon testing 
+        public static final double maxAngleVelocity = 4.6; // calculate actual max speed/velocity
 
         public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 40;

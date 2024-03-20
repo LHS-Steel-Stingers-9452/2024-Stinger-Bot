@@ -69,8 +69,8 @@ public class SwerveBase extends SubsystemBase {
             this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(3.5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(3.8, 0.0, 0.0), // Rotation PID constants
+                    new PIDConstants(4.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(3.0, 0.0, 0.0), // Rotation PID constants
                     4.5, // Max module speed, in m/s
                     0.372680629034, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -214,7 +214,10 @@ public void setHeading(Rotation2d heading){
 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
-          "Mod " + module.moduleNumber + " Cancoder", module.getCanCoderValue().getDegrees());
+          "Mod " + module.moduleNumber + " Cancoder RAW ", module.getCanCoderValue().getDegrees());
+                SmartDashboard.putNumber(
+          "Mod " + module.moduleNumber + " Cancoder OFFSET ", module.getOffsetCanCoderValue().getDegrees());
+
       //SmartDashboard.putNumber(
         //  "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
       //SmartDashboard.putNumber(
