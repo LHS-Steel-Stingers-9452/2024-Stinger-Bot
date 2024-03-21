@@ -77,8 +77,8 @@ public class Constants {
 
         );
 
-        public static final double maxSpeed = 4.6; //values are subject to change upon testing 
-        public static final double maxAngleVelocity = 4.6; // calculate actual max speed/velocity
+        public static final double maxSpeed = 4.6; //meters per second
+        public static final double maxAngleVelocity = 10.5; // radians per sec
 
         public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 40;
