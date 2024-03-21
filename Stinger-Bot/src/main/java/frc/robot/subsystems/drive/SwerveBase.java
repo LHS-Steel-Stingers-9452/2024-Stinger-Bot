@@ -94,9 +94,6 @@ public class SwerveBase extends SubsystemBase {
   StructArrayPublisher<SwerveModuleState> swerveDisplay = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
-   StructArrayPublisher<SwerveModulePosition> swervePos = NetworkTableInstance.getDefault()
-    .getStructArrayTopic("MyPos", SwerveModulePosition.struct).publish();
-
   public void drive(Translation2d translation, double rotation, boolean fieldRelative){
 
     //Converts joystick inputs to either field relative or chassis speeds using kinematics
@@ -236,12 +233,5 @@ public void setHeading(Rotation2d heading){
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
 
     swerveDisplay.set(getStates());
-
-    swervePos.set(getPositions());
-
-    
-
-
-
   }
 }
