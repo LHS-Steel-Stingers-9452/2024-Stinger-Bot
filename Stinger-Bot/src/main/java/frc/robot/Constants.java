@@ -97,7 +97,7 @@ public class Constants {
         public static final double driveD = 0.00;
         
         //Angle Motor PID Values
-        public static final double angleP = 0.0042;//0.0042
+        public static final double angleP = 0.0045;//0.0042
         public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
