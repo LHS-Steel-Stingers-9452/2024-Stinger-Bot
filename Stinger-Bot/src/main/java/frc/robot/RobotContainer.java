@@ -181,6 +181,10 @@ public class RobotContainer {
     return new InstantCommand(() -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
 
+  public void resetModulesTest(){
+    swerveBase.resetToAbsolute();
+  }
+
 
   public Command getAutonomousCommand() {
     //return preloadAutoAuton();
