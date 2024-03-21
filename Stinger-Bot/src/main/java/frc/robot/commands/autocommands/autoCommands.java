@@ -21,7 +21,7 @@ public class autoCommands {
     public static Command shootNote(Shooter shooter, Transfer transfer){
         Command command = new ParallelDeadlineGroup(
             new InstantCommand(()-> transfer.isNoteInTransfer()),
-            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(2)),
+            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(1)),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSeed))
             );
         return command;
