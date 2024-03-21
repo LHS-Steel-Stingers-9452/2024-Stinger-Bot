@@ -68,7 +68,7 @@ public class SwerveBase extends SubsystemBase {
     * with inverting motors.
     * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
     */
-    Timer.delay(1.0);
+    Timer.delay(2.5);
     resetModulesToAbsolute();
     
     //Odometry
