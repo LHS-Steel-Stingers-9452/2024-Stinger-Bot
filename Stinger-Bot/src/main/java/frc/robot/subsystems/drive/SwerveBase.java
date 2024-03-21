@@ -5,6 +5,7 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 import frc.robot.Constants.Swerve.Mod0;
 import frc.robot.Constants.Swerve.Mod1;
@@ -36,6 +37,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
+//Favorite import?
+import edu.wpi.first.wpilibj.Timer;
+
+
 public class SwerveBase extends SubsystemBase {
   /** Creates a new SwerveBase. */
   private final Pigeon2 pidgeotto;
@@ -57,6 +62,15 @@ public class SwerveBase extends SubsystemBase {
       new SwerveModule(3, Mod3.constants)
     };
 
+    //Reset to absoute here please
+    /*
+    * By pausing init for a second before setting module offsets, we avoid a bug
+    * with inverting motors.
+    * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
+    */
+    Timer.delay(1.0);
+    resetModulesToAbsolute();
+    
     //Odometry
     swerveOdometry = new SwerveDriveOdometry(kinematics, getGyroYaw(), getPositions());
 
@@ -183,7 +197,7 @@ public void setHeading(Rotation2d heading){
     return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
   }
 
-  public void resetToAbsolute(){
+  public void resetModulesToAbsolute(){
     for(SwerveModule module : swerveModules){
       module.resetToAbsolute();
     }
