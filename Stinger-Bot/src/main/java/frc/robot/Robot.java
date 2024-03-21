@@ -49,9 +49,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    //test solution for fixing module drift 
+    m_robotContainer.resetModulesTest();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   @Override
