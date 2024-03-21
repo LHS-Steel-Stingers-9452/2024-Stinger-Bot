@@ -117,9 +117,9 @@ public class SwerveModule {
        anglePIDController.setP(Swerve.angleP);
        anglePIDController.setI(Swerve.angleI);
        anglePIDController.setD(Swerve.angleD);
-        angleMotor.burnFlash();
-
-        resetToAbsolute();
+       angleMotor.burnFlash();
+       
+       resetToAbsolute();
     }
 
     public void angleEncoderConfig(){
@@ -140,6 +140,10 @@ public class SwerveModule {
     
     }
 
+
+    /**
+     * Resets integrated ecnoders to absolute position
+     */
     public void resetToAbsolute(){
         integratedAngleEncoder.setPosition(getOffsetCanCoderValue().getRotations());//integrated ecnoder is reset and given canCoder value; absolute position
     }
