@@ -14,7 +14,7 @@ import frc.robot.Util.Setpoints;
 import frc.robot.Util.Setpoints.GameState;
 public class Constants {
     public static final class RobotConstants{
-        public static final boolean isTuningMode = false;//in tunning mode
+        public static final boolean isTuningMode = true;//in tunning mode
         public static final boolean isArmTurningMode = false;//in process
         public static final boolean isShooterTuningMode = false;//need
 
@@ -27,7 +27,7 @@ public class Constants {
         //speed  should be 50
 
         //amp will be close to horizontal position
-        public static final Setpoints AMP = new Setpoints(144, 0.3, 25, 25, GameState.AMP);//old tolerance was .4
+        public static final Setpoints AMP = new Setpoints(140, 0.3, 25, 25, GameState.AMP);//old tolerance was .4
 
 
 
