@@ -72,9 +72,9 @@ public class SwerveModule {
         drivePIDController = driveMotor.getPIDController();
         anglePIDController = angleMotor.getPIDController();
         
-        driveConfig();
-        angleMotorConfig();
         angleEncoderConfig();
+        angleMotorConfig();
+        driveConfig();
 
         lastAngle = getState().angle;
 

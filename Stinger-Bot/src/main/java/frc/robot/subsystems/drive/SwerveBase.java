@@ -68,6 +68,7 @@ public class SwerveBase extends SubsystemBase {
     * with inverting motors.
     * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
     */
+    System.out.println("Waiting for one Second before module offsets...");
     Timer.delay(1.0);
     resetModulesToAbsolute();
     
