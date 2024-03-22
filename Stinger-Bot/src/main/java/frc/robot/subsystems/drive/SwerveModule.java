@@ -119,7 +119,7 @@ public class SwerveModule {
        anglePIDController.setD(Swerve.angleD);
        angleMotor.burnFlash();
        
-       //resetToAbsolute();
+       resetToAbsolute();
     }
 
     public void angleEncoderConfig(){
