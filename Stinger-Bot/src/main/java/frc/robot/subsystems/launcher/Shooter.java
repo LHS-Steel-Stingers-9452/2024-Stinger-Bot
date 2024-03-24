@@ -141,7 +141,7 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Shooter at Speed?", areWheelsAtSpeed());
 
-    if (RobotConstants.isShooterTuningMode) {
+    if (true) {
       // Put actual velocities to smart dashboard
       SmartDashboard.putNumber("Shooter Velocity L", getShooterVelocity(kShooterSide.kLEFT));
       SmartDashboard.putNumber("Shooter Velocity R", getShooterVelocity(kShooterSide.kRIGHT));

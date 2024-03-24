@@ -127,7 +127,7 @@ public class RobotContainer {
     new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
   operatorController.leftTrigger(.3).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(.20))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+    new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
     //Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));

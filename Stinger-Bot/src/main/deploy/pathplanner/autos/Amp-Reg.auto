@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.35,
-      "y": 5.55
+      "x": 0.75,
+      "y": 6.7
     },
-    "rotation": 0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Mid-2C"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2C-Mid"
+            "pathName": "Amp-Path"
           }
         },
         {
@@ -42,15 +36,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "pathName": "back-out"
           }
         }
       ]
