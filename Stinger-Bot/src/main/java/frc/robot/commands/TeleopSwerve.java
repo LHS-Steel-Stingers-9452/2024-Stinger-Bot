@@ -11,12 +11,10 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.drive.SwerveBase;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class TeleopSwerve extends Command {
   /** Creates a new TeleopSwerve. */
@@ -28,11 +26,6 @@ public class TeleopSwerve extends Command {
 
   private BooleanSupplier robotCentricSup;
   private BooleanSupplier slowChassisSup;
-
-  //private SlewRateLimiter translationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
-  //private SlewRateLimiter strafeFilter = new SlewRateLimiter(ControllerConstants.slewRate);
-  //private SlewRateLimiter rotationFilter = new SlewRateLimiter(ControllerConstants.slewRate);
-  //limiters to soften control inputs
 
   public TeleopSwerve( SwerveBase swerveBase,
   DoubleSupplier translationSup,
@@ -88,7 +81,7 @@ public class TeleopSwerve extends Command {
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
     */
 
-    //If left bumper is held slow down chassis to a quarter of 4.5 m/s
+    //If left bumper is held slow down chassis to a quarter of 4.6 m/s
     if (isChassisSlow) {
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
@@ -99,7 +92,7 @@ public class TeleopSwerve extends Command {
       //If left bumper is not held chassis moves at regular
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
-      (rotationVal)*Swerve.maxAngleVelocity,
+      (rotationVal)*Swerve.maxAngleVelocity,//slow down rotation as well at drivers request
       (!robotCentricSup.getAsBoolean())
       );
     }
