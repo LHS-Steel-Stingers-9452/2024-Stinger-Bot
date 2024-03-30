@@ -4,13 +4,8 @@
 
 package frc.robot;
 
-import javax.swing.plaf.TreeUI;
-
-import org.ejml.equation.Sequence;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,22 +14,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-//import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.LauncherConstants;
-import frc.robot.Constants.TransferConstants;
-//import frc.robot.Util.Setpoints.GameState;
-import frc.robot.commands.IntakeNoteReg;
+import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.manualIntakeControl;
-import frc.robot.commands.manualTransferControl;
-import frc.robot.commands.autocommands.autoCommands;
-
-
+import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -73,27 +56,14 @@ public class RobotContainer {
 
     ledSub = new Leds();
 
-
-
-    // Register Named Commands
-    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub, ledSub));
-    NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
-
-
-    teleopSwerve = new TeleopSwerve(
-      swerveBase,
-      //inverts controls because joysticks are back-right (+) while robot is front-left (+)
-      () -> -driverController.getLeftY(),
-      () -> -driverController.getLeftX(),
-      () -> -driverController.getRightX(),
-      () -> driverController.rightBumper().getAsBoolean(),
-      () -> driverController.leftBumper().getAsBoolean()//used to decrease speed of chassis
-      );
-    
-    swerveBase.setDefaultCommand(teleopSwerve);
-
+    //Try moving where bindings are configured
+    //Configures Control Bindings
     configureDriverBindings();
     configureOperatorBindings();
+
+    // Register Named Commands
+    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
+    NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -101,60 +71,75 @@ public class RobotContainer {
   }
 
   private void configureDriverBindings(){
-    /* Driver Controls */
+  /* Driver Controls */
+    
+    swerveBase.setDefaultCommand(
+      new TeleopSwerve(
+        swerveBase,
+        //inverts controls because joysticks are back-right (+) while robot is front-left (+)
+        () -> -driverController.getLeftY(),
+        () -> -driverController.getLeftX(),
+        () -> -driverController.getRightX(),
+        () -> driverController.rightBumper().getAsBoolean(),//used to drive robot relative
+        () -> driverController.leftBumper().getAsBoolean()//used to decrease speed of chassis
+        ));
 
-    //Y Button: Zero Gyro
-    driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
+  //Y Button: Zero Gyro
+    driverController.y().onTrue(CommandManager.zeroGyro(swerveBase));
 
   }
 
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
-  //Right Trigger: Manual speaker speed [dutycycle]
-  operatorController.rightTrigger(.3).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
-
-  //Left Trigger: Manual Amp speed
-  operatorController.leftTrigger(.3).whileTrue(
-    new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
-
-  //Right Bumber: Feed Note to shooter [run transfer]
-  operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
-
-
-
+    /**
+     * Intake Related Bindings
+     * */
     //Left Bumber: Auto intake *Press once and it will run until canceled or overwritten*
     operatorController.leftBumper().onTrue(
-      new IntakeNoteReg(
-          intakeSub, IntakeConstants.intakeSpeed,
-          transferSub, TransferConstants.transferSeed,
-          ledSub));
+      autoCommands.intakeNote(intakeSub, transferSub));
 
-
-    //Dpad up: manually intake note
+    //Dpad up: manually intake
     operatorController.povUp().whileTrue(
-      new manualIntakeControl(
-        intakeSub, IntakeConstants.intakeSpeed,
-        transferSub, TransferConstants.transferSeed));
+      CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.eStop(intakeSub, transferSub));//added eStop() as a saftey thing
 
-    //Dpad up: manually spit out
+    //Dpad down: manually spit out
     operatorController.povDown().whileTrue(
-      new manualIntakeControl(
-        intakeSub, IntakeConstants.intakeSpitSpeed,
-        transferSub, TransferConstants.tranSpitSpeed));
+      CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.eStop(intakeSub, transferSub));
 
-    //POV Left: Manual stop for launcher, transfer, intake
-    operatorController.povLeft().onTrue(new ParallelCommandGroup(
-      new InstantCommand(() -> shooterSub.stopShooter()),
-      new InstantCommand(() -> transferSub.stopTransfer()),
-      new InstantCommand(() -> intakeSub.stopIntake())));
+    //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
+    operatorController.povLeft().onTrue(
+      CommandManager.eStop(intakeSub, transferSub));
 
+  /**
+  * Arm Related Bindings
+  * */
+
+
+  /**
+  * Shoot Related Bindings
+  * */
+  //Right Trigger: Manual speaker speed [dutycycle]
+    operatorController.rightTrigger(.3).whileTrue(
+      new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+
+  //Left Trigger: Manual Amp speed
+    operatorController.leftTrigger(.3).whileTrue(
+      new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
+
+  //Right Bumber: Feed Note to shooter [run transfer]
+    operatorController.rightBumper().whileTrue(
+      CommandManager.feedNote(transferSub));
+  /**
+  * Climb Related Bindings
+  * */
   }
 
-  //back up auto
+
+  //[OG Saftey Auto]
   private Command preloadAutoAuton(){
-    return new InstantCommand(() -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
+    return new InstantCommand(
+      () -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
 
 
