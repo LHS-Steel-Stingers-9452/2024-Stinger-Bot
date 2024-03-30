@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.swing.plaf.TreeUI;
+
 import org.ejml.equation.Sequence;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -50,7 +52,7 @@ public class RobotContainer {
   private final Shooter shooterSub;
   
 
-  private final Leds ledSub = Leds.getInstance();
+  private final Leds ledSub;
 
   private TeleopSwerve teleopSwerve;
 
@@ -68,6 +70,8 @@ public class RobotContainer {
     transferSub = new Transfer();
 
     shooterSub = new Shooter();
+
+    ledSub = new Leds();
 
 
 
@@ -119,6 +123,15 @@ public class RobotContainer {
   operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
 
 
+
+    //Left Bumber: Auto intake *Press once and it will run until canceled or overwritten*
+    operatorController.leftBumper().onTrue(
+      new ParallelCommandGroup(
+          Commands.startEnd(()-> ledSub.requestAmp = true,()-> ledSub.requestAmp = false),
+      new IntakeNoteReg(
+          intakeSub, IntakeConstants.intakeSpeed,
+          transferSub, TransferConstants.transferSeed)));
+
     //Dpad up: manually intake note
     operatorController.povUp().whileTrue(
       new manualIntakeControl(
@@ -130,16 +143,6 @@ public class RobotContainer {
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpitSpeed,
         transferSub, TransferConstants.tranSpitSpeed));
-
-    //Left Bumber: Auto intake
-    operatorController.leftBumper().whileTrue(
-      new IntakeNoteReg(
-        intakeSub, IntakeConstants.intakeSpeed,
-        transferSub, TransferConstants.transferSeed));
-
-    //setting lights for auto intake
-    operatorController.leftBumper().whileTrue(
-      Commands.startEnd(()-> ledSub.requestAmp = true, ()-> ledSub.requestAmp = false));
 
 
     //POV Left:
