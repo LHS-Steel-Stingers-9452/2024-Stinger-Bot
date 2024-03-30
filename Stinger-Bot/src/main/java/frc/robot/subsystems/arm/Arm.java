@@ -1,8 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.proto.Wpimath;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -53,7 +50,7 @@ public class Arm extends SubsystemBase {
     this.angle = angle;
     // Misc setup goes here
 
-    armPosition = Shuffleboard.getTab("Arm").add("ArmPosition", 0).getEntry();
+    armPosition = Shuffleboard.getTab("Arm").add("ArmPosition[Rotations]", 0).getEntry();
 
     var talonFXConfigs = new TalonFXConfiguration();
     // These will be derived experimentally but in case you are wondering
