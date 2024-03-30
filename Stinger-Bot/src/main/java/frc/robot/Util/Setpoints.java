@@ -17,7 +17,7 @@ public class Setpoints {
     public double rightShooter;
     public GameState state;
 
-    public Setpoints(double arm, double tolerance, double leftShooter, double rightShooter, GameState state){
+    public Setpoints(double arm,  double leftShooter, double rightShooter, double tolerance, GameState state){
         this.arm = arm;
         this.tolerance = tolerance;
         this.leftShooter = leftShooter;
@@ -26,7 +26,7 @@ public class Setpoints {
     }
 
     public enum GameState{
-        STOWED, INTAKE, SPEAKER, AMP, PODIUM, WING, TRAP,
+        STOWED, INTAKE, SPEAKER, AMP, PODIUM, WING, TRAP, SHOWMODE
     }
 
     //Display the commanded ARM stte on the dashboard
@@ -52,6 +52,9 @@ public class Setpoints {
             case TRAP:
                 SmartDashboard.putString("Arm State", "TRAP");
                 break; 
+            case SHOWMODE:
+                SmartDashboard.putString("Arm State", "Show Mode");
+                break;
             default:
                 SmartDashboard.putString("Arm State", "OTHER");
         }
