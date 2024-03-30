@@ -6,12 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.transfer.Transfer;
 
 public class IntakeNoteReg extends Command {
   /** Creates a new intakeNotereg. */
   private Intake intakeSub;
   private Transfer transferSub;
+
+  private Leds ledSub;
 
   private Double intakeSpeedSup;
   private Double transferSpeedSup;
@@ -21,14 +24,17 @@ public class IntakeNoteReg extends Command {
     Intake intakeSub, 
     Double intakeSpeedSup, 
     Transfer transferSub, 
-    Double transferSpeedSup) {
+    Double transferSpeedSup,
+    Leds ledSub) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSub = intakeSub;
     this.intakeSpeedSup = intakeSpeedSup;
     this.transferSub = transferSub;
     this.transferSpeedSup = transferSpeedSup;
 
-    addRequirements(intakeSub, transferSub);
+    this.ledSub = ledSub;
+
+    addRequirements(intakeSub, transferSub, ledSub);
   }
 
   // Called when the command is initially scheduled.
@@ -42,6 +48,8 @@ public class IntakeNoteReg extends Command {
     double intakeSpeed = intakeSpeedSup;
     double transferSpeed = transferSpeedSup;
 
+    ledSub.intaking = true;
+
     intakeSub.setIntakeMotorSpeed(intakeSpeed);
     transferSub.setTransferSpeed(transferSpeed);
   }
@@ -51,6 +59,8 @@ public class IntakeNoteReg extends Command {
   public void end(boolean interrupted) {
     intakeSub.stopIntake();
     transferSub.stopTransfer();
+    ledSub.intaking = false;
+    ledSub.hasNote = true;
   }
 
   // Returns true when the command should end.

@@ -12,13 +12,14 @@ import frc.robot.Constants.TransferConstants;
 import frc.robot.commands.IntakeNoteReg;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.transfer.Transfer;
 
 public class autoCommands {
-    public static Command intakeNote(Intake intake, Transfer transfer){
+    public static Command intakeNote(Intake intake, Transfer transfer, Leds ledSub){
         //auto intake Note
         Command command = new ParallelDeadlineGroup(
-                new IntakeNoteReg(intake, IntakeConstants.intakeSpeed, transfer, TransferConstants.transferSeed));
+                new IntakeNoteReg(intake, IntakeConstants.intakeSpeed, transfer, TransferConstants.transferSeed, ledSub));
         return command;
     }
 

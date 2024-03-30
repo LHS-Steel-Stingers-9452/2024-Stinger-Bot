@@ -76,7 +76,7 @@ public class RobotContainer {
 
 
     // Register Named Commands
-    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
+    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub, ledSub));
     NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
 
 
@@ -126,11 +126,11 @@ public class RobotContainer {
 
     //Left Bumber: Auto intake *Press once and it will run until canceled or overwritten*
     operatorController.leftBumper().onTrue(
-      new ParallelCommandGroup(
-          Commands.startEnd(()-> ledSub.requestAmp = true,()-> ledSub.requestAmp = false),
       new IntakeNoteReg(
           intakeSub, IntakeConstants.intakeSpeed,
-          transferSub, TransferConstants.transferSeed)));
+          transferSub, TransferConstants.transferSeed,
+          ledSub));
+
 
     //Dpad up: manually intake note
     operatorController.povUp().whileTrue(
@@ -144,9 +144,7 @@ public class RobotContainer {
         intakeSub, IntakeConstants.intakeSpitSpeed,
         transferSub, TransferConstants.tranSpitSpeed));
 
-
-    //POV Left:
-    //Updated: Manual stop for launcher, transfer, intake
+    //POV Left: Manual stop for launcher, transfer, intake
     operatorController.povLeft().onTrue(new ParallelCommandGroup(
       new InstantCommand(() -> shooterSub.stopShooter()),
       new InstantCommand(() -> transferSub.stopTransfer()),
