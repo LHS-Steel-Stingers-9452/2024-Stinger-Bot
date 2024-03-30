@@ -30,13 +30,13 @@ import frc.robot.commands.IntakeNoteReg;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.manualIntakeControl;
 import frc.robot.commands.manualTransferControl;
-import frc.robot.commands.prepToShoot;
 import frc.robot.commands.autocommands.autoCommands;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmDefault;
+
+
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.transfer.Transfer;
 
 public class RobotContainer {
@@ -48,7 +48,9 @@ public class RobotContainer {
   private final Intake intakeSub;
   private final Transfer transferSub;
   private final Shooter shooterSub;
-  private final Arm armSub;
+  
+
+  private final Leds ledSub = Leds.getInstance();
 
   private TeleopSwerve teleopSwerve;
 
@@ -67,7 +69,7 @@ public class RobotContainer {
 
     shooterSub = new Shooter();
 
-    armSub = new Arm();
+
 
     // Register Named Commands
     NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
@@ -97,86 +99,59 @@ public class RobotContainer {
   private void configureDriverBindings(){
     /* Driver Controls */
 
-    //driver buttton to zero gyro
+    //Y Button: Zero Gyro
     driverController.y().onTrue(new InstantCommand(() -> swerveBase.zeroGyro()));
 
-    //bring down arm to stow/intake position then run intake command until note is detected
-    /* 
-    driverController.leftBumper().onTrue((armSub.prepareForIntakeCommand()
-            .andThen(new IntakeNoteReg(
-              intakeSub, 
-              IntakeConstants.intakeSpeed, 
-              transferSub, 
-              TransferConstants.transferSeed))));
-    */
-    
-    //Dpad up: manually intake note without photo sensor
-    /* 
-    driverController.leftBumper().whileTrue(
-      new manualIntakeControl(
-        intakeSub, IntakeConstants.intakeSpeed,
-        transferSub, TransferConstants.transferSeed));
-    */
   }
 
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
-  //manual shooter control for speaker shot
+  //Right Trigger: Manual speaker speed
   operatorController.rightTrigger(.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
+  //Left Trigger: Manual Amp speed
   operatorController.leftTrigger(.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
-    //Feed Note to shooter [run transfer]
-    operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
+  //Right Bumber: Feed Note to shooter [run transfer]
+  operatorController.rightBumper().whileTrue(new manualTransferControl(transferSub, TransferConstants.transferSeed));
 
 
-    /* Arm related commands */
-    //Arm default command [manual arm movment using left stick and left Y joystick axis]
-    //armSub.setDefaultCommand(new ArmDefault(armSub, operatorController.leftStick(), ()-> -operatorController.getRightY()));
-
-    //stow arm if not already
-    operatorController.povRight().onTrue(new prepToShoot(RobotConstants.STOWED, armSub, shooterSub));
-    
-    //bindings to set arm and shooter setpoints
-    operatorController.a().onTrue(new prepToShoot(RobotConstants.AMP, armSub, shooterSub));
-    operatorController.y().onTrue(new prepToShoot(RobotConstants.SPEAKER, armSub, shooterSub));
-
-    //Dpad up: manually intake note without photo sensor
+    //Dpad up: manually intake note
     operatorController.povUp().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpeed,
         transferSub, TransferConstants.transferSeed));
 
-    //Dpad up: manually outtake note no photo sensor
+    //Dpad up: manually spit out
     operatorController.povDown().whileTrue(
       new manualIntakeControl(
         intakeSub, IntakeConstants.intakeSpitSpeed,
         transferSub, TransferConstants.tranSpitSpeed));
 
-    //auto intake
-    operatorController.leftBumper().onTrue(
+    //Left Bumber: Auto intake
+    operatorController.leftBumper().whileTrue(
       new IntakeNoteReg(
         intakeSub, IntakeConstants.intakeSpeed,
         transferSub, TransferConstants.transferSeed));
 
-    //manual stop for launcher and transfer and intake now
-    operatorController.povLeft().onTrue(new InstantCommand(() -> shooterSub.stopShooter()));
-    operatorController.povLeft().onTrue(new InstantCommand(() -> transferSub.stopTransfer()));
-    operatorController.povLeft().onTrue(new InstantCommand(() -> intakeSub.stopIntake()));
+    //setting lights for auto intake
+    operatorController.leftBumper().whileTrue(
+      Commands.startEnd(()-> ledSub.requestAmp = true, ()-> ledSub.requestAmp = false));
 
 
-    if (RobotConstants.isShooterTuningMode) {
-      SmartDashboard.putData("Update Shooter Gains", shooterSub.updateShooterGainsCommand());
-      SmartDashboard.putData("Run Shooter", shooterSub.runShooterCommand());
-      SmartDashboard.putData("Stop Shooter", shooterSub.stopShooterCommand());
-      SmartDashboard.putData("Arm to Angle", armSub.moveToDegreeCommand());
-    }
-    //SmartDashboard.putData("Move Arm To Setpoint", armSub.tuneArmSetPointCommand());
+    //POV Left:
+    //Updated: Manual stop for launcher, transfer, intake
+    operatorController.povLeft().onTrue(new ParallelCommandGroup(
+      new InstantCommand(() -> shooterSub.stopShooter()),
+      new InstantCommand(() -> transferSub.stopTransfer()),
+      new InstantCommand(() -> intakeSub.stopIntake())));
+
   }
 
+  //back up auto
   private Command preloadAutoAuton(){
     return new InstantCommand(() -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
