@@ -111,7 +111,7 @@ public class RobotContainer {
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
-  //Right Trigger: Manual speaker speed
+  //Right Trigger: Manual speaker speed [dutycycle]
   operatorController.rightTrigger(.3).whileTrue(
     new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
@@ -156,12 +156,6 @@ public class RobotContainer {
   private Command preloadAutoAuton(){
     return new InstantCommand(() -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
-
-/* 
-  public void resetModulesTest(){
-    swerveBase.resetToAbsolute();
-  }
-*/
 
 
   public Command getAutonomousCommand() {
