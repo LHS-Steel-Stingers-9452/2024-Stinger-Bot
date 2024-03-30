@@ -126,7 +126,7 @@ public class Constants {
         public static final int transferID = 16;
         
         //transfer
-        public static final double transferSeed = 1.0;
+        public static final double transferSpeed = 1.0;
         public static final double tranSpitSpeed = -1.0;
 
         public static final double speedTolerance = 0.0;//to be determined
