@@ -14,14 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class Leds extends SubsystemBase {
-  private static Leds instance;
-
-  public static Leds getInstance() {
-    if (instance == null) {
-      instance = new Leds();
-    }
-    return instance;
-  }
 
   // Robot state tracking
   public int loopCycleCount = 0;
@@ -71,7 +63,7 @@ public class Leds extends SubsystemBase {
   private static final double autoFadeTime = 2.5; // 3s nominal
   private static final double autoFadeMaxTime = 5.0; // Return to normal
 
-  private Leds() {
+  public Leds() {
     leds = new AddressableLED(4);
     buffer = new AddressableLEDBuffer(length);
     leds.setLength(length);
@@ -88,6 +80,7 @@ public class Leds extends SubsystemBase {
     loadingNotifier.startPeriodic(0.02);
   }
 
+  //Periodic method to change LED state
   public synchronized void periodic() {
     // Update alliance color
     if (DriverStation.isFMSAttached()) {
@@ -194,6 +187,9 @@ public class Leds extends SubsystemBase {
     // Update LEDs
     leds.setData(buffer);
   }
+
+
+  //methods for different patterns below
 
   private void solid(Color color) {
     if (color != null) {
