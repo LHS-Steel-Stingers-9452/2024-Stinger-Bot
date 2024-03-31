@@ -27,7 +27,6 @@ public class Arm extends SubsystemBase {
     DefaultState,
     AmpState,
     ShooterState,
-    PassState,
     CustomState
     
   }
@@ -117,10 +116,6 @@ public class Arm extends SubsystemBase {
       case ShooterState:
         desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .25);//tune
         break;
-      case PassState:
-        desiredPosition = .00;
-        break;
-
     }
  
     runControlLoop();
