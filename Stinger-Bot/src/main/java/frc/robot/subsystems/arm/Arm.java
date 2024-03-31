@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
   // You may need more than one motor
   private final TalonFX leadKraken = new TalonFX(leadID);
   private final TalonFX followKraken = new TalonFX(followID);
-  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(encoderDioPort);
+  //private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(encoderDioPort);
 
   DoubleSupplier angle; 
   private final MotionMagicVoltage request = new MotionMagicVoltage(0).withSlot(0);
@@ -68,8 +68,9 @@ public class Arm extends SubsystemBase {
     // kD outputs n volts when the velocity error is 1 rotation per second
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kS = kS;
-    slot0Configs.kG = kG;
-    slot0Configs.kA = kA;
+    //slot0Configs.kG = kG;
+    //slot0Configs.kA = kA;
+    slot0Configs.kV = kV;
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
     slot0Configs.kD = kP;

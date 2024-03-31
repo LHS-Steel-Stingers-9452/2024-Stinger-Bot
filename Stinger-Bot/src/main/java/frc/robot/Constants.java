@@ -152,6 +152,7 @@ public class Constants {
         public static final int followID = 20;
         public static final double kS = 0;//.91
         public static final double kG = 0;
+        public static final double kV = 0;//find number later
         public static final double kA = 0;
         public static final double kP = 0;//40
         public static final double kI = 0;
