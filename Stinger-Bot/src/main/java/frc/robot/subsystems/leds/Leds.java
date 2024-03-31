@@ -46,7 +46,7 @@ public class Leds extends SubsystemBase {
   // Constants
   private static final boolean prideLeds = false;
   private static final int minLoopCycleCount = 10;
-  private static final int length = 12;
+  private static final int length = 12;//need be tuned
   private static final int staticSectionLength = 3;
   private static final double strobeFastDuration = 0.1;
   private static final double strobeSlowDuration = 0.2;
