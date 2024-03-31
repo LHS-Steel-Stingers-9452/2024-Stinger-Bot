@@ -2,12 +2,14 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 // Imports go here
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ArmConstants.kCurrentLimit;
 import static frc.robot.Constants.ArmConstants.kErrorTolerance;
+import static frc.robot.Constants.DIOConstants.encoderDioPort;
 import static frc.robot.Constants.ArmConstants.*;
 
 import java.util.function.DoubleSupplier;
@@ -39,11 +41,14 @@ public class Arm extends SubsystemBase {
   // You may need more than one motor
   private final TalonFX leadKraken = new TalonFX(leadID);
   private final TalonFX followKraken = new TalonFX(followID);
+  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(encoderDioPort);
+
   DoubleSupplier angle; 
   private final MotionMagicVoltage request = new MotionMagicVoltage(0).withSlot(0);
   // Unit default for TalonFX libraries is rotations
   private double desiredPosition = 0;
 
+  //Constructor
   public Arm(DoubleSupplier angle) {
 
     this.angle = angle;
@@ -51,17 +56,20 @@ public class Arm extends SubsystemBase {
 
     armPosition = Shuffleboard.getTab("Arm").add("ArmPosition[Rotations]", 0).getEntry();
 
+    //based on phoenix example
     var talonFXConfigs = new TalonFXConfiguration();
     // These will be derived experimentally but in case you are wondering
     // How these terms are defined from the TalonFX docs
     // kS adds n volts to overcome static friction
-    // kV outputs n volts when the velocity target is 1 rotation per second
+    // kG
+    // kA
     // kP outputs 12 volts when the positional error is 12/n rotations
     // kI adds n volts per second when the positional error is 1 rotation
     // kD outputs n volts when the velocity error is 1 rotation per second
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kS = kS;
-    slot0Configs.kV = kV;
+    slot0Configs.kG = kG;
+    slot0Configs.kA = kA;
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
     slot0Configs.kD = kP;
@@ -73,6 +81,8 @@ public class Arm extends SubsystemBase {
     // acc/jerk = time to reach constant acceleration
     motionMagicConfigs.MotionMagicJerk = kJerk;
 
+
+
     var motorOutputConfigs = talonFXConfigs.MotorOutput;
     if (kClockwisePositive)
       motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
@@ -80,7 +90,7 @@ public class Arm extends SubsystemBase {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var feedbackConfigs = talonFXConfigs.Feedback;
-    feedbackConfigs.SensorToMechanismRatio = kSensorToMechanismGearRatio;
+    feedbackConfigs.SensorToMechanismRatio = kSensorToMechanismGearRatio;//accounting for output with gear ratios
 
     var currentConfigs = talonFXConfigs.CurrentLimits;
     currentConfigs.StatorCurrentLimitEnable = true;
