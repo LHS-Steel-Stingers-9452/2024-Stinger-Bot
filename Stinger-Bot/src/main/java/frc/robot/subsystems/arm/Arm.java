@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase {
     followKraken.setControl(new Follower(leadID , true));//please work
 
     ArmCurrentState = PivotStates.DefaultState;
-    ArmCurrentState = PivotStates.DefaultState;
+    ArmRequestedState = PivotStates.DefaultState;
 
     // if we design the robot with a proper resting position in mind
     // this should be the only initilization necessary
