@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
@@ -130,11 +131,11 @@ public class RobotContainer {
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
     operatorController.povRight().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+      new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutySpeakerShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
   //Left Trigger: Manual Amp speed
     operatorController.povLeft().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
+      new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutyAmpShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
