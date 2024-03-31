@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.RobotConstants;
-import frc.robot.Util.Setpoints;
-import frc.robot.Util.TunableNumber;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -27,11 +25,14 @@ import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.robot.Util.TunableNumber;
+
+
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Launcher. */
-  private final TalonFX leftMotor = new TalonFX(LauncherConstants.leftMotorID);
-  private final TalonFX rightMotor = new TalonFX(LauncherConstants.rightMotorID);
+  private final TalonFX topLauncher = new TalonFX(LauncherConstants.leftMotorID);
+  private final TalonFX bottomLauncher = new TalonFX(LauncherConstants.rightMotorID);
 
   private static TunableNumber shooterKP = new TunableNumber("Shooter KP", 0.05);
   private static TunableNumber shooterKI = new TunableNumber("Shooter KI", 0);
@@ -50,8 +51,8 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage velocityVoltageR = new VelocityVoltage(0);
 
   public enum kShooterSide {
-    kLEFT,
-    kRIGHT
+    kTop,
+    kBottom
   };
 
   public Shooter() {
@@ -69,21 +70,21 @@ public class Shooter extends SubsystemBase {
 
     /* Apply configs */
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftMotor.getConfigurator().apply(motorConfig);
+    topLauncher.getConfigurator().apply(motorConfig);
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    rightMotor.getConfigurator().apply(motorConfig);
+    bottomLauncher.getConfigurator().apply(motorConfig);
 
     // optimize StatusSignal rates for the Talons
-    leftMotor.getVelocity().setUpdateFrequency(50);
-    leftMotor.optimizeBusUtilization();
-    rightMotor.getVelocity().setUpdateFrequency(50);
-    rightMotor.optimizeBusUtilization();  
+    topLauncher.getVelocity().setUpdateFrequency(50);
+    topLauncher.optimizeBusUtilization();
+    bottomLauncher.getVelocity().setUpdateFrequency(50);
+    bottomLauncher.optimizeBusUtilization();  
   }
 
   //for manual control
   public void setShooterSpeed(double speed){
-    leftMotor.set(speed);
-    rightMotor.set(speed);
+    topLauncher.set(speed);
+    topLauncher.set(speed);
   }
 
   /**
@@ -94,21 +95,21 @@ public class Shooter extends SubsystemBase {
     // Save Velocity setpoints
     leftShooterSetpointVal.set(targetVelocityL);
     rightShooterSetpointVal.set(targetVelocityR);
-    leftMotor.setControl(velocityVoltageL.withVelocity(targetVelocityL));
-    rightMotor.setControl(velocityVoltageR.withVelocity(targetVelocityR));
+    topLauncher.setControl(velocityVoltageL.withVelocity(targetVelocityL));
+    bottomLauncher.setControl(velocityVoltageR.withVelocity(targetVelocityR));
   }
 
   public void runShooter() {
     // Get Velocity setpoint from TunableNumber
-    leftMotor.setControl(velocityVoltageL.withVelocity(leftShooterSetpointVal.get()));
-    rightMotor.setControl(velocityVoltageR.withVelocity(rightShooterSetpointVal.get()));
+    topLauncher.setControl(velocityVoltageL.withVelocity(leftShooterSetpointVal.get()));
+    bottomLauncher.setControl(velocityVoltageR.withVelocity(rightShooterSetpointVal.get()));
   }
 
   public void stopShooter(){
     //leftMotor.setControl(new NeutralOut());
     //rightMotor.setControl(new NeutralOut());
-    leftMotor.setControl(new StaticBrake());
-    rightMotor.setControl(new StaticBrake());
+    topLauncher.setControl(new StaticBrake());
+    bottomLauncher.setControl(new StaticBrake());
   }
 
   /**
@@ -117,10 +118,10 @@ public class Shooter extends SubsystemBase {
   */
   public double getShooterVelocity(kShooterSide side) {
     switch(side) {
-    case kLEFT:
-      return leftMotor.getVelocity().getValueAsDouble();
-    case kRIGHT:
-      return rightMotor.getVelocity().getValueAsDouble();
+    case kTop:
+      return topLauncher.getVelocity().getValueAsDouble();
+    case kBottom:
+      return bottomLauncher.getVelocity().getValueAsDouble();
     default:
         return 0.0;
     }
@@ -130,8 +131,8 @@ public class Shooter extends SubsystemBase {
      * @return true if the error of the shooter is within the tolerance
      */
     public boolean areWheelsAtSpeed() {
-      double leftErr = Math.abs(leftShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kLEFT));
-      double rightErr = Math.abs(rightShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kRIGHT));
+      double leftErr = Math.abs(leftShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kTop));
+      double rightErr = Math.abs(rightShooterSetpointVal.get() - getShooterVelocity(kShooterSide.kBottom));
       return (leftErr + rightErr / 2.0) < LauncherConstants.shooterTolerence;
   }
 
@@ -143,8 +144,8 @@ public class Shooter extends SubsystemBase {
 
     if (true) {
       // Put actual velocities to smart dashboard
-      SmartDashboard.putNumber("Shooter Velocity L", getShooterVelocity(kShooterSide.kLEFT));
-      SmartDashboard.putNumber("Shooter Velocity R", getShooterVelocity(kShooterSide.kRIGHT));
+      SmartDashboard.putNumber("Shooter Velocity L", getShooterVelocity(kShooterSide.kTop));
+      SmartDashboard.putNumber("Shooter Velocity R", getShooterVelocity(kShooterSide.kBottom));
     }
   }
 
@@ -159,8 +160,8 @@ public class Shooter extends SubsystemBase {
     slot0.kD = shooterKD.get();
     slot0.kV = shooterKV.get();
 
-    leftMotor.getConfigurator().apply(slot0);
-    rightMotor.getConfigurator().apply(slot0);
+    topLauncher.getConfigurator().apply(slot0);
+    bottomLauncher.getConfigurator().apply(slot0);
   }
 
   /**
