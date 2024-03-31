@@ -136,11 +136,14 @@ public class Constants {
     }
 
     public static final class LauncherConstants{
-        public static final int leftMotorID = 17;
-        public static final int rightMotorID = 18;
+        public static final int topLaunchID = 17;
+        public static final int bottomLaunchID = 18;
 
-        //Duty cycle
-        public static final double intakeFromShooterSpeed = -.20;
+        public static final double shooterTolerence = 5;
+
+        //Duty cycle value [quick backup shots]
+        public static final double dutySpeakerShot = 0.50;
+        public static final double dutyAmpShot = 0.18;
     }
 
     public static final class ArmConstants{
