@@ -5,7 +5,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 public class Constants {
-    public static final class RobotConstants{}
+    public static final class RobotConstants{
+        public static final boolean isTuningMode = true;
+        public static final boolean isShooterTuningMode = true;
+    }
 
     public static final class ControllerConstants{
         public static final int driverControllerPort = 0;
