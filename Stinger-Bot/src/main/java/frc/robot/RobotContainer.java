@@ -18,6 +18,8 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.PivotStates;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -32,15 +34,13 @@ public class RobotContainer {
   private final SwerveBase swerveBase;
   private final Intake intakeSub;
   private final Transfer transferSub;
+  private final Arm armSub;
   private final Shooter shooterSub;
   
 
   private final Leds ledSub;
 
-  private TeleopSwerve teleopSwerve;
-
   private final SendableChooser<Command> autoChooser;
-
 
 
   public RobotContainer() {
@@ -51,6 +51,8 @@ public class RobotContainer {
     intakeSub = new Intake();
 
     transferSub = new Transfer();
+
+    armSub = new Arm(null);
 
     shooterSub = new Shooter();
 
@@ -108,23 +110,30 @@ public class RobotContainer {
       CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.eStop(intakeSub, transferSub));
 
     //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
-    operatorController.povLeft().onTrue(
+    operatorController.start().onTrue(
       CommandManager.eStop(intakeSub, transferSub));
 
   /**
   * Arm Related Bindings
   * */
-
+  //test for amp
+    operatorController.y()
+      .onTrue(
+        new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub));
+    
+    operatorController.a()
+      .onTrue(
+        new InstantCommand(()-> armSub.requestState(PivotStates.DefaultState), armSub));
 
   /**
   * Shoot Related Bindings
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
-    operatorController.rightTrigger(.3).whileTrue(
+    operatorController.povRight().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(.50))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
   //Left Trigger: Manual Amp speed
-    operatorController.leftTrigger(.3).whileTrue(
+    operatorController.povLeft().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(.18))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
   //Right Bumber: Feed Note to shooter [run transfer]
