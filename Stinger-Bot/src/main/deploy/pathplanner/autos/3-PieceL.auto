@@ -34,6 +34,24 @@
           "data": {
             "name": "midArmShot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "mid-3C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3C-Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
+          }
         }
       ]
     }
