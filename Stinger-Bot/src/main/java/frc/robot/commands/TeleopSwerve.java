@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -86,7 +87,7 @@ public class TeleopSwerve extends Command {
             MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     double rotationVal =
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
     boolean isChassisSlow = 
             slowChassisSup.getAsBoolean();
