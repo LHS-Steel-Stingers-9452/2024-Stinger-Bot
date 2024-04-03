@@ -76,19 +76,19 @@ public class Shooter extends SubsystemBase {
     bottomLauncher.getVelocity().setUpdateFrequency(50);
     bottomLauncher.optimizeBusUtilization();  
 
-    //Bottom launcher to follow top 
-    bottomLauncher.setControl(new Follower(topLaunchID, false));
+    
 
     shooterVeloc = Shuffleboard.getTab("Shooter").add("Shooter Velocity[RPS]", 0).getEntry();
     canShoot = Shuffleboard.getTab("Shooter").add("Shooter at speed?", false).getEntry();
   }
 
   /**
-   * 
+   * Backup shot using duty cycle 
    * @param speed
    */
   public void setShooterSpeed(double speed){
     topLauncher.set(speed);
+    bottomLauncher.set(speed);
   }
 
   /**
@@ -101,17 +101,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter() {
-    // Get Velocity setpoint from TunableNumber
+    // Get the velocity setpoint from TunableNumber
     topLauncher.setControl(velocityVoltageRequest.withVelocity(shooterSetPointVal.get()));
   }
 
   public void stopShooter(){
     topLauncher.setControl(new StaticBrake());
+    bottomLauncher.setControl(new StaticBrake());
   }
 
   /**
-  * @param int side - the side of the shooter to query (0 = left, 1 = right)
-  * @return the velocity of the specified shooter side in RPS
+  *
+  * @return the velocity of the shooter in RPS
   */
   public double getShooterVelocity() {
     return topLauncher.getVelocity().getValueAsDouble();
@@ -129,6 +130,8 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    bottomLauncher.setControl(new Follower(topLaunchID, false));
 
     canShoot.setBoolean(areWheelsAtSpeed());
     shooterVeloc.setDouble(getShooterVelocity());
