@@ -10,6 +10,8 @@ import frc.robot.Constants.TransferConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
 import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.PivotStates;
 
 public class autoCommands {
     public static Command intakeNote(Intake intake, Transfer transfer){
@@ -21,12 +23,25 @@ public class autoCommands {
 
     public static Command shootNote(Shooter shooter, Transfer transfer){
         Command command = new SequentialCommandGroup(
-            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(.65)),
+            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(.5)),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed)).andThen(Commands.waitSeconds(.5)),
             new ParallelCommandGroup(new InstantCommand(()-> shooter.stopShooter())), new InstantCommand(() -> transfer.stopTransfer()));
         return command;
 
     }
             
+    public static Command midArmShot(Arm arm, Shooter shooter, Transfer transfer){
+        Command command = new SequentialCommandGroup(
+            new InstantCommand(()-> arm.requestState(PivotStates.MidState)).andThen(Commands.waitSeconds(.8)),
+            new InstantCommand(()-> shooter.setShooterSpeed(.60)).andThen(Commands.waitSeconds(.5)),
+            new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed)).andThen(Commands.waitSeconds(.5)),
+            new ParallelCommandGroup(
+                new InstantCommand(()-> shooter.stopShooter())), 
+                new InstantCommand(() -> transfer.stopTransfer()),
+                new InstantCommand(()-> arm.requestState(PivotStates.DefaultState)));
+
+        return command;
+
+    }
     
 }
