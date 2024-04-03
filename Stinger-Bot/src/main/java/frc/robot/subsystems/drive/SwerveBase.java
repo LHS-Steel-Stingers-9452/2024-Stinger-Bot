@@ -50,8 +50,12 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(pigeonID);
-    //zeroGyro();
     pidgeotto.setYaw(0);
+    /* 
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      pidgeotto.setYaw(180);
+    }
+    */
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Mod0.constants),
@@ -82,9 +86,9 @@ public class SwerveBase extends SubsystemBase {
             this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(0.0100, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(0.0400, 0.0, 0.0), // Translation PID constants
                     //[Tune Translation PID]
-                    new PIDConstants(0.0045, 0.0, 0.0), // Rotation PID constants
+                    new PIDConstants(0.005, 0.0, 0.0), // Rotation PID constants
                     maxSpeed, // Max module speed, in m/s
                     0.372680629034, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -131,9 +135,13 @@ public class SwerveBase extends SubsystemBase {
       new Translation2d(
         autoChassisSpeeds.vxMetersPerSecond, 
         autoChassisSpeeds.vyMetersPerSecond), 
-      autoChassisSpeeds.omegaRadiansPerSecond, 
-      false);//try false, setting true could've been the reason for the drive being reverse on red
-    //setModuleStates(autoModuleStates);
+        autoChassisSpeeds.omegaRadiansPerSecond, 
+        /**
+         * Should remain false since it goes directly to drive()
+         * 'true' claims field relative and blue origin causing inverse movement as seen in SDR on red alliance
+         * It should now behave as intended when on red alliance
+         */
+        false);
 
   }
 
@@ -148,7 +156,10 @@ public class SwerveBase extends SubsystemBase {
   */
   
 
-  //gets module states
+  /**
+   * Gets module states
+   * @return module states
+   */
   public SwerveModuleState[] getStates(){
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -223,6 +234,7 @@ public void setHeading(Rotation2d heading){
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //pay attendtion to this when running autos
     swerveOdometry.update(getGyroYaw(), getPositions());
     field.setRobotPose(getPose());
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
@@ -245,9 +257,7 @@ public void setHeading(Rotation2d heading){
   /*
   display gyro to test zero heading
   displays gyro yaw in degrees
-  startup value should be 0 because of zeroGyro upon deployment
   CCW+
-  0 is facing towards directly towards opponent's alliance station
   */
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
 
