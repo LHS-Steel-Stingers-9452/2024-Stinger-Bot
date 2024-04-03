@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.RobotConstants;
@@ -70,28 +71,26 @@ public class TeleopSwerve extends Command {
 
     */
 
-    var isRedAlliance = () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            }
+    boolean isRedAlliance = 
+            DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    int accountForRed = 
+            (isRedAlliance)? -1:1;
+
+    SmartDashboard.putBoolean("isRedAlliance", isRedAlliance);
+
 
     double translationVal =
-           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange);
+           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     double strafeVal =
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange);
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     double rotationVal =
-            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     boolean isChassisSlow = 
             slowChassisSup.getAsBoolean();
+
 
     /* 
     SmartDashboard.putNumber("vX(Teleop)", translationVal);
@@ -99,7 +98,7 @@ public class TeleopSwerve extends Command {
     SmartDashboard.putNumber("omega(Teleop)", rotationVal);
     */
 
-    //If left bumper is held slow down chassis to a quarter of 4.5 m/s
+    //If left bumper is held slow down translation to a quarter of 4.6 m/s
     if (isChassisSlow) {
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
