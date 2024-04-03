@@ -67,6 +67,7 @@ public class RobotContainer {
     // Register Named Commands
     NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
     NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
+    NamedCommands.registerCommand("midArmShot", autoCommands.midArmShot(armSub, shooterSub, transferSub));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -121,6 +122,10 @@ public class RobotContainer {
     operatorController.y()
       .onTrue(
         new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub));
+
+    operatorController.b()
+      .onTrue(
+        new InstantCommand(()-> armSub.requestState(PivotStates.MidState), armSub));
     
     operatorController.a()
       .onTrue(
@@ -133,13 +138,16 @@ public class RobotContainer {
     operatorController.povRight().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutySpeakerShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
+    operatorController.rightTrigger().whileTrue(
+      new InstantCommand(() -> shooterSub.setShooterSpeed(0.60))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+
   //Left Trigger: Manual Amp speed
     operatorController.povLeft().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutyAmpShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
+      new InstantCommand(() -> shooterSub.setShooterSpeed(0.20))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
-      CommandManager.feedNote(transferSub));
+      CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
   /**
   * Climb Related Bindings
   * */
