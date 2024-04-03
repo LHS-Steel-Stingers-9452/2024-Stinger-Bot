@@ -11,6 +11,8 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.Swerve;
@@ -62,12 +64,18 @@ public class TeleopSwerve extends Command {
             rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange));
 
     */
+    boolean isRedAlliance = 
+            DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    int accountForRed = 
+            (isRedAlliance)? -1:1;
+
+    SmartDashboard.putBoolean("isRedAlliance", isRedAlliance);
 
     double translationVal =
-           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange);
+           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     double strafeVal =
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange);
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
 
     double rotationVal =
             MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
