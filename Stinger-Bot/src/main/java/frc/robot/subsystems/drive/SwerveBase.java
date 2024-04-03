@@ -52,8 +52,8 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(pigeonID);
-    //zeroGyro();
-    pidgeotto.setYaw(0);
+    //pidgeotto.setYaw(0);
+    pidgeotto.reset();
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Mod0.constants),
@@ -129,9 +129,16 @@ public class SwerveBase extends SubsystemBase {
 
   public void autoDrive(ChassisSpeeds autoChassisSpeeds){
       drive(
-      new Translation2d(autoChassisSpeeds.vxMetersPerSecond, autoChassisSpeeds.vyMetersPerSecond), autoChassisSpeeds.omegaRadiansPerSecond, true);
-    //setModuleStates(autoModuleStates);
-
+      new Translation2d(
+        autoChassisSpeeds.vxMetersPerSecond, 
+        autoChassisSpeeds.vyMetersPerSecond), 
+        autoChassisSpeeds.omegaRadiansPerSecond, 
+        /**
+         * Should remain false sinc it goes directly to drive()
+         * 'true' claims field relative and blue origin causing inverse movement as seen in SDR on red alliance
+         * It should now behave as intended when on red alliance
+         */
+        false);
   }
 
   /* Used by SwerveControllerCommand in Auto */
