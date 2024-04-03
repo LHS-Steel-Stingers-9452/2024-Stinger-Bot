@@ -150,13 +150,11 @@ public class Constants {
         
         public static final int leadID = 19;
         public static final int followID = 20;
-        public static final double kS = 0;//.91
-        public static final double kG = 0;
-        public static final double kV = 0;//find number later
-        public static final double kA = 0;
-        public static final double kP = 0;//40
+        public static final double kS = .91;
+        public static final double kV = 1.35;
+        public static final double kP = 44;
         public static final double kI = 0;
-        public static final double kD = 0;//.01
+        public static final double kD = 0;
         public static final double kCruiseVelocity = Math.PI * 4;//tune
         public static final double kAcceleration = Math.PI;//tune
         public static final double kJerk = Math.PI * 80; //tune
