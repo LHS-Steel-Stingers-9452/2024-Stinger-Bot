@@ -29,6 +29,7 @@ public class Arm extends SubsystemBase {
     DefaultState,
     AmpState,
     ShooterState,
+    MidState,
     CustomState
     
   }
@@ -100,8 +101,6 @@ public class Arm extends SubsystemBase {
     leadKraken.getConfigurator().apply(talonFXConfigs);
     followKraken.getConfigurator().apply(talonFXConfigs);
 
-    followKraken.setControl(new Follower(leadID , true));//please work
-
     ArmCurrentState = PivotStates.DefaultState;
     ArmRequestedState = PivotStates.DefaultState;
 
@@ -122,10 +121,13 @@ public class Arm extends SubsystemBase {
         desiredPosition = 0;
         break;
       case AmpState:
-        desiredPosition = .00;//tune
+        desiredPosition = 0.22;//tune
         break;
       case ShooterState:
         desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .25);//tune
+        break;
+      case MidState:
+        desiredPosition = 0.044;
         break;
     }
  
@@ -139,6 +141,7 @@ public class Arm extends SubsystemBase {
 
   public void runControlLoop() {
     leadKraken.setControl(request.withPosition(desiredPosition));
+    followKraken.setControl(new Follower(leadID , true));
   }
 
   private double getPosition() {
