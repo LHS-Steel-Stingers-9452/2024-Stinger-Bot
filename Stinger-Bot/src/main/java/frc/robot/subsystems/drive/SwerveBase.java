@@ -14,6 +14,8 @@ import frc.robot.Constants.Swerve.Mod3;
 
 import static frc.robot.Constants.Swerve.*;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -52,8 +54,12 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveBase() {
     pidgeotto = new Pigeon2(pigeonID);
-    //pidgeotto.setYaw(0);
-    pidgeotto.reset();
+    pidgeotto.setYaw(0);
+    /* 
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      pidgeotto.setYaw(180);
+    }
+    */
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Mod0.constants),
