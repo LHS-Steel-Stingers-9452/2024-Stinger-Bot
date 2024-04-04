@@ -139,7 +139,7 @@ public class Constants {
         public static final int topLaunchID = 17;
         public static final int bottomLaunchID = 18;
 
-        public static final double shooterTolerence = 5;
+        public static final double shooterTolerence = 10;
 
         //Duty cycle value [quick backup shots]
         public static final double dutySpeakerShot = 0.50;
