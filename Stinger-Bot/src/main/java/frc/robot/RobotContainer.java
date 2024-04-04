@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
@@ -151,6 +152,16 @@ public class RobotContainer {
   /**
   * Climb Related Bindings
   * */
+
+
+  /**
+   * Tunning stuff
+   */
+  if (RobotConstants.isShooterTuningMode) {
+      SmartDashboard.putData("Update Shooter Gains", shooterSub.updateShooterGainsCommand());
+      SmartDashboard.putData("Run Shooter", shooterSub.runShooterCommand());
+      SmartDashboard.putData("Stop Shooter", shooterSub.stopShooterCommand());
+    }
   }
 
 
