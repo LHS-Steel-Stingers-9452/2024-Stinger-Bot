@@ -37,7 +37,8 @@ public class Arm extends SubsystemBase {
   public static PivotStates ArmCurrentState;
   public static PivotStates ArmRequestedState;
 
-  GenericEntry armPosition;
+  GenericEntry armError;
+  GenericEntry armPos;
 
   // You may need more than one motor
   private final TalonFX leadKraken = new TalonFX(leadID);
@@ -55,22 +56,19 @@ public class Arm extends SubsystemBase {
     this.angle = angle;
     // Misc setup goes here
 
-    armPosition = Shuffleboard.getTab("Arm").add("ArmPosition[Rotations]", 0).getEntry();
+    armError = Shuffleboard.getTab("Arm").add("Arm Errpr[Rotations]", 0).getEntry();
+    armPos = Shuffleboard.getTab("Arm").add("Arm Pos[Rotations]", 0).getEntry();
 
     //based on phoenix example
     var talonFXConfigs = new TalonFXConfiguration();
     // These will be derived experimentally but in case you are wondering
     // How these terms are defined from the TalonFX docs
     // kS adds n volts to overcome static friction
-    // kG
-    // kA
     // kP outputs 12 volts when the positional error is 12/n rotations
     // kI adds n volts per second when the positional error is 1 rotation
     // kD outputs n volts when the velocity error is 1 rotation per second
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kS = kS;
-    //slot0Configs.kG = kG;
-    //slot0Configs.kA = kA;
     slot0Configs.kV = kV;
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
@@ -92,7 +90,7 @@ public class Arm extends SubsystemBase {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var feedbackConfigs = talonFXConfigs.Feedback;
-    feedbackConfigs.SensorToMechanismRatio = kSensorToMechanismGearRatio;//accounting for output with gear ratios
+    feedbackConfigs.SensorToMechanismRatio = kSensorToMechanismGearRatio;//accounting for gear ratios
 
     var currentConfigs = talonFXConfigs.CurrentLimits;
     currentConfigs.StatorCurrentLimitEnable = true;
@@ -114,20 +112,21 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
 
-    armPosition.setDouble(getError());
+    armError.setDouble(getError());
+    armPos.setDouble(getPosition());
 
     switch (ArmRequestedState) {
       case DefaultState:
         desiredPosition = 0;
         break;
       case AmpState:
-        desiredPosition = 0.22;//tune
+        desiredPosition = 0.22;
         break;
       case ShooterState:
-        desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .25);//tune
+        desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .22);
         break;
       case MidState:
-        desiredPosition = 0.044;
+        desiredPosition = 0.044;// actual mid position should be around 0.13185
         break;
     }
  
