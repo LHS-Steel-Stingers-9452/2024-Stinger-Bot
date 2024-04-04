@@ -170,6 +170,10 @@ public class Shooter extends SubsystemBase {
       return new RunCommand(()->this.runShooter(), this);
   }
 
+  public Command stopShooterCommand() {
+      return new RunCommand(()->this.stopShooter(), this);
+  }
+
 
   public Command updateShooterGainsCommand() {
       return new InstantCommand(()->this.updateGains(), this);
