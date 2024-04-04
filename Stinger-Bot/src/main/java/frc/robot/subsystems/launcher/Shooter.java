@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
   private static TunableNumber shooterKV = new TunableNumber("Shooter KV", 0.113);
 
   //Setpoint in RPS
-  private static TunableNumber shooterSetPointVal = new TunableNumber("L shooter setpoint", 0);
+  private static TunableNumber shooterSetPointVal = new TunableNumber("Shooter setpoint", 0);
 
 
   private TalonFXConfiguration motorConfig = new TalonFXConfiguration();
@@ -51,11 +51,20 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
 
   GenericEntry shooterVeloc;
+  GenericEntry shooterVelocRPM;
   GenericEntry canShoot;
+
+
+  public enum shooterSetpoints{
+    BaseShot,
+    AmpShot,
+    PassShot,
+    CustomShot
+  }
 
   public Shooter() {
 
-    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motorConfig.Voltage.PeakForwardVoltage = 12.0;
     motorConfig.Voltage.PeakReverseVoltage = 0.0;
 
@@ -80,6 +89,7 @@ public class Shooter extends SubsystemBase {
 
     shooterVeloc = Shuffleboard.getTab("Shooter").add("Shooter Velocity[RPS]", 0).getEntry();
     canShoot = Shuffleboard.getTab("Shooter").add("Shooter at speed?", false).getEntry();
+    shooterVelocRPM = Shuffleboard.getTab("Shooter").add("Shooter Veloc [RPM]",0).getEntry();
   }
 
   /**
@@ -118,6 +128,10 @@ public class Shooter extends SubsystemBase {
     return topLauncher.getVelocity().getValueAsDouble();
   }
 
+  public double getShooterVelocityRPM(){
+    return getShooterVelocity() * 60;
+  }
+
     /**
      * @return true if the error of the shooter is within the tolerance
      */
@@ -135,6 +149,7 @@ public class Shooter extends SubsystemBase {
 
     canShoot.setBoolean(areWheelsAtSpeed());
     shooterVeloc.setDouble(getShooterVelocity());
+    shooterVeloc.setDouble(getShooterVelocityRPM());
   }
 
   /**
