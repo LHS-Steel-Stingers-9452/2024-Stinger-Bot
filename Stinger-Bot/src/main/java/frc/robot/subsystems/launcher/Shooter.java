@@ -78,6 +78,7 @@ public class Shooter extends SubsystemBase {
     /* Apply configs */
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     topLauncher.getConfigurator().apply(motorConfig);
+    bottomLauncher.setControl(new Follower(topLaunchID, false));
 
     // optimize StatusSignal rates for the Talons
     topLauncher.getVelocity().setUpdateFrequency(50);
@@ -144,9 +145,6 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    bottomLauncher.setControl(new Follower(topLaunchID, false));
-
     canShoot.setBoolean(areWheelsAtSpeed());
     shooterVeloc.setDouble(getShooterVelocity());
     shooterVeloc.setDouble(getShooterVelocityRPM());
