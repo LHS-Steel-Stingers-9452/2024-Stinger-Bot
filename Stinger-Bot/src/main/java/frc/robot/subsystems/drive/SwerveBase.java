@@ -169,7 +169,7 @@ public class SwerveBase extends SubsystemBase {
     return states;
   }
 
-  public SwerveModulePosition[] getModulePositionSimplified(){
+  public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] position = new SwerveModulePosition[4];
 
     for (SwerveModule mod : swerveModules){
@@ -177,18 +177,7 @@ public class SwerveBase extends SubsystemBase {
     }
 
     return position;
-  }
-
-  public SwerveModulePosition[] getPositions(){
-    SwerveModulePosition[] positions = new SwerveModulePosition[]{
-      new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getPosition().angle),
-      new SwerveModulePosition(swerveModules[1].getPosition().distanceMeters, swerveModules[1].getPosition().angle),
-      new SwerveModulePosition(swerveModules[2].getPosition().distanceMeters, swerveModules[2].getPosition().angle),
-      new SwerveModulePosition(swerveModules[3].getPosition().distanceMeters, swerveModules[3].getPosition().angle)
-    };
-    return positions;
-    }
-    
+  }    
 
   public Pose2d getPose(){
     return swerveOdometry.getPoseMeters();
