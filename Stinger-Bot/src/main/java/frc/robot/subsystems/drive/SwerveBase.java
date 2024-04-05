@@ -254,7 +254,7 @@ public void setHeading(Rotation2d heading){
 
   //need to make sure turning counter clockwise, angle on angle motor, CCW+
   //encoders reading positive value, logg data 
-  /*
+  /*\[]
   display gyro to test zero heading
   displays gyro yaw in degrees
   CCW+
