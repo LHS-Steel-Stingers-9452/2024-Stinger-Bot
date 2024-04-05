@@ -171,10 +171,10 @@ public class SwerveBase extends SubsystemBase {
 
   public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[]{
-      new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[1].getPosition().distanceMeters, swerveModules[1].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[2].getPosition().distanceMeters, swerveModules[2].getCanCoderValue()),
-      new SwerveModulePosition(swerveModules[3].getPosition().distanceMeters, swerveModules[3].getCanCoderValue())
+      new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getPosition().angle),
+      new SwerveModulePosition(swerveModules[1].getPosition().distanceMeters, swerveModules[1].getPosition().angle),
+      new SwerveModulePosition(swerveModules[2].getPosition().distanceMeters, swerveModules[2].getPosition().angle),
+      new SwerveModulePosition(swerveModules[3].getPosition().distanceMeters, swerveModules[3].getPosition().angle)
     };
     return positions;
     }
