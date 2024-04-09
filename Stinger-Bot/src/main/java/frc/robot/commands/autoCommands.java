@@ -23,7 +23,7 @@ public class autoCommands {
 
     public static Command shootNote(Shooter shooter, Transfer transfer){
         Command command = new SequentialCommandGroup(
-            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(.5)),
+            new InstantCommand(()-> shooter.setShooterSpeed(.50)).andThen(Commands.waitSeconds(.4)),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed)).andThen(Commands.waitSeconds(.5)),
             new ParallelCommandGroup(new InstantCommand(()-> shooter.stopShooter())), new InstantCommand(() -> transfer.stopTransfer()));
         return command;
@@ -32,8 +32,8 @@ public class autoCommands {
             
     public static Command midArmShot(Arm arm, Shooter shooter, Transfer transfer){
         Command command = new SequentialCommandGroup(
-            new InstantCommand(()-> arm.requestState(PivotStates.MidState)).andThen(Commands.waitSeconds(.8)),
-            new InstantCommand(()-> shooter.setShooterSpeed(.60)).andThen(Commands.waitSeconds(.5)),
+            new InstantCommand(()-> arm.requestState(PivotStates.MidState)).andThen(Commands.waitSeconds(.5)),
+            new InstantCommand(()-> shooter.setShooterSpeed(.60)).andThen(Commands.waitSeconds(.4)),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed)).andThen(Commands.waitSeconds(.5)),
             new ParallelCommandGroup(
                 new InstantCommand(()-> shooter.stopShooter())), 
