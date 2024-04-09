@@ -94,7 +94,7 @@ public class Arm extends SubsystemBase {
 
     var currentConfigs = talonFXConfigs.CurrentLimits;
     currentConfigs.StatorCurrentLimitEnable = true;
-    currentConfigs .StatorCurrentLimit = kCurrentLimit;
+    currentConfigs .StatorCurrentLimit = 70;
 
     leadKraken.getConfigurator().apply(talonFXConfigs);
     followKraken.getConfigurator().apply(talonFXConfigs);
