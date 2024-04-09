@@ -22,6 +22,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.PivotStates;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -38,6 +39,7 @@ public class RobotContainer {
   private final Transfer transferSub;
   private final Arm armSub;
   private final Shooter shooterSub;
+  private final Climbers climberSub;
   
 
   private final Leds ledSub;
@@ -59,6 +61,8 @@ public class RobotContainer {
     shooterSub = new Shooter();
 
     ledSub = new Leds();
+
+    climberSub = new Climbers();
 
     //Try moving where bindings are configured
     //Configures Control Bindings
@@ -142,9 +146,12 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(0.60))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
+    //Trap shot
+    operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(0.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+
   //Left Trigger: Manual Amp speed
     operatorController.povLeft().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(0.20))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
+      new InstantCommand(() -> shooterSub.setShooterSpeed(0.25))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
@@ -152,6 +159,10 @@ public class RobotContainer {
   /**
   * Climb Related Bindings
   * */
+  //up climbers
+  driverController.rightTrigger().whileTrue(new InstantCommand(()-> climberSub.moveup())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+  //downClimbers
+  driverController.leftTrigger().whileTrue(new InstantCommand(() -> climberSub.moveDown())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
 
 
   /**
