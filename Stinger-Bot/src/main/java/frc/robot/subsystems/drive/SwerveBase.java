@@ -131,6 +131,7 @@ public class SwerveBase extends SubsystemBase {
   }
 
   public void autoDrive(ChassisSpeeds autoChassisSpeeds){
+    
     drive(
       new Translation2d(
         autoChassisSpeeds.vxMetersPerSecond, 
@@ -168,7 +169,7 @@ public class SwerveBase extends SubsystemBase {
     }
     return states;
   }
-
+/* 
   public SwerveModulePosition[] getPositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[]{
       new SwerveModulePosition(swerveModules[0].getPosition().distanceMeters, swerveModules[0].getCanCoderValue()),
@@ -178,6 +179,17 @@ public class SwerveBase extends SubsystemBase {
     };
     return positions;
     }
+*/
+
+public SwerveModulePosition[] getPositions(){
+  SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
+  for (SwerveModule mod: swerveModules){
+    positions[mod.moduleNumber] = mod.getPosition();
+  }
+
+  return positions;
+}
     
 
   public Pose2d getPose(){
