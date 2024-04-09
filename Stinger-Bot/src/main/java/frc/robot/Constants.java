@@ -120,7 +120,7 @@ public class Constants {
 
         public static final int voltageComp = 12;
         
-        public static final double intakeSpeed = 0.85;
+        public static final double intakeSpeed = 1;
         public static final double intakeSpitSpeed = -0.7;
     }
 
