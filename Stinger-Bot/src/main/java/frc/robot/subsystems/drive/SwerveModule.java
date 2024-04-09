@@ -144,7 +144,7 @@ public class SwerveModule {
      * Resets integrated ecnoders to absolute position
      */
     public void resetToAbsolute(){
-        integratedAngleEncoder.setPosition(getOffsetCanCoderValue().getRotations());//integrated ecnoder is reset and given canCoder value; absolute position
+        integratedAngleEncoder.setPosition(getOffsetCanCoderValue().getDegrees());//integrated ecnoder is reset and given canCoder value; absolute position
     }
 
     private Rotation2d getAngle(){

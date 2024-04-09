@@ -36,6 +36,9 @@ public class Climbers extends SubsystemBase {
     leftClimber.setInverted(true);
     rightCLimber.setInverted(true);
 
+    leftEncoder.setPositionConversionFactor(1/60);
+    rightEncoder.setPositionConversionFactor(1/60);
+
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
 
