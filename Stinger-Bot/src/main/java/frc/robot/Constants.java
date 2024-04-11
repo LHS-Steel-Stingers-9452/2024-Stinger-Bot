@@ -153,7 +153,7 @@ public class Constants {
         public static final double kS = .91;
         public static final double kV = 1.35;
         public static final double kP = 38;
-        public static final double kI = 5;//10 is origin
+        public static final double kI = 0;//10 is origin
         public static final double kD = 12;
         public static final double kCruiseVelocity = Math.PI * 4;
         public static final double kAcceleration = Math.PI*1.2;
@@ -161,7 +161,7 @@ public class Constants {
         public static final boolean kClockwisePositive = false;//Lead talon is on the left [With Convention]
         public static final double kErrorTolerance = .05;
         public static final double kSensorToMechanismGearRatio = 92.85;//Actual: 92.8571428571
-        public static final int kCurrentLimit = 40;
+        public static final int kCurrentLimit = 70;
     }
 
     public static final class ClimberConstants{}
