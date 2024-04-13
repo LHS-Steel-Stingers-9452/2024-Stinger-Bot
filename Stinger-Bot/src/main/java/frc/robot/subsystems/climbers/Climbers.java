@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.climbers;
 
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
@@ -13,7 +11,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Util.Setpoints;
 
 public class Climbers extends SubsystemBase {
   /** Creates a new Climbers. */
@@ -34,28 +31,25 @@ public class Climbers extends SubsystemBase {
     rightEncoder = rightCLimber.getEncoder();   
     
     leftClimber.setInverted(true);
-    rightCLimber.setInverted(true);
+    rightCLimber.setInverted(false);
 
-    leftEncoder.setPositionConversionFactor(1/60);
-    rightEncoder.setPositionConversionFactor(1/60);
+    leftEncoder.setPositionConversionFactor((1/60) * 360);
+    rightEncoder.setPositionConversionFactor((1/60) * 360);
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
 
-    leftClimber.setSoftLimit(SoftLimitDirection.kReverse, 0);
-    rightCLimber.setSoftLimit(SoftLimitDirection.kReverse, 0);
-
-    //leftClimber.setSoftLimit(SoftLimitDirection.kForward, 0);
-    //rightCLimber.setSoftLimit(SoftLimitDirection.kForward, 0);
-
-    
+    //leftClimber.setSmartCurrentLimit(15);
+    //rightCLimber.setSmartCurrentLimit(15);
+    leftClimber.setSmartCurrentLimit(60, 15);
+    rightCLimber.setSmartCurrentLimit(60, 15);  
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("leftClimber Pos[Rot]", leftEncoder.getPosition());
-    SmartDashboard.putNumber("rightClimber Pos[Rot]", rightEncoder.getPosition());
+    SmartDashboard.putNumber("leftClimber output current[amps]", leftClimber.getOutputCurrent());
+    SmartDashboard.putNumber("rightClimber output current[amps]", rightCLimber.getOutputCurrent());
   }
 
   public void moveup(){
@@ -64,8 +58,8 @@ public class Climbers extends SubsystemBase {
   }
 
   public void moveDown(){
-    leftClimber.set(-0.85);
-    rightCLimber.set(-0.85);
+    leftClimber.set(-1);
+    rightCLimber.set(-1);
   }
 
   public void stopClimber(){
