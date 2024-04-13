@@ -52,30 +52,12 @@ public class TeleopSwerve extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //apply filters to control inputs
-    /* 
-    double translationVal =
-           translationFilter.calculate(MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange));
-
-    double strafeVal =
-            strafeFilter.calculate(MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange));
-
-    double rotationVal =
-            rotationFilter.calculate(MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange));
-
-    */
-    boolean isRedAlliance = 
-            DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-    int accountForRed = 
-            (isRedAlliance)? -1:1;
-
-    SmartDashboard.putBoolean("isRedAlliance", isRedAlliance);
 
     double translationVal =
-           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
+           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
     double strafeVal =
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange)*accountForRed;
+            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange);
 
     double rotationVal =
             MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
@@ -94,15 +76,15 @@ public class TeleopSwerve extends Command {
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
       ((rotationVal)*Swerve.maxAngleVelocity),
-      (!robotCentricSup.getAsBoolean())
-      );
+      (!robotCentricSup.getAsBoolean()),
+      (Swerve.openLoopDrive));
     } else {
       //If left bumper is not held chassis moves at regular
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,//slow down rotation as well at drivers request
-      (!robotCentricSup.getAsBoolean())
-      );
+      (!robotCentricSup.getAsBoolean()),
+      (Swerve.openLoopDrive));
     }
 
   }

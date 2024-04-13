@@ -112,7 +112,7 @@ public class SwerveBase extends SubsystemBase {
   StructArrayPublisher<SwerveModuleState> swerveDisplay = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative){
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative, Boolean isOpenLoop){
 
     //Converts joystick inputs to either field relative or chassis speeds using kinematics
     SwerveModuleState [] swerveModuleStates = 
@@ -126,7 +126,7 @@ public class SwerveBase extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
 
     for (SwerveModule module : swerveModules){
-      module.setDesiredState(swerveModuleStates[module.moduleNumber]);
+      module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
     }
   }
 
@@ -142,7 +142,8 @@ public class SwerveBase extends SubsystemBase {
          * 'true' claims field relative and blue origin causing inverse movement as seen in SDR on red alliance
          * It should now behave as intended when on red alliance
          */
-        false);
+        false,
+        true);// always true in order to run openloop
 
   }
 

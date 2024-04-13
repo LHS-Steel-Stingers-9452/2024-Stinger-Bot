@@ -172,7 +172,7 @@ public class SwerveModule {
         );
     }
 
-    public void setDesiredState(SwerveModuleState desiredModuleState){
+    public void setDesiredState(SwerveModuleState desiredModuleState, Boolean isOpenLoop){
         /* 
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Speed Setpoint: ", desiredState.speedMetersPerSecond);
         SmartDashboard.putNumber("Optimized " + moduleNumber + " Angle Setpoint(degrees): ", desiredState.angle.getDegrees());
@@ -180,14 +180,17 @@ public class SwerveModule {
         desiredModuleState = CustomModuleState.optimize(desiredModuleState, getState().angle);
 
         setAngle(desiredModuleState);
-        setSpeed(desiredModuleState);
+        setSpeed(desiredModuleState, isOpenLoop);
     }
 
-    private void setSpeed(SwerveModuleState desiredModuleState){
-        //only run closed loop
-        
-        double velocity = desiredModuleState.speedMetersPerSecond;
-        drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
+    private void setSpeed(SwerveModuleState desiredModuleState, Boolean isOpenLoop){
+        if (isOpenLoop){
+            double percentOutput = desiredModuleState.speedMetersPerSecond / Swerve.maxSpeed;
+            driveMotor.set(percentOutput);
+        } else{
+            double velocity = desiredModuleState.speedMetersPerSecond;
+            drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
+        }
     }
 
     private void setAngle(SwerveModuleState desiredState){

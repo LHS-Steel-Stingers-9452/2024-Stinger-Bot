@@ -62,8 +62,15 @@ public class Constants {
         public static final double driveKV = 2.44;//might need tune
         public static final double driveKA = 0.27;//might need tune
 
+        public static final Boolean openLoopDrive = true;
 
         //Drive Motor PID Values
+        /*
+         * All values up until last day of closed loop drive remained zero  
+         * last used closed loop drive on 4/12/2024
+         * Now using open loop don't forget to map your joystick deadband
+         * So that new deadband is now zero
+         */
         public static final double driveP = 0.00;
         public static final double driveI = 0.00;
         public static final double driveD = 0.00;
