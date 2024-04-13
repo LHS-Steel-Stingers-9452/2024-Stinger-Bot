@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 // Imports go here
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 import static frc.robot.Constants.ArmConstants.kCurrentLimit;
 import static frc.robot.Constants.ArmConstants.kErrorTolerance;
@@ -95,7 +96,7 @@ public class Arm extends SubsystemBase {
 
     var currentConfigs = talonFXConfigs.CurrentLimits;
     currentConfigs.StatorCurrentLimitEnable = true;
-    currentConfigs .StatorCurrentLimit = 70;
+    currentConfigs .StatorCurrentLimit = kCurrentLimit;
 
     leadKraken.getConfigurator().apply(talonFXConfigs);
     followKraken.getConfigurator().apply(talonFXConfigs);
