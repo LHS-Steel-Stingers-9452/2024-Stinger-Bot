@@ -260,8 +260,8 @@ public void setHeading(Rotation2d heading){
 
       //SmartDashboard.putNumber(
         //  "Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-      //SmartDashboard.putNumber(
-        //  "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
+      SmartDashboard.putNumber(
+          "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
 
   //need to make sure turning counter clockwise, angle on angle motor, CCW+
