@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.RobotConstants;
@@ -96,6 +97,8 @@ public class RobotContainer {
   //Y Button: Zero Gyro
     driverController.y().onTrue(CommandManager.zeroGyro(swerveBase));
 
+    driverController.start().onTrue(CommandManager.redReset(swerveBase, 180));
+
   }
 
   private void configureOperatorBindings(){
@@ -110,28 +113,37 @@ public class RobotContainer {
 
     //Dpad up: manually intake
     operatorController.povUp().whileTrue(
-      CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.eStop(intakeSub, transferSub));//added eStop() as a saftey thing
+      CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
     //Dpad down: manually spit out
     operatorController.povDown().whileTrue(
-      CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.eStop(intakeSub, transferSub));
+      CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
     //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
     operatorController.start().onTrue(
-      CommandManager.eStop(intakeSub, transferSub));
+      CommandManager.eStop(intakeSub, transferSub, armSub, shooterSub));
 
   /**
   * Arm Related Bindings
   * */
-  //test for amp
+  //amp state
     operatorController.y()
       .onTrue(
-        new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub));
+        new ParallelCommandGroup(
+          new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub),
+          new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutyAmpShot), shooterSub)));
 
+    //slighly elevated state
     operatorController.b()
       .onTrue(
         new InstantCommand(()-> armSub.requestState(PivotStates.MidState), armSub));
+
+    //slighly elevated state
+    operatorController.x()
+      .onTrue(
+        new InstantCommand(()-> armSub.requestState(PivotStates.CommunityShot), armSub));
     
+    //bring arm to default position
     operatorController.a()
       .onTrue(
         new InstantCommand(()-> armSub.requestState(PivotStates.DefaultState), armSub));
@@ -140,22 +152,19 @@ public class RobotContainer {
   * Shoot Related Bindings
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
-    operatorController.povRight().whileTrue(
+    operatorController.rightTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutySpeakerShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
-    operatorController.rightTrigger().whileTrue(
+    operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.setShooterSpeed(0.60))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(0.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
-  //Left Trigger: Manual Amp speed
-    operatorController.povLeft().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(0.25))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));//origin is .20
-
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
+
   /**
   * Climb Related Bindings
   * */
