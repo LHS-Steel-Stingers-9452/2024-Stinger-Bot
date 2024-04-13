@@ -143,7 +143,7 @@ public class SwerveBase extends SubsystemBase {
          * It should now behave as intended when on red alliance
          */
         false,
-        true);// always true in order to run openloop
+        openLoopDrive);// always true in order to run openloop
 
   }
 
