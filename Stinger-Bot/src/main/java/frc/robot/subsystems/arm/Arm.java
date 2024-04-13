@@ -30,6 +30,7 @@ public class Arm extends SubsystemBase {
     AmpState,
     ShooterState,
     MidState,
+    CommunityShot,
     CustomState
     
   }
@@ -72,7 +73,7 @@ public class Arm extends SubsystemBase {
     slot0Configs.kV = kV;
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
-    slot0Configs.kD = kP;
+    slot0Configs.kD = kD;
 
     var motionMagicConfigs = talonFXConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = kCruiseVelocity;
@@ -125,6 +126,9 @@ public class Arm extends SubsystemBase {
       case ShooterState:
         desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .22);
         break;
+      case CommunityShot:
+        desiredPosition = 0.024;
+        break;
       case MidState:
         desiredPosition = 0.044;// actual mid position should be around 0.13185
         break;
@@ -139,6 +143,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void runControlLoop() {
+    //leadKraken.setVoltage(.45);
     leadKraken.setControl(request.withPosition(desiredPosition));
     followKraken.setControl(new Follower(leadID , true));
   }
