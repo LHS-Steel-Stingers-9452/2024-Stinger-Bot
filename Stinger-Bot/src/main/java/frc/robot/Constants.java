@@ -171,7 +171,9 @@ public class Constants {
         public static final int kCurrentLimit = 70;
     }
 
-    public static final class ClimberConstants{}
+    public static final class ClimberConstants{
+        public static final double maxClimberHeight = 0;
+    }
 
     public static final class AutoConstants{}
 
