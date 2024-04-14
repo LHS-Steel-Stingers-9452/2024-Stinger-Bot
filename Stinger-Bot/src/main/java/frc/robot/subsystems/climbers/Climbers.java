@@ -40,7 +40,7 @@ public class Climbers extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Left Climber pos[deg]", leftClimberPos());
-    SmartDashboard.putNumber("Right Climber pos[deg]", rightAbsolute.getPosition());
+    SmartDashboard.putNumber("Right Climber pos[deg]", rightClimberPos());
 
   }
 
@@ -103,29 +103,28 @@ public class Climbers extends SubsystemBase {
     rightCLimber.set(0);
   }
 
+
+
   private void leftClimberConfig(){
     leftClimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    leftClimber.setInverted(true);
+    leftClimber.setInverted(false);
 
-    //Don't event include gear ration since encoder is on the output shaft
-    leftAbsolute.setPositionConversionFactor(360);
     //make sure this is positive when turning up
-    leftAbsolute.setInverted(true);
-
-
-    leftAbsolute.setZeroOffset(0);
+    leftAbsolute.setInverted(false);
+    //leftAbsolute.setZeroOffset(0);
   }
+
 
   private void rightClimberConfig(){
     rightCLimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    rightCLimber.setInverted(false);
+    rightCLimber.setInverted(true);
 
-    //Don't event include gear ration since encoder is on the output shaft
-    rightAbsolute.setPositionConversionFactor(360);
     //make sure this is positive when turning up
-    rightAbsolute.setInverted(false);
-    rightAbsolute.setZeroOffset(0);
+    rightAbsolute.setInverted(true);
+    //rightAbsolute.setZeroOffset(0);
   }
+
+
 
   public double leftClimberPos(){
     return leftAbsolute.getPosition();
