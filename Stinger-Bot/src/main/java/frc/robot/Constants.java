@@ -172,7 +172,16 @@ public class Constants {
     }
 
     public static final class ClimberConstants{
-        public static final double maxClimberHeight = 0;
+        //Units in rotaitons
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        //moves climbers to max height using dutycycle and log output
+        //use number slighly under max for tolerance
+        public static final double maxHight = 0;
+        //min height should be slightly higher than 0 to account for slippage and such
+        public static final double minHeight = 0;
     }
 
     public static final class AutoConstants{}

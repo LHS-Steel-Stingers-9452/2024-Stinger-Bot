@@ -7,10 +7,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.PivotStates;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
@@ -57,8 +59,6 @@ public class CommandManager {
         return command;
     }
 
-
-
     
     public static Command zeroGyro(SwerveBase swerveBase){
         Command command = 
@@ -74,8 +74,13 @@ public class CommandManager {
         return command;
     }
 
-    
-
+    public static Command climberMove(Climbers climbers, double leftClimbSetpoint, double RightClimbSetPoint){
+        Command command = 
+            new ParallelCommandGroup(
+                new InstantCommand(()-> climbers.setClimberSetpoint(leftClimbSetpoint, RightClimbSetPoint))
+            );
+        return command;
+    }
 
     
 }

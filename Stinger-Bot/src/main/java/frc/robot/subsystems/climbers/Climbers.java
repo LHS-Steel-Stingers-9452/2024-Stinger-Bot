@@ -6,31 +6,40 @@ package frc.robot.subsystems.climbers;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimberConstants;
+import static frc.robot.Constants.ClimberConstants.*;
 
 public class Climbers extends SubsystemBase {
   /** Creates a new Climbers. */
     private final CANSparkMax leftClimber;
-    private final SparkAbsoluteEncoder leftAbsolute;
-
-    /*Right climber*/
     private final CANSparkMax rightCLimber;
+
+
+    private final SparkPIDController leftPIDController;
+    private final SparkPIDController rightPIDController;
+    private final SparkAbsoluteEncoder leftAbsolute;
     private final SparkAbsoluteEncoder rightAbsolute;
+    
 
 
   public Climbers() {
-    /*left climber */
+    //Climb Motors
     leftClimber = new CANSparkMax(24, MotorType.kBrushless);
-    leftAbsolute = leftClimber.getAbsoluteEncoder(Type.kDutyCycle);
-
-
-    /*right climber */
     rightCLimber = new CANSparkMax(25, MotorType.kBrushless);
+
+
+    /*Climb Feedback */
+    leftPIDController = leftClimber.getPIDController();
+    rightPIDController = rightCLimber.getPIDController();
+
+
+    leftAbsolute = leftClimber.getAbsoluteEncoder(Type.kDutyCycle);
     rightAbsolute = rightCLimber.getAbsoluteEncoder(Type.kDutyCycle);
 
     leftClimberConfig();
@@ -39,61 +48,16 @@ public class Climbers extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Climber pos[deg]", leftClimberPos());
-    SmartDashboard.putNumber("Right Climber pos[deg]", rightClimberPos());
-
+    SmartDashboard.putNumber("Left Climber pos[deg]", getLeftClimberPos());
+    SmartDashboard.putNumber("Right Climber pos[deg]", getRightClimberPos());
   }
 
-  public void moveup(){
-    //left climber controls
-    //if approaching max setpoint slow down and stop once withn 20 degrees 
-    /* 
-    if (Math.abs(ClimberConstants.maxClimberHeight - leftClimberPos()) < 90){
-      leftClimber.set(.5);
-    } else if(Math.abs(ClimberConstants.maxClimberHeight - leftClimberPos()) < 20){
-      leftClimber.set(0);
-    } else{
-      leftClimber.set(1);
-    }
-
-    //right climber controls
-    //if approaching max setpoint slow down and once withn 20 degrees 
-    if (Math.abs(ClimberConstants.maxClimberHeight - rightClimberPos()) <= 90){
-      rightClimber.set(.5);
-    } else if(Math.abs(ClimberConstants.maxClimberHeight - rightClimberPos()) <= 20){
-      leftClimber.set(0);
-    } else{
-      rightCLimber.set(1);
-    */
-    leftClimber.set(1);
-    rightCLimber.set(1);
+  public void climbUpTest(){
+    leftClimber.set(.6);
+    rightCLimber.set(.6);
   }
 
-  public void moveDown(){
-    //left climber controls
-    /*
-    //if approaching min setpoint slow down and stop once withn 20 degrees 
-    
-    if (leftClimberPos() <= 90){
-      leftClimber.set(-.5);
-    } else if(leftClimberPos() <= 20){
-      leftClimber.set(0);
-    } else{
-      leftClimber.set(-1);
-    }
-    
-    //right climber controls
-    //if approaching max setpoint slow down and once withn 20 degrees 
-    if (rightClimberPos() < 90){
-      rightCLimber.set(-.5);
-    } else if(rightClimberPos() < 20){
-      leftClimber.set(0);
-    } else{
-      rightCLimber.set(-1);
-    }
-    */
-
-    
+   public void climbDownTest(){
     leftClimber.set(-1);
     rightCLimber.set(-1);
   }
@@ -106,31 +70,61 @@ public class Climbers extends SubsystemBase {
 
 
   private void leftClimberConfig(){
-    leftClimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    leftClimber.restoreFactoryDefaults();
+
     leftClimber.setInverted(false);
+    leftClimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     //make sure this is positive when turning up
     leftAbsolute.setInverted(false);
-    //leftAbsolute.setZeroOffset(0);
+
+    leftClimber.enableVoltageCompensation(12);
+
+    leftPIDController.setFeedbackDevice(leftAbsolute);
+    
+    leftPIDController.setP(0);
+    leftPIDController.setI(0);
+    leftPIDController.setD(0);
+    leftClimber.burnFlash();
+
+
   }
 
 
   private void rightClimberConfig(){
-    rightCLimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
+     rightCLimber.restoreFactoryDefaults();
+
     rightCLimber.setInverted(true);
+    rightCLimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     //make sure this is positive when turning up
-    rightAbsolute.setInverted(true);
-    //rightAbsolute.setZeroOffset(0);
+    rightCLimber.setInverted(true);
+
+    rightCLimber.enableVoltageCompensation(12);
+
+    rightPIDController.setFeedbackDevice(rightAbsolute);
+    
+    rightPIDController.setP(kP);
+    rightPIDController.setI(kI);
+    rightPIDController.setD(kD);
+
+    rightCLimber.burnFlash();
+
+
   }
 
 
+  public void setClimberSetpoint(double leftClimb, double rightClimb){
+    leftPIDController.setReference(leftClimb, ControlType.kPosition);
+    rightPIDController.setReference(rightClimb, ControlType.kPosition);
+  }
 
-  public double leftClimberPos(){
+
+  public double getLeftClimberPos(){
     return leftAbsolute.getPosition();
   }
 
-  public double rightClimberPos(){
+  public double getRightClimberPos(){
     return rightAbsolute.getPosition();
   }
 }

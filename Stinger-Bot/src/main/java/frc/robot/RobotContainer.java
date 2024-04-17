@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.RobotConstants;
@@ -169,9 +170,19 @@ public class RobotContainer {
   * Climb Related Bindings
   * */
   //up climbers
-  driverController.rightTrigger().whileTrue(new InstantCommand(()-> climberSub.moveup())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+  driverController.rightTrigger().whileTrue(new InstantCommand(()-> climberSub.climbUpTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
   //downClimbers
-  driverController.leftTrigger().whileTrue(new InstantCommand(() -> climberSub.moveDown())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+  driverController.leftTrigger().whileTrue(new InstantCommand(() -> climberSub.climbDownTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+
+  /*Climber setpoints */
+  //climbers max height
+  driverController.povUp().whileTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight, ClimberConstants.maxHight));
+  //climbers min height
+  driverController.povDown().whileTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight, ClimberConstants.minHeight));
+  
+
+
+
 
 
   /**
