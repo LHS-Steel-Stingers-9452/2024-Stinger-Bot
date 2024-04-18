@@ -52,7 +52,7 @@ public class Constants {
         public static final double maxSpeed = 4.6; //meters per second
         public static final double maxAngleVelocity = 10.5; // radians per sec
 
-        public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
+        public static final int driveCurrentLimit = 70;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 40;
 
         public static final double voltageComp = 12.0;
@@ -62,7 +62,7 @@ public class Constants {
         public static final double driveKV = 2.44;//might need tune
         public static final double driveKA = 0.27;//might need tune
 
-        public static final Boolean openLoopDrive = true;
+        public static final Boolean openLoopDrive = false;
 
         //Drive Motor PID Values
         /*
@@ -71,7 +71,7 @@ public class Constants {
          * Now using open loop don't forget to map your joystick deadband
          * So that new deadband is now zero
          */
-        public static final double driveP = 0.00;
+        public static final double driveP = 0.0;
         public static final double driveI = 0.00;
         public static final double driveD = 0.00;
         
@@ -163,7 +163,7 @@ public class Constants {
         public static final double kI = 0;//0
         public static final double kD = .0005;//.001
         public static final double kCruiseVelocity = Math.PI * 4;
-        public static final double kAcceleration = Math.PI*1.2;//1.2
+        public static final double kAcceleration = Math.PI*1.3;//1.2
         public static final double kJerk = Math.PI * 15; //Math.PI * 35
         public static final boolean kClockwisePositive = false;//Lead talon is on the left [With Convention]
         public static final double kErrorTolerance = .05;
@@ -173,15 +173,15 @@ public class Constants {
 
     public static final class ClimberConstants{
         //Units in rotaitons
-        public static final double kP = 0;
+        public static final double kP = 0.040;
         public static final double kI = 0;
         public static final double kD = 0;
 
         //moves climbers to max height using dutycycle and log output
         //use number slighly under max for tolerance
-        public static final double maxHight = 0;
+        public static final double maxHight = 480;
         //min height should be slightly higher than 0 to account for slippage and such
-        public static final double minHeight = 0;
+        public static final double minHeight = 19.6;
     }
 
     public static final class AutoConstants{}

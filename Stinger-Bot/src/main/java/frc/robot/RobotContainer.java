@@ -166,6 +166,12 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
 
+
+
+
+
+
+      
   /**
   * Climb Related Bindings
   * */
@@ -174,11 +180,16 @@ public class RobotContainer {
   //downClimbers
   driverController.leftTrigger().whileTrue(new InstantCommand(() -> climberSub.climbDownTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
 
+
+
+
+
+
   /*Climber setpoints */
   //climbers max height
-  driverController.povUp().whileTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight, ClimberConstants.maxHight));
+  driverController.povUp().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight, ClimberConstants.maxHight));
   //climbers min height
-  driverController.povDown().whileTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight, ClimberConstants.minHeight));
+  driverController.povDown().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight, ClimberConstants.minHeight));
   
 
 

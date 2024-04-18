@@ -5,6 +5,7 @@
 package frc.robot.subsystems.climbers;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -23,8 +24,10 @@ public class Climbers extends SubsystemBase {
 
     private final SparkPIDController leftPIDController;
     private final SparkPIDController rightPIDController;
-    private final SparkAbsoluteEncoder leftAbsolute;
-    private final SparkAbsoluteEncoder rightAbsolute;
+
+    private final  RelativeEncoder leftRelative;
+    private final RelativeEncoder rightRelative;
+    
     
 
 
@@ -38,9 +41,8 @@ public class Climbers extends SubsystemBase {
     leftPIDController = leftClimber.getPIDController();
     rightPIDController = rightCLimber.getPIDController();
 
-
-    leftAbsolute = leftClimber.getAbsoluteEncoder(Type.kDutyCycle);
-    rightAbsolute = rightCLimber.getAbsoluteEncoder(Type.kDutyCycle);
+    leftRelative = leftClimber.getEncoder();
+    rightRelative = rightCLimber.getEncoder();
 
     leftClimberConfig();
     rightClimberConfig();
@@ -48,13 +50,13 @@ public class Climbers extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Climber pos[deg]", getLeftClimberPos());
-    SmartDashboard.putNumber("Right Climber pos[deg]", getRightClimberPos());
+    SmartDashboard.putNumber("Left Climber pos[Rot]", getLeftClimberPos());
+    SmartDashboard.putNumber("Right Climber pos[Rot]", getRightClimberPos());
   }
 
   public void climbUpTest(){
-    leftClimber.set(.6);
-    rightCLimber.set(.6);
+    leftClimber.set(1);
+    rightCLimber.set(1);
   }
 
    public void climbDownTest(){
@@ -72,21 +74,20 @@ public class Climbers extends SubsystemBase {
   private void leftClimberConfig(){
     leftClimber.restoreFactoryDefaults();
 
-    leftClimber.setInverted(false);
+    leftClimber.setInverted(true);
     leftClimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
-
-    //make sure this is positive when turning up
-    leftAbsolute.setInverted(false);
 
     leftClimber.enableVoltageCompensation(12);
 
-    leftPIDController.setFeedbackDevice(leftAbsolute);
+    //account for gear ratio
+    leftRelative.setPositionConversionFactor((1/60));
     
-    leftPIDController.setP(0);
-    leftPIDController.setI(0);
-    leftPIDController.setD(0);
+    leftPIDController.setP(kP);
+    leftPIDController.setI(kI);
+    leftPIDController.setD(kD);
     leftClimber.burnFlash();
 
+    leftRelative.setPosition(0);
 
   }
 
@@ -94,15 +95,13 @@ public class Climbers extends SubsystemBase {
   private void rightClimberConfig(){
      rightCLimber.restoreFactoryDefaults();
 
-    rightCLimber.setInverted(true);
+    rightCLimber.setInverted(false);
     rightCLimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
-
-    //make sure this is positive when turning up
-    rightCLimber.setInverted(true);
 
     rightCLimber.enableVoltageCompensation(12);
 
-    rightPIDController.setFeedbackDevice(rightAbsolute);
+    //account for gear ratio
+    rightRelative.setPositionConversionFactor((1/60));
     
     rightPIDController.setP(kP);
     rightPIDController.setI(kI);
@@ -110,21 +109,27 @@ public class Climbers extends SubsystemBase {
 
     rightCLimber.burnFlash();
 
+    rightRelative.setPosition(0);
 
   }
 
-
+  /**
+   * set individual climer positions[Motor Rotations]
+   * @param leftClimb left climber setpoint
+   * @param rightClimb right climber setpoint
+   */
   public void setClimberSetpoint(double leftClimb, double rightClimb){
     leftPIDController.setReference(leftClimb, ControlType.kPosition);
     rightPIDController.setReference(rightClimb, ControlType.kPosition);
   }
 
 
+
   public double getLeftClimberPos(){
-    return leftAbsolute.getPosition();
+    return rightRelative.getPosition();
   }
 
   public double getRightClimberPos(){
-    return rightAbsolute.getPosition();
+    return rightRelative.getPosition();
   }
 }

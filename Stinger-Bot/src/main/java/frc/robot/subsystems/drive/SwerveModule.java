@@ -188,6 +188,7 @@ public class SwerveModule {
             double percentOutput = desiredModuleState.speedMetersPerSecond / Swerve.maxSpeed;
             driveMotor.set(percentOutput);
         } else{
+            //closed loop drive
             double velocity = desiredModuleState.speedMetersPerSecond;
             drivePIDController.setReference(velocity, ControlType.kVelocity, 0, driveFeedforward.calculate(velocity));
         }

@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // Imports go here
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -134,6 +135,8 @@ public class Arm extends SubsystemBase {
         desiredPosition = 0.044;// actual mid position should be around 0.13185
         break;
     }
+
+    SmartDashboard.putBoolean("Climber at Setpoint", climberAtSetpoint());
  
     runControlLoop();
 
@@ -165,5 +168,13 @@ public class Arm extends SubsystemBase {
   // example of a "getter" method
   public PivotStates getCurrentState() {
     return ArmCurrentState;
+  }
+
+  public boolean climberAtSetpoint(){
+    if(getError() <= ArmConstants.kErrorTolerance){
+      return true;
+    } else{
+      return false;
+    }
   }
 }
