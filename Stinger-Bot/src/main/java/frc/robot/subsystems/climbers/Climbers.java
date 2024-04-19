@@ -76,6 +76,7 @@ public class Climbers extends SubsystemBase {
 
     leftClimber.setInverted(true);
     leftClimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    leftClimber.setSmartCurrentLimit(40);
 
     leftClimber.enableVoltageCompensation(12);
 
@@ -97,6 +98,7 @@ public class Climbers extends SubsystemBase {
 
     rightCLimber.setInverted(false);
     rightCLimber.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    rightCLimber.setSmartCurrentLimit(40);
 
     rightCLimber.enableVoltageCompensation(12);
 
