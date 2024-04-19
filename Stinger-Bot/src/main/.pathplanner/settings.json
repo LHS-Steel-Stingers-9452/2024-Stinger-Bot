@@ -5,9 +5,14 @@
   "pathFolders": [
     "Amp Paths",
     "Close Paths",
-    "Far Paths"
+    "Far Paths",
+    "Source Paths"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Amp",
+    "Mid",
+    "Source"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

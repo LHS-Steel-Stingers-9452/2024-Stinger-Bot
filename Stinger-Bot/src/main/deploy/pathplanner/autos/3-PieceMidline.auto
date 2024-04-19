@@ -24,9 +24,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "1F-5F"
+            "pathName": " 1F-Low"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "midArmShot"
           }
         }
       ]

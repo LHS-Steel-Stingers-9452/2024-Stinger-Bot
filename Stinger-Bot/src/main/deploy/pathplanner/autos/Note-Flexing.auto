@@ -5,7 +5,7 @@
       "x": 0.72,
       "y": 6.7
     },
-    "rotation": 60.0
+    "rotation": 64.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
+            "name": "midArmShot"
           }
         },
         {
@@ -64,6 +64,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Amp",
   "choreoAuto": false
 }

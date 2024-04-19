@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.59,
-        "y": 4.12
+        "x": 1.21,
+        "y": 6.42
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.21321541552174,
-        "y": 4.746989170341978
+        "x": 1.7166577111741557,
+        "y": 6.609431555950854
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.34,
-        "y": 5.565873600441298
+        "x": 2.7190686223948486,
+        "y": 5.698044741348875
       },
       "prevControl": {
-        "x": 1.8248499759414392,
-        "y": 5.565873600441298
+        "x": 2.322555199672118,
+        "y": 5.595244965087427
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake note",
-      "waypointRelativePos": 0,
+      "name": "Intake Note",
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "race",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -47.602562202499875,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Close Paths",
+  "folder": "Amp Paths",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 48.23058462036661,
     "velocity": 0
   },
   "useDefaultConstraints": true

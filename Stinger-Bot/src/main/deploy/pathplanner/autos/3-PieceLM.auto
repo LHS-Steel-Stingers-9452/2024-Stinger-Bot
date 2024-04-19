@@ -24,53 +24,21 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.1
+            "pathName": "1C-Mid"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "1C-Mid"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.1
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shootNote"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "shootNote"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Mid-2C"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
           }
         },
         {
@@ -95,6 +63,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Mid",
   "choreoAuto": false
 }

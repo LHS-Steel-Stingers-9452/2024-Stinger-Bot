@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.59,
-        "y": 4.12
+        "x": 0.695314845175145,
+        "y": 6.688710831967119
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.21321541552174,
-        "y": 4.746989170341978
+        "x": 1.6953148451751452,
+        "y": 6.688710831967119
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.34,
-        "y": 5.565873600441298
+        "x": 4.146950839356224,
+        "y": 7.0991756528967604
       },
       "prevControl": {
-        "x": 1.8248499759414392,
-        "y": 5.565873600441298
+        "x": 3.146950839356224,
+        "y": 7.0991756528967604
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,25 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "intake note",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "race",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "autoIntake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -61,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Close Paths",
+  "folder": "Amp Paths",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 60.708637829015736,
     "velocity": 0
   },
   "useDefaultConstraints": true

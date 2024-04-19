@@ -24,12 +24,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -55,12 +49,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "3C-Mid"
@@ -75,6 +63,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Mid",
   "choreoAuto": false
 }
