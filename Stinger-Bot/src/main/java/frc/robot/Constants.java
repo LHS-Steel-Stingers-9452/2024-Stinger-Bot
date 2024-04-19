@@ -52,7 +52,7 @@ public class Constants {
         public static final double maxSpeed = 4.6; //meters per second
         public static final double maxAngleVelocity = 10.5; // radians per sec
 
-        public static final int driveCurrentLimit = 70;//optimal limit based on NEO current limit data
+        public static final int driveCurrentLimit = 50;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 40;
 
         public static final double voltageComp = 12.0;
@@ -150,7 +150,7 @@ public class Constants {
 
         //Duty cycle value [quick backup shots]
         public static final double dutySpeakerShot = 0.50;
-        public static final double dutyAmpShot = 0.20;
+        public static final double dutyAmpShot = 0.22;//Origin .20
     }
 
     public static final class ArmConstants{
@@ -163,8 +163,8 @@ public class Constants {
         public static final double kI = 0;//0
         public static final double kD = .0005;//.001
         public static final double kCruiseVelocity = Math.PI * 4;
-        public static final double kAcceleration = Math.PI*1.3;//1.2
-        public static final double kJerk = Math.PI * 15; //Math.PI * 35
+        public static final double kAcceleration = Math.PI*2.4;//2
+        public static final double kJerk = Math.PI * 20; //Math.PI * 15
         public static final boolean kClockwisePositive = false;//Lead talon is on the left [With Convention]
         public static final double kErrorTolerance = .05;
         public static final double kSensorToMechanismGearRatio = 92.85;//Actual: 92.8571428571
