@@ -15,7 +15,7 @@ import frc.robot.Constants.RobotConstants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 //import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -67,7 +67,6 @@ public class Shooter extends SubsystemBase {
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motorConfig.Voltage.PeakForwardVoltage = 12.0;
     motorConfig.Voltage.PeakReverseVoltage = 0.0;
-
 
     /* Update Shooter Gains from TunableNumbers */
     motorConfig.Slot0.kP = shooterKP.get();
