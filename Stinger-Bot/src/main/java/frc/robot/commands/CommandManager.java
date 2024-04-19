@@ -21,9 +21,12 @@ import frc.robot.Constants.LauncherConstants;
 
 public class CommandManager {
 
-    public static Command intakeNote(Intake intake, Transfer transfer){
+    public static Command intakeNote(Intake intake, Transfer transfer
+    //,Arm arm
+    ){
         //auto intake Note
         Command command = new ParallelCommandGroup(
+           //new InstantCommand(()-> arm.requestState(PivotStates.CommunityShot)),
             new InstantCommand(()-> intake.setIntakeMotorSpeed(IntakeConstants.intakeSpeed), intake),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed), transfer));
         return command;
