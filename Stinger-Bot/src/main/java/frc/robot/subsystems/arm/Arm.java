@@ -123,7 +123,7 @@ public class Arm extends SubsystemBase {
         desiredPosition = 0;
         break;
       case AmpState:
-        desiredPosition = 0.22;
+        desiredPosition = 0.23;//Origin: .22
         break;
       case ShooterState:
         desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .22);
