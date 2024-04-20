@@ -32,7 +32,7 @@ public class autoCommands {
             
     public static Command midArmShot(Arm arm, Shooter shooter, Transfer transfer){
         Command command = new SequentialCommandGroup(
-            new InstantCommand(()-> arm.requestState(PivotStates.CommunityShot)).andThen(Commands.waitSeconds(.5)),
+            new InstantCommand(()-> arm.requestState(PivotStates.CommunityShot)).andThen(Commands.waitSeconds(.7)),
             new InstantCommand(()-> shooter.setShooterSpeed(.60)).andThen(Commands.waitSeconds(.4)),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.transferSpeed)).andThen(Commands.waitSeconds(.5)),
             new ParallelCommandGroup(
