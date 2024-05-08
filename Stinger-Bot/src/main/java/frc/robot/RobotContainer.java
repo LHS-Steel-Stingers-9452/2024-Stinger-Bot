@@ -66,6 +66,7 @@ public class RobotContainer {
 
     climberSub = new Climbers();
 
+
     //Try moving where bindings are configured
     //Configures Control Bindings
     configureDriverBindings();
@@ -83,7 +84,7 @@ public class RobotContainer {
 
   private void configureDriverBindings(){
   /* Driver Controls */
-    
+  
     swerveBase.setDefaultCommand(
       new TeleopSwerve(
         swerveBase,

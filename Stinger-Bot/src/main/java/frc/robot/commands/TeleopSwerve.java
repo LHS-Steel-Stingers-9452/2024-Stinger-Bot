@@ -82,13 +82,14 @@ public class TeleopSwerve extends Command {
       //If left bumper is not held chassis moves at regular
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
+
       (rotationVal)*Swerve.maxAngleVelocity,//slow down rotation as well at drivers request
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
     }
 
   }
-
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
