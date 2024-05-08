@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.72,
+      "y": 4.36
+    },
+    "rotation": -68.47000000000003
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "midArmShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Low-Dip"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Source",
+  "choreoAuto": false
+}

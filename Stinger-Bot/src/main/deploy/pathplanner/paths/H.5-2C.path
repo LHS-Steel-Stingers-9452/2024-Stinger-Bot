@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.21,
+        "y": 6.42
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7166577111741557,
+        "y": 6.609431555950854
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7190686223948486,
+        "y": 5.71
+      },
+      "prevControl": {
+        "x": 2.322555199672118,
+        "y": 5.607200223738552
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "autoIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -47.602562202499875,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Paths",
+  "previewStartingState": {
+    "rotation": 48.23058462036661,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,81 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.74,
+      "y": 6.74
+    },
+    "rotation": 65.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "midArmShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "High-3C"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3C-High.5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "midArmShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H.5-2C"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2C-Mid"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "midArmShot"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Amp",
+  "choreoAuto": false
+}

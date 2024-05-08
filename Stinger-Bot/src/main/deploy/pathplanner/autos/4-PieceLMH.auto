@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.35,
+      "y": 5.55
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "mid-1C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1C-Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid-2C"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2C-Mid"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "midArmShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "mid-3C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3C-Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Mid",
+  "choreoAuto": false
+}

@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.75,
+      "y": 6.67
+    },
+    "rotation": 58.92882623713453
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "midArmShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HighQual92"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Amp",
+  "choreoAuto": false
+}

@@ -13,30 +13,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Setpoints {
     public double arm;
     public double tolerance;
-    public double leftShooter;
-    public double rightShooter;
+    public double shooter;
     public GameState state;
 
-    public Setpoints(double arm, double tolerance, double leftShooter, double rightShooter, GameState state){
+    /**
+     * 
+     * @param arm - value should be given in deggrees
+     * @param tolerance 
+     * @param shooter - value should be fed in RPM
+     * @param state
+     */
+    public Setpoints(double arm, double tolerance, double shooter, GameState state){
         this.arm = arm;
         this.tolerance = tolerance;
-        this.leftShooter = leftShooter;
-        this.rightShooter = rightShooter;
+        this.shooter = shooter;
         this.state = state;
     }
 
     public enum GameState{
-        STOWED, INTAKE, SPEAKER, AMP, PODIUM, WING, TRAP,
+        DEFAULT, SPEAKER, AMP, PODIUM, WING, TRAP
     }
 
     //Display the commanded ARM stte on the dashboard
     public static void displayArmState(GameState state){
         switch (state) {
-            case STOWED:
+            case DEFAULT:
                 SmartDashboard.putString("Arm State", "STOWED");
                 break;
-            case INTAKE:
-                SmartDashboard.putString("Arm State", "INTAKE");
             case SPEAKER:
                 SmartDashboard.putString("Arm State", "SPEAKER");
                 break;

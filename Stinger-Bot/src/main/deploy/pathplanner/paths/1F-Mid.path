@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.18,
+        "y": 0.78
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.609739764934075,
+        "y": 4.431154316854089
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.05183919458748,
+        "y": 4.403168079063431
+      },
+      "prevControl": {
+        "x": 5.41191521668948,
+        "y": 4.071222996188149
+      },
+      "nextControl": {
+        "x": 4.454799455053455,
+        "y": 4.95356408894636
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.348327060290484,
+        "y": 5.531946336619947
+      },
+      "prevControl": {
+        "x": 2.59837901493985,
+        "y": 5.50396009882929
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.6,
+    "maxAcceleration": 3.2,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Far Paths",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

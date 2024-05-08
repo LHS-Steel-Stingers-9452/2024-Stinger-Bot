@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.71,
+      "y": 6.67
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "midArmShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HighQual120"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4C-High"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoIntake"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Amp",
+  "choreoAuto": false
+}

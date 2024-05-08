@@ -57,7 +57,7 @@ public class IntakeNoteReg extends Command {
   @Override
   public boolean isFinished() {
     //stops command when note is detected
-    //return transferSub.isNoteInTransfer();
-    return false;
+    return transferSub.isNoteInTransfer();
+    //return false;
   }
 }
