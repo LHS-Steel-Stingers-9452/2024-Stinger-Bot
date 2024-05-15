@@ -1,13 +1,20 @@
 package frc.robot;
 
+import static frc.robot.Constants.ArmConstants.kErrorTolerance;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Util.Setpoints;
+import frc.robot.Util.Setpoints.GameState;
 public class Constants {
     public static final class RobotConstants{
-        public static final boolean isTuningMode = true;
-        public static final boolean isShooterTuningMode = true;
+        public static final Setpoints AMP = new Setpoints(0.23, kErrorTolerance, 25, GameState.AMP);
+        public static final Setpoints DEAULT = new Setpoints(0, kErrorTolerance, 0, GameState.DEFAULT);
+        public static final Setpoints SPEAKER = new Setpoints(0,kErrorTolerance,55,  GameState.SPEAKER);
+
+
     }
 
     public static final class ControllerConstants{
@@ -151,6 +158,12 @@ public class Constants {
         //Duty cycle value [quick backup shots]
         public static final double dutySpeakerShot = 0.50;
         public static final double dutyAmpShot = 0.22;//Origin .20
+
+
+        public static final double kP = 0.05;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kV = 0.113;
     }
 
     public static final class ArmConstants{

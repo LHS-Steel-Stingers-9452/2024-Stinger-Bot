@@ -191,20 +191,6 @@ public class RobotContainer {
   driverController.povUp().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight, ClimberConstants.maxHight));
   //climbers min height
   driverController.povDown().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight, ClimberConstants.minHeight));
-  
-
-
-
-
-
-  /**
-   * Tunning stuff
-   */
-  if (RobotConstants.isShooterTuningMode) {
-      SmartDashboard.putData("Update Shooter Gains", shooterSub.updateShooterGainsCommand());
-      SmartDashboard.putData("Run Shooter", shooterSub.runShooterCommand());
-      SmartDashboard.putData("Stop Shooter", shooterSub.stopShooterCommand());
-    }
   }
 
 
