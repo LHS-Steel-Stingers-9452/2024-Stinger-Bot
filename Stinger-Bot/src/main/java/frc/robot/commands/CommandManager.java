@@ -12,7 +12,6 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.PivotStates;
-import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
@@ -77,13 +76,7 @@ public class CommandManager {
         return command;
     }
 
-    public static Command climberMove(Climbers climbers, double leftClimbSetpoint, double RightClimbSetPoint){
-        Command command = 
-            new ParallelCommandGroup(
-                new InstantCommand(()-> climbers.setClimberSetpoint(leftClimbSetpoint, RightClimbSetPoint))
-            );
-        return command;
-    }
+  
 
     
 }

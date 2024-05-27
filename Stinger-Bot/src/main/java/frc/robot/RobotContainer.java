@@ -24,7 +24,6 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.PivotStates;
-import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -41,7 +40,7 @@ public class RobotContainer {
   private final Transfer transferSub;
   private final Arm armSub;
   private final Shooter shooterSub;
-  private final Climbers climberSub;
+
   
 
   private final Leds ledSub;
@@ -64,7 +63,7 @@ public class RobotContainer {
 
     ledSub = new Leds();
 
-    climberSub = new Climbers();
+
 
 
     //Try moving where bindings are configured
@@ -173,24 +172,9 @@ public class RobotContainer {
 
 
       
-  /**
-  * Climb Related Bindings
-  * */
-  //up climbers
-  driverController.rightTrigger().whileTrue(new InstantCommand(()-> climberSub.climbUpTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
-  //downClimbers
-  driverController.leftTrigger().whileTrue(new InstantCommand(() -> climberSub.climbDownTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+  
 
 
-
-
-
-
-  /*Climber setpoints */
-  //climbers max height
-  driverController.povUp().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight, ClimberConstants.maxHight));
-  //climbers min height
-  driverController.povDown().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight, ClimberConstants.minHeight));
   
 
 
