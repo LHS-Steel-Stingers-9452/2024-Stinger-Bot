@@ -191,7 +191,39 @@ public SwerveModulePosition[] getPositions(){
 
   return positions;
 }
-    
+
+public double[] getDriveTemp (){
+
+  double [] motorTemps = new double[4];
+
+  for (SwerveModule mod: swerveModules){
+
+    motorTemps[mod.moduleNumber] = mod.getDriveTemp();
+  }
+  return motorTemps;
+}
+  
+public double[] getDriveBusVoltage (){
+
+  double [] BusVoltage = new double[4];
+
+  for (SwerveModule mod: swerveModules){
+
+    BusVoltage[mod.moduleNumber] = mod.getDriveBusVoltage();
+  }
+  return BusVoltage;
+}
+
+public double[] getDriveOutputCurrent (){
+
+  double [] OutputCurrent = new double[4];
+
+  for (SwerveModule mod: swerveModules){
+
+    OutputCurrent[mod.moduleNumber] = mod.getDriveOutputCurrent();
+  }
+  return OutputCurrent;
+}
 
   public Pose2d getPose(){
     return swerveOdometry.getPoseMeters();
@@ -253,6 +285,7 @@ public void setHeading(Rotation2d heading){
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     //Returns the Robot location of the field
 
+    /* 
     for (SwerveModule module : swerveModules) {
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Cancoder RAW ", module.getCanCoderValue().getDegrees());
@@ -264,6 +297,7 @@ public void setHeading(Rotation2d heading){
       SmartDashboard.putNumber(
           "Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
     }
+    */
 
   //need to make sure turning counter clockwise, angle on angle motor, CCW+
   //encoders reading positive value, logg data 
@@ -275,5 +309,13 @@ public void setHeading(Rotation2d heading){
     SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
 
     swerveDisplay.set(getStates());
+
+    SmartDashboard.putNumberArray("Drive Temp", getDriveTemp());
+
+    SmartDashboard.putNumberArray("Drive Bus Voltage", getDriveBusVoltage());
+
+    SmartDashboard.putNumberArray("Drive Output Current", getDriveOutputCurrent());
+
+
   }
 }

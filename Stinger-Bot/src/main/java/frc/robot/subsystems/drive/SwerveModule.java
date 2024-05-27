@@ -183,6 +183,21 @@ public class SwerveModule {
         setSpeed(desiredModuleState, isOpenLoop);
     }
 
+    public double getDriveTemp (){
+        return driveMotor.getMotorTemperature();
+
+    }
+
+    public double getDriveBusVoltage (){
+        return driveMotor.getBusVoltage();
+
+    }
+
+    public double getDriveOutputCurrent (){
+
+        return driveMotor.getOutputCurrent();
+    } 
+
     private void setSpeed(SwerveModuleState desiredModuleState, Boolean isOpenLoop){
         if (isOpenLoop){
             double percentOutput = desiredModuleState.speedMetersPerSecond / Swerve.maxSpeed;
