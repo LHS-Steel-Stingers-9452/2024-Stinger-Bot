@@ -52,7 +52,7 @@ public class Constants {
         public static final double maxSpeed = 4.6; //meters per second
         public static final double maxAngleVelocity = 10.5; // radians per sec
 
-        public static final int driveCurrentLimit = 50;//optimal limit based on NEO current limit data
+        public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
         public static final int angleCurrentLimit = 40;
 
         public static final double voltageComp = 12.0;
