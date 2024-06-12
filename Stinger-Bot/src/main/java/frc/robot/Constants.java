@@ -26,7 +26,7 @@ public class Constants {
         public static final double whealDiameter = Units.inchesToMeters(4.00);
         public static final double wheelCircumference = whealDiameter * Math.PI;
 
-        public static final double driveGearRatio = (6.75 / 1.0); //6.75:1
+        public static final double driveGearRatio = (5.90 / 1.0); //6.75:1
         public static final double angleGearRatio = (150.0/7.0) / 1.0; //150/7:1
 
         //Encoder converstion factors
@@ -49,11 +49,11 @@ public class Constants {
 
         );
 
-        public static final double maxSpeed = 4.6; //meters per second
+        public static final double maxSpeed = 5.24; //meters per second
         public static final double maxAngleVelocity = 10.5; // radians per sec
 
         public static final int driveCurrentLimit = 40;//optimal limit based on NEO current limit data
-        public static final int angleCurrentLimit = 40;
+        public static final int angleCurrentLimit = 20;
 
         public static final double voltageComp = 12.0;
  

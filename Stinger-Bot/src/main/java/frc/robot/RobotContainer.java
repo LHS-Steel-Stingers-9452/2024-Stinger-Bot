@@ -157,7 +157,7 @@ public class RobotContainer {
       new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutySpeakerShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
     operatorController.leftTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(0.60))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+      new InstantCommand(() -> shooterSub.setShooterSpeed(1))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
 
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(0.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
@@ -165,21 +165,6 @@ public class RobotContainer {
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
-
-
-
-
-
-
-      
-  
-
-
-  
-
-
-
-
 
   /**
    * Tunning stuff
