@@ -132,7 +132,7 @@ public class Arm extends SubsystemBase {
         desiredPosition = 0.024;
         break;
       case MidState:
-        desiredPosition = 0.044;// actual mid position should be around 0.13185
+        desiredPosition = 0.096;// actual mid position should be around 0.13185
         break;
     }
 
