@@ -2,7 +2,6 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // Imports go here
@@ -11,7 +10,6 @@ import frc.robot.Constants.ArmConstants;
 
 import static frc.robot.Constants.ArmConstants.kCurrentLimit;
 import static frc.robot.Constants.ArmConstants.kErrorTolerance;
-import static frc.robot.Constants.DIOConstants.encoderDioPort;
 import static frc.robot.Constants.ArmConstants.*;
 
 import java.util.function.DoubleSupplier;
