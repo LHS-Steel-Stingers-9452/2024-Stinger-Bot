@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.LimelightHelpers;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.Swerve;
@@ -29,12 +30,15 @@ public class TeleopSwerve extends Command {
   private BooleanSupplier robotCentricSup;
   private BooleanSupplier slowChassisSup;
 
+  private BooleanSupplier lockButton; 
+
   public TeleopSwerve( SwerveBase swerveBase,
   DoubleSupplier translationSup,
   DoubleSupplier strafeSup,
   DoubleSupplier rotationSup,
   BooleanSupplier robotCentricSup,
-  BooleanSupplier slowChassisSup) {
+  BooleanSupplier slowChassisSup, 
+  BooleanSupplier lockButton) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
     this.translationSup = translationSup;
@@ -42,6 +46,7 @@ public class TeleopSwerve extends Command {
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
     this.slowChassisSup = slowChassisSup;
+    this.lockButton = lockButton; 
 
     addRequirements(swerveBase);
   }
@@ -65,11 +70,8 @@ public class TeleopSwerve extends Command {
     boolean isChassisSlow = 
             slowChassisSup.getAsBoolean();
 
-    /* 
-    SmartDashboard.putNumber("vX(Teleop)", translationVal);
-    SmartDashboard.putNumber("vY(Teleop)", strafeVal);
-    SmartDashboard.putNumber("omega(Teleop)", rotationVal);
-    */
+    boolean isLockButton = 
+            lockButton.getAsBoolean();
 
     //If left bumper is held slow down chassis to a quarter of 4.6 m/s
     if (isChassisSlow) {
@@ -78,7 +80,7 @@ public class TeleopSwerve extends Command {
       ((rotationVal)*Swerve.maxAngleVelocity),
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
-    } else {
+    } else if(isChassisSlow == false) {
       //If left bumper is not held chassis moves at regular
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
@@ -86,8 +88,37 @@ public class TeleopSwerve extends Command {
       (rotationVal)*Swerve.maxAngleVelocity,//slow down rotation as well at drivers request
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
+    } else if (isLockButton){
+      swerveBase.drive(
+        (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)), 
+        limelight_aim_proportional(), 
+        (!robotCentricSup.getAsBoolean()), 
+        (Swerve.openLoopDrive));
+
     }
 
+  }
+
+  double limelight_aim_proportional()
+  {    
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double kP = .035;
+
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+
+    // convert to radians per second for our drive method <- ignore this
+    targetingAngularVelocity *= Swerve.maxAngleVelocity;
+
+    //invert since tx is positive when the target is to the right of the crosshair
+    targetingAngularVelocity *= -1.0;
+
+    return targetingAngularVelocity;
   }
   
   // Called once the command ends or is interrupted.

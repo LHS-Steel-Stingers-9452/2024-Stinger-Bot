@@ -92,7 +92,8 @@ public class RobotContainer {
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
         () -> driverController.rightBumper().getAsBoolean(),//used to drive robot relative
-        () -> driverController.leftBumper().getAsBoolean()//used to decrease speed of chassis
+        () -> driverController.leftBumper().getAsBoolean(),//used to decrease speed of chassis
+        () -> driverController.rightStick().getAsBoolean()
         ));
 
   //Y Button: Zero Gyro
@@ -101,7 +102,6 @@ public class RobotContainer {
     driverController.start().onTrue(CommandManager.redReset(swerveBase, 180));
 
   }
-
   private void configureOperatorBindings(){
   /*add vision to determine speed and angle necessary to score in speaker */
 
@@ -166,6 +166,8 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
 
+  //reverse test shot
+  operatorController.leftTrigger().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(-.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
   /**
    * Tunning stuff
    */
