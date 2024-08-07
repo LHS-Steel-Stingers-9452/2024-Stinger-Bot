@@ -80,21 +80,23 @@ public class TeleopSwerve extends Command {
       ((rotationVal)*Swerve.maxAngleVelocity),
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
-    } else if(isChassisSlow == false) {
-      //If left bumper is not held chassis moves at regular
+    }
+
+    if (isLockButton){
+      swerveBase.drive(
+        (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)), 
+        limelight_aim_proportional(), 
+        (!robotCentricSup.getAsBoolean()), 
+        (Swerve.openLoopDrive));
+    }
+    if((isLockButton == false) && (isChassisSlow == false)){
+    //If left bumper is not held chassis moves at regular
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
 
       (rotationVal)*Swerve.maxAngleVelocity,//slow down rotation as well at drivers request
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
-    } else if (isLockButton){
-      swerveBase.drive(
-        (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)), 
-        limelight_aim_proportional(), 
-        (!robotCentricSup.getAsBoolean()), 
-        (Swerve.openLoopDrive));
-
     }
 
   }
@@ -106,14 +108,14 @@ public class TeleopSwerve extends Command {
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kP = .035;
+    double kP = .055;
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
     double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
 
     // convert to radians per second for our drive method <- ignore this
-    targetingAngularVelocity *= Swerve.maxAngleVelocity;
+    //targetingAngularVelocity *= Swerve.maxAngleVelocity;
 
     //invert since tx is positive when the target is to the right of the crosshair
     targetingAngularVelocity *= -1.0;

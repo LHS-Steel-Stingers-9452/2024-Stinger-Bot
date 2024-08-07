@@ -93,7 +93,7 @@ public class RobotContainer {
         () -> -driverController.getRightX(),
         () -> driverController.rightBumper().getAsBoolean(),//used to drive robot relative
         () -> driverController.leftBumper().getAsBoolean(),//used to decrease speed of chassis
-        () -> driverController.rightStick().getAsBoolean()
+        () -> driverController.rightTrigger().getAsBoolean()
         ));
 
   //Y Button: Zero Gyro
@@ -167,7 +167,7 @@ public class RobotContainer {
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
 
   //reverse test shot
-  operatorController.leftTrigger().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(-.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+  operatorController.leftStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(-.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
   /**
    * Tunning stuff
    */
