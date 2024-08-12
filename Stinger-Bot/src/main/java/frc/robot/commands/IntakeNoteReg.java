@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
 
@@ -51,13 +52,12 @@ public class IntakeNoteReg extends Command {
   public void end(boolean interrupted) {
     intakeSub.stopIntake();
     transferSub.stopTransfer();
+    LimelightHelpers.setLEDMode_ForceBlink("Stinger_Cam");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //stops command when note is detected
     return transferSub.isNoteInTransfer();
-    //return false;
   }
 }
