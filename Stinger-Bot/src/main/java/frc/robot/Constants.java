@@ -80,6 +80,21 @@ public class Constants {
         public static final double angleI = 0.00;// always zero
         public static final double angleD = 0.00;
 
+        /*
+         * Path Planner values values
+         */
+        //Translation PID Values
+        public static final double ppTrnlP = 0.700;
+        public static final double ppTrnlI = 0.00;
+        public static final double ppTrnlD = 0.00;
+        
+        //Rotation PID Values
+        public static final double ppRotP = 0.700;//0.0045
+        public static final double ppRotI = 0.00;// always zero
+        public static final double ppRotD = 0.005;
+
+        public static final double driveBaseRadius = 0.372680629034;
+
         public static final class Mod0{
             //Offset values to be updated
             public static final int driveMotorID = 1;
