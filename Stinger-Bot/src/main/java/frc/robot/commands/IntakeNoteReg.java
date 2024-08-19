@@ -42,14 +42,14 @@ public class IntakeNoteReg extends Command {
     double intakeSpeed = intakeSpeedSup;
     double transferSpeed = transferSpeedSup;
 
-    intakeSub.setIntakeMotorSpeed(intakeSpeed);
+    //intakeSub.setIntakeMotorSpeed(intakeSpeed);
     transferSub.setTransferSpeed(transferSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSub.stopIntake();
+   // intakeSub.stopIntake();
     transferSub.stopTransfer();
   }
 
