@@ -82,7 +82,7 @@ public class TeleopSwerve extends Command {
     } else if(isLockTag) {
       swerveBase.drive(
       (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
-      (limelight_aim_proportional()),// should control robot rotation and lock onto april tags
+      (CommandManager.limelightAim()),// should control robot rotation and lock onto april tags
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
     }
@@ -104,28 +104,5 @@ public class TeleopSwerve extends Command {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  double limelight_aim_proportional()
-  {    
-    // kP (constant of proportionality)
-    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
-    // if it is too high, the robot will oscillate.
-    // if it is too low, the robot will never reach its target
-    // if the robot never turns in the correct direction, kP should be inverted.
-    double kP = .035;
-    PIDController aimPidController = new PIDController(kP, 0, 0);
-
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocity = aimPidController.calculate(LimelightHelpers.getTX("limelight"));
-
-    // convert to radians per second for our drive method
-    targetingAngularVelocity *= Swerve.maxAngleVelocity;
-
-    //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngularVelocity *= -1.0;
-
-    return targetingAngularVelocity;
   }
 }
