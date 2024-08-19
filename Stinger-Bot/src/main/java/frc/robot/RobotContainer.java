@@ -26,6 +26,7 @@ import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
 import frc.robot.subsystems.transfer.Transfer;
+import frc.robot.subsystems.vision.LimeLight;
 
 public class RobotContainer {
   //Controllers
@@ -44,7 +45,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     //initialize subsytems
-    swerveBase = new SwerveBase();
+    swerveBase = new SwerveBase(new LimeLight());
 
     intakeSub = new Intake();
 
