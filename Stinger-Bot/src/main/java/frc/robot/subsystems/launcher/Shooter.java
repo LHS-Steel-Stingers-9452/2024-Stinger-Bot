@@ -102,6 +102,10 @@ public class Shooter extends SubsystemBase {
     bottomLauncher.set(speed);
   }
 
+  public void topLauncherSpin(double speed){
+    topLauncher.set(speed);
+  }
+
   /**
   * @param targetVelocity The target velocity in RPS of the shooter 
   */
