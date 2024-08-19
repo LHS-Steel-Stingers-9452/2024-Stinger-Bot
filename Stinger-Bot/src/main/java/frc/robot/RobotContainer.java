@@ -113,12 +113,22 @@ public class RobotContainer {
       autoCommands.intakeNote(intakeSub, transferSub));
 
     //Dpad up: manually intake
-    operatorController.povUp().whileTrue(
-      CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+   // operatorController.povUp().whileTrue(
+     // CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+      operatorController.povUp()
+        .whileTrue(
+          new InstantCommand(()->transferSub.setTransferSpeed(1)))
+        .whileFalse(
+          new InstantCommand(()->transferSub.stopTransfer()));
 
+            operatorController.povDown()
+        .whileTrue(
+          new InstantCommand(()->transferSub.setTransferSpeed(-1)))
+        .onFalse(
+          new InstantCommand(()->transferSub.stopTransfer()));
     //Dpad down: manually spit out
-    operatorController.povDown().whileTrue(
-      CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+   // operatorController.povDown().whileTrue(
+     // CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
     //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
     operatorController.start().onTrue(
@@ -167,7 +177,8 @@ public class RobotContainer {
       CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
 
   //reverse test shot
-  operatorController.leftStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(-.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+  operatorController.leftStick().whileTrue(new InstantCommand(() -> shooterSub.topLauncherSpin
+  (-.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
   /**
    * Tunning stuff
    */
