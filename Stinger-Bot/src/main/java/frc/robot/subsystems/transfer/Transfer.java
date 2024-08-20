@@ -48,6 +48,10 @@ public class Transfer extends SubsystemBase {
     transferMotor.set(transferSpeed);
   }
 
+  public void setTransferVolt( double voltApplied){
+    transferMotor.setVoltage(voltApplied);
+  }
+
   public void stopTransfer(){
     transferMotor.setControl(new NeutralOut());
   }
@@ -69,7 +73,7 @@ public class Transfer extends SubsystemBase {
     // This method will be called once per scheduler run
     
     m_isNoteInTransfer = photoSensor.get() ? false : true;
-    SmartDashboard.putBoolean("Is note?", isNoteInTransfer());
+    SmartDashboard.putBoolean("Is note?", isNoteInTransfer());//Can delete this if LL blink works
     SmartDashboard.putNumber("transfer Speed(RPM)", Math.abs((getTransferSpeed() * 60) *1/9));
   }
 
