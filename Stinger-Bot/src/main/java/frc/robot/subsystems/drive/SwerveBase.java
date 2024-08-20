@@ -10,7 +10,6 @@ import frc.robot.Constants.Swerve.Mod1;
 import frc.robot.Constants.Swerve.Mod2;
 import frc.robot.Constants.Swerve.Mod3;
 import frc.robot.subsystems.vision.LimeLight;
-import frc.robot.LimelightHelpers;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -27,7 +26,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -81,7 +79,7 @@ public class SwerveBase extends SubsystemBase {
       kinematics, 
       getGyroYaw(), 
       getPositions(), 
-      getPose());
+      new Pose2d());
 
 
     field = new Field2d();
