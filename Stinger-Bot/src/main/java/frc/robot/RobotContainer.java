@@ -110,7 +110,7 @@ public class RobotContainer {
 
     //Dpad down: manually spit out
     operatorController.povDown().whileTrue(
-      CommandManager.groundOuttake(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+      CommandManager.spitNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
     //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
     operatorController.start().onTrue(
