@@ -63,7 +63,7 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {
 
-    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.Voltage.PeakForwardVoltage = 12.0;
     motorConfig.Voltage.PeakReverseVoltage = 0.0;
 
