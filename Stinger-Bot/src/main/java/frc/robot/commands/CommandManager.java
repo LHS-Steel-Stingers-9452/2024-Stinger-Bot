@@ -5,8 +5,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 //import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
@@ -22,9 +25,7 @@ import frc.robot.Constants.Swerve;
 
 public class CommandManager {
 
-    public static Command intakeNote(Intake intake, Transfer transfer
-    //,Arm arm
-    ){
+    public static Command intakeNote(Intake intake, Transfer transfer){
         //auto intake Note
         Command command = new ParallelCommandGroup(
            //new InstantCommand(()-> arm.requestState(PivotStates.CommunityShot)),
@@ -33,8 +34,8 @@ public class CommandManager {
         return command;
     }
 
-    public static Command groundOuttake(Intake intake, Transfer transfer){
-        //auto intake Note
+    public static Command spitNote(Intake intake, Transfer transfer){
+        //reverse intake and transfer
         Command command = new ParallelCommandGroup(
             new InstantCommand(()-> intake.setIntakeMotorSpeed(IntakeConstants.intakeSpitSpeed), intake),
             new InstantCommand(()-> transfer.setTransferSpeed(TransferConstants.tranSpitSpeed), transfer));
@@ -112,6 +113,14 @@ public class CommandManager {
         
     }
   */
+    public static Command flashLeds(){
+        Command command =
+            new SequentialCommandGroup(
+                new InstantCommand(()-> LimelightHelpers.setLEDMode_ForceBlink("Stinger_Cam")),
+                Commands.waitSeconds(1),
+                new InstantCommand(()-> LimelightHelpers.setLEDMode_ForceOff("Stinger_Cam")));
+        return command;
+    }
 
     
 }
