@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
 
@@ -50,9 +49,8 @@ public class IntakeNoteReg extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSub.stopIntake();
-    transferSub.stopTransfer();
-    LimelightHelpers.setLEDMode_ForceBlink("Stinger_Cam");
+    CommandManager.stopIntaking(intakeSub, transferSub);
+    CommandManager.flashLeds();
   }
 
   // Returns true when the command should end.
