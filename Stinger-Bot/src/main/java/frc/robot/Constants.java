@@ -155,7 +155,7 @@ public class Constants {
         public static final double tranSpitSpeed = -1.0;
     }
 
-    public static final class shooterConstants{
+    public static final class ShooterConstants{
         public static final int topID = 17;
         public static final int bottomID = 18;
 
@@ -181,6 +181,7 @@ public class Constants {
         public static final double kP = 40;//39
         public static final double kI = 0;//0
         public static final double kD = .0005;//.001
+        public static final double kG = 0;//TODO - Tune
         public static final double kCruiseVelocity = Math.PI * 4;
         public static final double kAcceleration = Math.PI*2.4;//2
         public static final double kJerk = Math.PI * 20; //Math.PI * 15
@@ -188,6 +189,24 @@ public class Constants {
         public static final double kErrorTolerance = .05;
         public static final double kSensorToMechanismGearRatio = 92.85;//Actual: 92.8571428571
         public static final int kCurrentLimit = 70;
+        public static final boolean kEnableCurrentLimit = true;
+
+
+        /* case DefaultState:
+        desiredPosition = 0;
+        break;
+      case AmpState:
+        desiredPosition = 0.23;//Origin: .22
+        break;
+      case ShooterState:
+        desiredPosition = MathUtil.clamp(angle.getAsDouble(), 0, .22);
+        break;
+      case CommunityShot:
+        desiredPosition = 0.024;
+        break;
+      case MidState:
+        desiredPosition = 0.096;// actual mid position should be around 0.13185
+        break; */
     }
 
     public static final class ClimberConstants{
