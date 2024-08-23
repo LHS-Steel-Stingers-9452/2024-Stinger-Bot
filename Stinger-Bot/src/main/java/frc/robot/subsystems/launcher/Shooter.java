@@ -5,15 +5,17 @@
 package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.shooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -27,10 +29,9 @@ public class Shooter extends SubsystemBase {
   private final TalonFX topFlywheel;
   private final TalonFX botttomFlywheel;
 
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
 
   private TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
 
   private double targetVelocValue;
 
@@ -38,16 +39,21 @@ public class Shooter extends SubsystemBase {
   GenericEntry velocAbsRPS;
   GenericEntry canShoot;
 
+  //REVIEW - If arm follower works then utilize here as well
   public Shooter() {
 
     topFlywheel = new TalonFX(topID);
     botttomFlywheel = new TalonFX(bottomID);
 
-    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    motorConfig.Voltage.PeakForwardVoltage = 12.0;
-    motorConfig.Voltage.PeakReverseVoltage = 12.0;
+    velocRawRPS = Shuffleboard.getTab("Shooter").add("Veloc [Raw-RPS]",0).getEntry();
+    velocAbsRPS = Shuffleboard.getTab("Shooter").add("Veloc [Abs-RPS]",0).getEntry();
+    canShoot = Shuffleboard.getTab("Shooter").add("At speed?", false).getEntry();
 
-    /* Update Shooter Gains from TunableNumbers */
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motorConfig.Voltage.PeakForwardVoltage = 12.0;
+    motorConfig.Voltage.PeakReverseVoltage = -12.0;
+
+    //TODO - Values must be manually tuned
     motorConfig.Slot0.kP = kP;
     motorConfig.Slot0.kI = kI;
     motorConfig.Slot0.kD = kD;
@@ -65,10 +71,6 @@ public class Shooter extends SubsystemBase {
     topFlywheel.optimizeBusUtilization();
     botttomFlywheel.getVelocity().setUpdateFrequency(50);
     botttomFlywheel.optimizeBusUtilization();  
-
-    velocRawRPS = Shuffleboard.getTab("Shooter").add("Veloc [Raw-RPS]",0).getEntry();
-    velocAbsRPS = Shuffleboard.getTab("Shooter").add("Veloc [Abs-RPS]",0).getEntry();
-    canShoot = Shuffleboard.getTab("Shooter").add("At speed?", false).getEntry();
   }
 
   /**
@@ -80,7 +82,7 @@ public class Shooter extends SubsystemBase {
   }
 
     /**
-     * @return true if the error of the shooter is within the tolerance
+     * @return true if the veloc of the shooter is within the tolerance
      */
     public boolean areWheelsAtSpeed() {
       double launchError = Math.abs(targetVelocValue - getShooterVelocity());
@@ -95,9 +97,13 @@ public class Shooter extends SubsystemBase {
     velocAbsRPS.setDouble(Math.abs(getShooterVelocity()));
 
     canShoot.setBoolean(areWheelsAtSpeed());
-    if (areWheelsAtSpeed() && (targetVelocValue == 0)){
-        coastMode();
-    }
+
+    //FIXME - Logic could be flaw not allowing the motors to move when requested
+    //NOTE - By the time motors leads are shorted coast mode will be applied so the else{} logic is uncessecarry
+    //REVIEW - Logic needs secand hand confirmation review, but issues hould be resolved
+    if ((areWheelsAtSpeed()) && (targetVelocValue == 0)){
+      coastMode();
+    } 
   }
 
     /**
@@ -107,14 +113,6 @@ public class Shooter extends SubsystemBase {
   public void dutyShot(double speed){
     topFlywheel.set(speed);
     botttomFlywheel.set(speed);
-  }
-  
-  /**
-   * To be used with {@code dutyShot()}
-   */
-  public void dutyStop(){
-    topFlywheel.setControl(new StaticBrake());
-    botttomFlywheel.setControl(new StaticBrake());
   }
 
   /**
@@ -130,7 +128,7 @@ public class Shooter extends SubsystemBase {
    */
   public void instantStop(){
     targetVelocValue = 0;
-    topFlywheel.setControl(new StaticBrake());
+    topFlywheel.setControl(new NeutralOut());
   }
 
   /**
