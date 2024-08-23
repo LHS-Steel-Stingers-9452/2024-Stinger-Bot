@@ -3,13 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 //import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
@@ -20,7 +18,6 @@ import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.launcher.Shooter;
-import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.Swerve;
 
 public class CommandManager {
@@ -54,7 +51,7 @@ public class CommandManager {
             new InstantCommand(() -> transfer.stopTransfer(), transfer),
             new InstantCommand(() -> intake.stopIntake(), intake),
             new InstantCommand(() -> arm.requestState(PivotStates.DefaultState)),
-            new InstantCommand(() -> shooter.stopShooter()));
+            new InstantCommand(() -> shooter.dutyStop()));
         return command;
     }
 
@@ -79,7 +76,7 @@ public class CommandManager {
         return command;
     }
 
-    //kp needs to be tunned
+    //FIXME -  Non responsive
     public static double limelightAim(){
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -87,6 +84,8 @@ public class CommandManager {
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
     double kP = .035;
+
+    @SuppressWarnings("resource")
     PIDController aimPidController = new PIDController(kP, 0, 0);
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
