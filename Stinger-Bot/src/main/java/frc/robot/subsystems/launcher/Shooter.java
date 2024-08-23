@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.LauncherConstants.*;
+import static frc.robot.Constants.shooterConstants.*;
 import frc.robot.Constants.RobotConstants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -31,8 +31,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 public class Shooter extends SubsystemBase {
 
   /** Creates a new Launcher. */
-  private final TalonFX topLauncher;
-  private final TalonFX bottomLauncher;
+  private final TalonFX topFlywheel;
+  private final TalonFX botttomFlywheel;
 
 
   private TalonFXConfiguration motorConfig = new TalonFXConfiguration();
@@ -47,8 +47,8 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {
 
-    topLauncher = new TalonFX(topLaunchID);
-    bottomLauncher = new TalonFX(bottomLaunchID);
+    topFlywheel = new TalonFX(topID);
+    botttomFlywheel = new TalonFX(bottomID);
 
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.Voltage.PeakForwardVoltage = 12.0;
@@ -63,15 +63,15 @@ public class Shooter extends SubsystemBase {
     /* Apply configs */
     //Both motors are CC+
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    topLauncher.getConfigurator().apply(motorConfig);
+    topFlywheel.getConfigurator().apply(motorConfig);
     
-    bottomLauncher.setControl(new Follower(topLaunchID, false));
+    botttomFlywheel.setControl(new Follower(topID, false));
 
     // optimize StatusSignal rates for the Talons
-    topLauncher.getVelocity().setUpdateFrequency(50);
-    topLauncher.optimizeBusUtilization();
-    bottomLauncher.getVelocity().setUpdateFrequency(50);
-    bottomLauncher.optimizeBusUtilization();  
+    topFlywheel.getVelocity().setUpdateFrequency(50);
+    topFlywheel.optimizeBusUtilization();
+    botttomFlywheel.getVelocity().setUpdateFrequency(50);
+    botttomFlywheel.optimizeBusUtilization();  
 
     velocRawRPS = Shuffleboard.getTab("Shooter").add("Veloc [Raw-RPS]",0).getEntry();
     velocAbsRPS = Shuffleboard.getTab("Shooter").add("Veloc [Abs-RPS]",0).getEntry();
@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
   * @return the velocity of the shooter in RPS
   */
   public double getShooterVelocity() {
-    return topLauncher.getVelocity().getValueAsDouble();
+    return topFlywheel.getVelocity().getValueAsDouble();
   }
 
     /**
@@ -112,8 +112,16 @@ public class Shooter extends SubsystemBase {
    * @param speed value range: [-1,1]
    */
   public void dutyShot(double speed){
-    topLauncher.set(speed);
-    bottomLauncher.set(speed);
+    topFlywheel.set(speed);
+    botttomFlywheel.set(speed);
+  }
+  
+  /**
+   * To be used with {@code dutyShot()}
+   */
+  public void dutyStop(){
+    topFlywheel.setControl(new StaticBrake());
+    botttomFlywheel.setControl(new StaticBrake());
   }
 
   /**
@@ -121,7 +129,7 @@ public class Shooter extends SubsystemBase {
   */
   public void runShooter(double targetVelocity) {
     targetVelocValue = targetVelocity;
-    topLauncher.setControl(velocityVoltageRequest.withVelocity(targetVelocity));
+    topFlywheel.setControl(velocityVoltageRequest.withVelocity(targetVelocity));
   }
 
   /**
@@ -129,7 +137,7 @@ public class Shooter extends SubsystemBase {
    */
   public void instantStop(){
     targetVelocValue = 0;
-    topLauncher.setControl(new StaticBrake());
+    topFlywheel.setControl(new StaticBrake());
   }
 
   /**
@@ -137,6 +145,6 @@ public class Shooter extends SubsystemBase {
    */
   private void coastMode(){
     targetVelocValue = 0;
-    topLauncher.setControl(new CoastOut());
+    topFlywheel.setControl(new CoastOut());
   }
 }
