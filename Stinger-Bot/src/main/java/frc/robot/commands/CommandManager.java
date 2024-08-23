@@ -13,7 +13,6 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Arm.PivotStates;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
@@ -50,8 +49,8 @@ public class CommandManager {
         Command command = new ParallelCommandGroup(
             new InstantCommand(() -> transfer.stopTransfer(), transfer),
             new InstantCommand(() -> intake.stopIntake(), intake),
-            new InstantCommand(() -> arm.requestState(PivotStates.DefaultState)),
-            new InstantCommand(() -> shooter.dutyStop()));
+            new InstantCommand(() -> arm.setPosition(0.0)),
+            new InstantCommand(() -> shooter.instantStop()));
         return command;
     }
 

@@ -15,12 +15,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.shooterConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Arm.PivotStates;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -50,7 +49,7 @@ public class RobotContainer {
 
     transferSub = new Transfer();
 
-    armSub = new Arm(null);
+    armSub = new Arm();
 
     shooterSub = new Shooter();
 
@@ -122,39 +121,39 @@ public class RobotContainer {
     operatorController.y()
       .onTrue(
         new ParallelCommandGroup(
-          new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub),
-          new InstantCommand(() -> shooterSub.dutyShot(shooterConstants.dutyAmpShot), shooterSub)));
+          new InstantCommand(()-> armSub.setPosition(0.23), armSub),
+          new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutyAmpShot), shooterSub)));
 
     //slighly elevated state
     operatorController.b()
       .onTrue(
-        new InstantCommand(()-> armSub.requestState(PivotStates.MidState), armSub));
+        new InstantCommand(()-> armSub.setPosition(0.096), armSub));
 
     //slighly elevated state
     operatorController.x()
       .onTrue(
-        new InstantCommand(()-> armSub.requestState(PivotStates.CommunityShot), armSub));
+        new InstantCommand(()-> armSub.setPosition(0.024), armSub));
     
     //bring arm to default position
     operatorController.a()
       .onTrue(
-        new InstantCommand(()-> armSub.requestState(PivotStates.DefaultState), armSub));
+        new InstantCommand(()-> armSub.setPosition(0.0), armSub));
 
   /**
   * Shoot Related Bindings
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
     operatorController.rightTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.dutyShot(shooterConstants.dutySpeakerShot)))
-        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
+      new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutySpeakerShot)))
+        .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
 
     operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(1)))
-        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
+        .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
 
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
-      .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
+      .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
