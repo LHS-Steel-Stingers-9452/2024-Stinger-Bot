@@ -19,61 +19,49 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
-import frc.robot.Util.TunableNumber;
-
 
 
 public class Shooter extends SubsystemBase {
 
   /** Creates a new Launcher. */
-  private final TalonFX topLauncher = new TalonFX(topLaunchID);
-  private final TalonFX bottomLauncher = new TalonFX(bottomLaunchID);
-
-  private static TunableNumber shooterKP = new TunableNumber("Shooter KP", 0.05);
-  private static TunableNumber shooterKI = new TunableNumber("Shooter KI", 0);
-  private static TunableNumber shooterKD = new TunableNumber("Shooter KD", 0);
-  private static TunableNumber shooterKV = new TunableNumber("Shooter KV", 0.113);
-
-  //Setpoint in RPS
-  private static TunableNumber shooterSetPointVal = new TunableNumber("Shooter setpoint", 0);
+  private final TalonFX topLauncher;
+  private final TalonFX bottomLauncher;
 
 
   private TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
 
-  GenericEntry shooterVeloc;
-  GenericEntry shooterVelocRPM;
+  private double targetVelocValue;
+
+  GenericEntry velocRawRPS;
+  GenericEntry velocAbsRPS;
   GenericEntry canShoot;
-
-
-  public enum shooterSetpoints{
-    BaseShot,
-    AmpShot,
-    PassShot,
-    CustomShot
-  }
 
   public Shooter() {
 
+    topLauncher = new TalonFX(topLaunchID);
+    bottomLauncher = new TalonFX(bottomLaunchID);
+
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.Voltage.PeakForwardVoltage = 12.0;
-    motorConfig.Voltage.PeakReverseVoltage = 0.0;
+    motorConfig.Voltage.PeakReverseVoltage = 12.0;
 
     /* Update Shooter Gains from TunableNumbers */
-    motorConfig.Slot0.kP = shooterKP.get();
-    motorConfig.Slot0.kI = shooterKI.get();
-    motorConfig.Slot0.kD = shooterKD.get();
-    motorConfig.Slot0.kV = shooterKV.get();
+    motorConfig.Slot0.kP = kP;
+    motorConfig.Slot0.kI = kI;
+    motorConfig.Slot0.kD = kD;
+    motorConfig.Slot0.kV = kV;
 
     /* Apply configs */
+    //Both motors are CC+
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     topLauncher.getConfigurator().apply(motorConfig);
     
@@ -85,39 +73,9 @@ public class Shooter extends SubsystemBase {
     bottomLauncher.getVelocity().setUpdateFrequency(50);
     bottomLauncher.optimizeBusUtilization();  
 
-    
-
-    shooterVeloc = Shuffleboard.getTab("Shooter").add("Shooter Velocity[RPS]", 0).getEntry();
-    canShoot = Shuffleboard.getTab("Shooter").add("Shooter at speed?", false).getEntry();
-    shooterVelocRPM = Shuffleboard.getTab("Shooter").add("Shooter Veloc [RPM]",0).getEntry();
-  }
-
-  /**
-   * Backup shot using duty cycle 
-   * @param speed
-   */
-  public void setShooterSpeed(double speed){
-    topLauncher.set(speed);
-    bottomLauncher.set(speed);
-  }
-
-  /**
-  * @param targetVelocity The target velocity in RPS of the shooter 
-  */
-  public void runShooter(double targetVelocity) {
-    // Save Velocity setpoints
-    shooterSetPointVal.set(targetVelocity);
-    topLauncher.setControl(velocityVoltageRequest.withVelocity(targetVelocity));
-  }
-
-  public void runShooter() {
-    // Get the velocity setpoint from TunableNumber
-    topLauncher.setControl(velocityVoltageRequest.withVelocity(shooterSetPointVal.get()));
-  }
-
-  public void stopShooter(){
-    topLauncher.setControl(new StaticBrake());
-    bottomLauncher.setControl(new StaticBrake());
+    velocRawRPS = Shuffleboard.getTab("Shooter").add("Veloc [Raw-RPS]",0).getEntry();
+    velocAbsRPS = Shuffleboard.getTab("Shooter").add("Veloc [Abs-RPS]",0).getEntry();
+    canShoot = Shuffleboard.getTab("Shooter").add("At speed?", false).getEntry();
   }
 
   /**
@@ -128,15 +86,11 @@ public class Shooter extends SubsystemBase {
     return topLauncher.getVelocity().getValueAsDouble();
   }
 
-  public double getShooterVelocityRPM(){
-    return getShooterVelocity() * 60;
-  }
-
     /**
      * @return true if the error of the shooter is within the tolerance
      */
     public boolean areWheelsAtSpeed() {
-      double launchError = Math.abs(shooterSetPointVal.get() - getShooterVelocity());
+      double launchError = Math.abs(targetVelocValue - getShooterVelocity());
       return launchError < shooterTolerence;
   }
 
@@ -144,52 +98,45 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    velocRawRPS.setDouble(getShooterVelocity());
+    velocAbsRPS.setDouble(Math.abs(getShooterVelocity()));
+
     canShoot.setBoolean(areWheelsAtSpeed());
-    shooterVeloc.setDouble(getShooterVelocity());
-    shooterVeloc.setDouble(getShooterVelocityRPM());
+    if (areWheelsAtSpeed() && (targetVelocValue == 0)){
+        coastMode();
+    }
+  }
+
+    /**
+   * Shoot using duty cycle 
+   * @param speed value range: [-1,1]
+   */
+  public void dutyShot(double speed){
+    topLauncher.set(speed);
+    bottomLauncher.set(speed);
   }
 
   /**
-  * Update Shooter Gains from TunableNumbers
+  * @param targetVelocity The target velocity in RPS 
   */
-  public void updateGains() {
-    var slot0 = new Slot0Configs();
-
-    slot0.kP = shooterKP.get();
-    slot0.kI = shooterKI.get();
-    slot0.kD = shooterKD.get();
-    slot0.kV = shooterKV.get();
-
-    topLauncher.getConfigurator().apply(slot0);
-    //bottomLauncher.getConfigurator().apply(slot0);//just in case
+  public void runShooter(double targetVelocity) {
+    targetVelocValue = targetVelocity;
+    topLauncher.setControl(velocityVoltageRequest.withVelocity(targetVelocity));
   }
 
   /**
-  * @param shooterVeloc - Requested shooter veloc in RPS
-  */
-  public void setShooterSetpoints(Double shooterVeloc) {
-    shooterSetPointVal.set(shooterVeloc);
+   * Stop motors with break mode
+   */
+  public void instantStop(){
+    targetVelocValue = 0;
+    topLauncher.setControl(new StaticBrake());
   }
 
-  /*
-  * Command Factories
-  */
-  public Command runShooterCommand(double velocity) {
-    return new RunCommand(()->this.runShooter(velocity), this);
+  /**
+   * Stop motors with coast mode
+   */
+  private void coastMode(){
+    targetVelocValue = 0;
+    topLauncher.setControl(new CoastOut());
   }
-
-  public Command runShooterCommand() {
-      return new RunCommand(()->this.runShooter(), this);
-  }
-
-  public Command stopShooterCommand() {
-      return new RunCommand(()->this.stopShooter(), this);
-  }
-
-
-  public Command updateShooterGainsCommand() {
-      return new InstantCommand(()->this.updateGains(), this);
-  }
-  
-
 }
