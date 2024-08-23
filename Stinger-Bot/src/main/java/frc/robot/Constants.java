@@ -153,19 +153,23 @@ public class Constants {
         //transfer
         public static final double transferSpeed = 1.0;
         public static final double tranSpitSpeed = -1.0;
-
-        public static final double speedTolerance = 0.0;//to be determined
     }
 
-    public static final class LauncherConstants{
-        public static final int topLaunchID = 17;
-        public static final int bottomLaunchID = 18;
-
-        public static final double shooterTolerence = 10;
+    public static final class shooterConstants{
+        public static final int topID = 17;
+        public static final int bottomID = 18;
 
         //Duty cycle value [quick backup shots]
         public static final double dutySpeakerShot = 0.50;
         public static final double dutyAmpShot = 0.22;//Origin .20
+
+        public static final double shooterTolerence = 10;
+
+        //PID values[Need to be tuned]
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kV = 0;
     }
 
     public static final class ArmConstants{
@@ -202,7 +206,6 @@ public class Constants {
     public static final class AutoConstants{}
 
     public static final class DIOConstants {
-        public static final int encoderDioPort = 0;
         public static final int photoSensDioPort = 7;
     }
 
