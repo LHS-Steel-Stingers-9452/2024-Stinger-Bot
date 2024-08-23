@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.LauncherConstants;
-import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.shooterConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autoCommands;
@@ -124,7 +123,7 @@ public class RobotContainer {
       .onTrue(
         new ParallelCommandGroup(
           new InstantCommand(()-> armSub.requestState(PivotStates.AmpState), armSub),
-          new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutyAmpShot), shooterSub)));
+          new InstantCommand(() -> shooterSub.dutyShot(shooterConstants.dutyAmpShot), shooterSub)));
 
     //slighly elevated state
     operatorController.b()
@@ -146,33 +145,28 @@ public class RobotContainer {
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
     operatorController.rightTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(LauncherConstants.dutySpeakerShot))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+      new InstantCommand(() -> shooterSub.dutyShot(shooterConstants.dutySpeakerShot)))
+        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
     operatorController.leftTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.setShooterSpeed(1))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+      new InstantCommand(() -> shooterSub.dutyShot(1)))
+        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
     //Trap shot
-    operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.setShooterSpeed(0.38))).onFalse(new InstantCommand(()-> shooterSub.stopShooter()));
+    operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
+      .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
-      CommandManager.feedNote(transferSub)).onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
-
-  /**
-   * Tunning stuff
-   */
-  if (RobotConstants.isShooterTuningMode) {
-      SmartDashboard.putData("Update Shooter Gains", shooterSub.updateShooterGainsCommand());
-      SmartDashboard.putData("Run Shooter", shooterSub.runShooterCommand());
-      SmartDashboard.putData("Stop Shooter", shooterSub.stopShooterCommand());
-    }
+      CommandManager.feedNote(transferSub))
+        .onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
   }
 
 /* 
   //[OG Saftey Auto]
   private Command preloadAutoAuton(){
     return new InstantCommand(
-      () -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.stopShooter())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
+      () -> shooterSub.setShooterSpeed(.5)).andThen(Commands.waitSeconds(7)).andThen(new InstantCommand(() -> transferSub.setTransferSpeed(.35))).andThen(Commands.waitSeconds(2)).andThen(new InstantCommand(() -> shooterSub.dutyStop())).andThen(new InstantCommand(() -> transferSub.stopTransfer()));
   }
 */
 
