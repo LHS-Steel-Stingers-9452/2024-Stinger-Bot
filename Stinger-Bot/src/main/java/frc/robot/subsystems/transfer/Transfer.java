@@ -71,7 +71,6 @@ public class Transfer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
     m_isNoteInTransfer = photoSensor.get() ? false : true;
     SmartDashboard.putBoolean("Is note?", isNoteInTransfer());//Can delete this if LL blink works
     SmartDashboard.putNumber("transfer Speed(RPM)", Math.abs((getTransferSpeed() * 60) *1/9));
