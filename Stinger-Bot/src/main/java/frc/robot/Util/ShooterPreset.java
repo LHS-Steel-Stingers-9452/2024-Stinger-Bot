@@ -1,10 +1,16 @@
 package frc.robot.Util;
 
-public class ShooterPreset {
+public class ShooterPreset implements Comparable<ShooterPreset>{
     private double distance;
     private double armAngle;
     private double shooterVeloc;
 
+    /**
+     * 
+     * @param distance Units: tbd
+     * @param armAngle Units: Rotations
+     * @param shooterVeloc Units: RPS
+     */
     public ShooterPreset(double distance, double armAngle, double shooterVeloc){
         this.distance = distance;
         this.armAngle = armAngle;
@@ -37,4 +43,9 @@ public class ShooterPreset {
         this.shooterVeloc = newSpeed;
     }
     
+
+    @Override
+    public int compareTo(ShooterPreset altPreset){
+        return Double.compare(this.getDistance(), altPreset.getDistance());
+    }
 }
