@@ -63,6 +63,7 @@ public class Shooter extends SubsystemBase {
     //Both motors are CC+
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     topFlywheel.getConfigurator().apply(motorConfig);
+    botttomFlywheel.getConfigurator().apply(motorConfig);
     
     botttomFlywheel.setControl(new Follower(topID, false));
 
@@ -101,9 +102,11 @@ public class Shooter extends SubsystemBase {
     //FIXME - Logic could be flaw not allowing the motors to move when requested
     //NOTE - By the time motors leads are shorted coast mode will be applied so the else{} logic is uncessecarry
     //REVIEW - Logic needs secand hand confirmation review, but issues hould be resolved
+    /* 
     if ((areWheelsAtSpeed()) && (targetVelocValue == 0)){
       coastMode();
     } 
+    */
   }
 
     /**
@@ -137,5 +140,11 @@ public class Shooter extends SubsystemBase {
   private void coastMode(){
     targetVelocValue = 0;
     topFlywheel.setControl(new CoastOut());
+  }
+
+  public void dutyStop(){
+
+    topFlywheel.setControl(new StaticBrake());
+    botttomFlywheel.setControl(new StaticBrake());
   }
 }
