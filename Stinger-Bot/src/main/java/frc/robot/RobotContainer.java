@@ -24,7 +24,6 @@ import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
 import frc.robot.subsystems.transfer.Transfer;
-import frc.robot.subsystems.vision.LimeLight;
 
 public class RobotContainer {
   //Controllers
@@ -43,7 +42,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     //initialize subsytems
-    swerveBase = new SwerveBase(new LimeLight());
+    swerveBase = new SwerveBase();
 
     intakeSub = new Intake();
 
@@ -145,15 +144,15 @@ public class RobotContainer {
   //Right Trigger: Manual speaker speed [dutycycle]
     operatorController.rightTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutySpeakerShot)))
-        .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
+        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
     operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(1)))
-        .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
+        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
-      .onFalse(new InstantCommand(()-> shooterSub.instantStop()));
+      .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
   //Right Bumber: Feed Note to shooter [run transfer]
     operatorController.rightBumper().whileTrue(
