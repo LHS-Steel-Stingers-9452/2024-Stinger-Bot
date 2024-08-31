@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -8,6 +9,9 @@ public class Constants {
     public static final class RobotConstants{
         public static final boolean isTuningMode = true;
         public static final boolean isShooterTuningMode = true;
+
+        public static final Pose2d blueSpeaker = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d(0));
+        public static final Pose2d redSpeaker = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d(Math.PI));
     }
 
     public static final class ControllerConstants{
