@@ -5,13 +5,17 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.Swerve.Mod0;
 import frc.robot.Constants.Swerve.Mod1;
 import frc.robot.Constants.Swerve.Mod2;
 import frc.robot.Constants.Swerve.Mod3;
-import frc.robot.subsystems.vision.LimeLight;
 
 import static frc.robot.Constants.Swerve.*;
+
+import java.sql.Driver;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,15 +32,17 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 //Favorite import?
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 
 public class SwerveBase extends SubsystemBase {
@@ -46,17 +52,20 @@ public class SwerveBase extends SubsystemBase {
   private final SwerveDrivePoseEstimator swervePose;
   private final SwerveModule[] swerveModules;
 
-  private Field2d field;
+  private Alliance allianceColor;
+  private Pose2d speakerPosition;
 
-  LimeLight StingerCam;
+  StructArrayPublisher<SwerveModulePosition> swerveDisplay;
+  StructArrayPublisher<Pose2d> arrayPublisher;
+  
+  GenericEntry speakerDistance;
+  GenericEntry speakerRotation;
 
 
-  public SwerveBase(LimeLight camera) {
+  public SwerveBase() {
 
     pidgeotto = new Pigeon2(pigeonID);
     pidgeotto.setYaw(0);
-
-    StingerCam = camera;
 
     swerveModules = new SwerveModule[] {
       new SwerveModule(0, Mod0.constants),
@@ -80,10 +89,6 @@ public class SwerveBase extends SubsystemBase {
       getGyroYaw(), 
       getPositions(), 
       new Pose2d());
-
-
-    field = new Field2d();
-    SmartDashboard.putData("Field", field);
 
     AutoBuilder.configureHolonomic(
             this::getPose, // Robot pose supplier
@@ -111,11 +116,17 @@ public class SwerveBase extends SubsystemBase {
             this // Reference to this subsystem to set requirements
     );
 
+    //For visualizing swerve on Advantage Scope
+   swerveDisplay = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("RealOutputs/ModulePosition/Outputs", SwerveModulePosition.struct).publish();
+
+   arrayPublisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
+
+    speakerDistance =  Shuffleboard.getTab("vision").add("speaker distance[m]",0).getEntry();
+    speakerRotation =  Shuffleboard.getTab("vision").add("speaker angle[degrees]",0).getEntry();
     
   }
-  //For visualizing swerve on Advantage Scope
-  StructArrayPublisher<SwerveModuleState> swerveDisplay = NetworkTableInstance.getDefault()
-    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, Boolean isOpenLoop){
 
@@ -159,55 +170,166 @@ public class SwerveBase extends SubsystemBase {
     return states;
   }
 
-/*
- * All getters here
- */
-public SwerveModulePosition[] getPositions(){
-  SwerveModulePosition[] positions = new SwerveModulePosition[4];
+  /*
+   * All getters here
+   */
+  public SwerveModulePosition[] getPositions(){
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
-  for (SwerveModule mod: swerveModules){
-    positions[mod.moduleNumber] = mod.getPosition();
+    for (SwerveModule mod: swerveModules){
+      positions[mod.moduleNumber] = mod.getPosition();
+    }
+
+    return positions;
   }
 
-  return positions;
-}
+  public double[] getDriveTemp (){
 
-public double[] getDriveTemp (){
+    double [] motorTemps = new double[4];
 
-  double [] motorTemps = new double[4];
+    for (SwerveModule mod: swerveModules){
 
-  for (SwerveModule mod: swerveModules){
-
-    motorTemps[mod.moduleNumber] = mod.getDriveTemp();
+     motorTemps[mod.moduleNumber] = mod.getDriveTemp();
+    }
+    return motorTemps;
   }
-  return motorTemps;
-}
   
-public double[] getDriveBusVoltage (){
+  public double[] getDriveBusVoltage (){
 
-  double [] BusVoltage = new double[4];
+    double [] BusVoltage = new double[4];
 
-  for (SwerveModule mod: swerveModules){
+    for (SwerveModule mod: swerveModules){
 
-    BusVoltage[mod.moduleNumber] = mod.getDriveBusVoltage();
+      BusVoltage[mod.moduleNumber] = mod.getDriveBusVoltage();
+    }
+    return BusVoltage;
   }
-  return BusVoltage;
-}
 
-public double[] getDriveOutputCurrent (){
+  public double[] getDriveOutputCurrent (){
 
-  double [] OutputCurrent = new double[4];
+    double [] OutputCurrent = new double[4];
 
-  for (SwerveModule mod: swerveModules){
+    for (SwerveModule mod: swerveModules){
 
-    OutputCurrent[mod.moduleNumber] = mod.getDriveOutputCurrent();
+      OutputCurrent[mod.moduleNumber] = mod.getDriveOutputCurrent();
+    }
+    return OutputCurrent;
   }
-  return OutputCurrent;
-}
 
   public Pose2d getPose(){
     return swervePose.getEstimatedPosition();
   }
+
+  public Rotation2d getHeading(){
+    return getPose().getRotation();
+  }
+
+  public Rotation2d getGyroYaw(){
+    return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
+  }
+
+  /**
+   * Gets the current robot-relative velocity (x, y and omega) of the robot
+   * @return A ChassisSpeeds object of the current robot-relative velocity
+   */
+  public ChassisSpeeds getRobotVelocity(){
+    return kinematics.toChassisSpeeds(getStates());
+  }
+
+  /**
+   * 
+   * @return current alliance color
+   */
+  private Alliance getAllianceColor(){
+      if(allianceColor == null){
+        if(DriverStation.getAlliance().isPresent()){
+          allianceColor = DriverStation.getAlliance().get();
+        }
+      }
+      return allianceColor;
+  } 
+
+  private Pose2d getSpeakerPos(){
+    if(speakerPosition == null) {
+      if(getAllianceColor() != null) {
+        speakerPosition = (getAllianceColor() == DriverStation.Alliance.Blue) ? Constants.RobotConstants.blueSpeaker
+          : Constants.RobotConstants.redSpeaker;
+      }
+    }
+
+    return speakerPosition;
+  }
+
+  //TODO - Get distance to speaker
+  //NOTE - Should utlize same logic red for blue speaker, which speaker is already determined in getSpeakerPos()
+  public double getDistanceToSpeaker(Pose2d robotPose, Pose2d speakerPosition){
+    double distanceToSpeaker;
+
+    if (speakerPosition == null) return 0.0;
+
+    //x diff
+    double xDiff = robotPose.getX() - speakerPosition.getX();
+    //y diff
+    double yDiff = robotPose.getY() - speakerPosition.getY();
+
+    double xPower = Math.pow(xDiff, 2);
+    //pathag
+    double yPower = Math.pow(yDiff, 2);
+
+    distanceToSpeaker = Math.sqrt(xPower + yPower);
+
+    return distanceToSpeaker;
+  }
+
+  //TODO - Rotation to speaker based on two methods below
+  //TODO - Get rotation to speaker blue
+  public double getBlueAngleToSpeaker(){
+    Pose2d robotPose = swervePose.getEstimatedPosition();
+    Pose2d speakerPosition = RobotConstants.blueSpeaker;
+
+    double xDiff = robotPose.getX() - speakerPosition.getX();
+    double yDiff = robotPose.getY() - speakerPosition.getY(); 
+
+    return 180 - Math.toDegrees(Math.atan(yDiff/xDiff));
+    
+  }
+  //TODO - Get roation to speaker red
+public double getRedAngleToSpeaker(){
+  Pose2d robotPose = swervePose.getEstimatedPosition();
+  Pose2d speakerPosition = RobotConstants.redSpeaker;
+
+  double xDiff = robotPose.getX() - speakerPosition.getX();
+  double yDiff = robotPose.getY() - speakerPosition.getY(); 
+
+  return Math.toDegrees(Math.atan(yDiff/xDiff));
+}
+
+public double calcAngleToSpeaker(){
+  if (getAllianceColor()== DriverStation.Alliance.Blue) {
+    return getBlueAngleToSpeaker();
+    
+  }
+  else{
+    return getRedAngleToSpeaker();
+  }
+  
+}
+
+
+//NOTE -  - WE USE THESE
+public Rotation2d rotToSpeaker(){
+  return Rotation2d.fromDegrees(calcAngleToSpeaker());
+}
+
+public double calcDistanceToSpeaker(){
+    if (getSpeakerPos()!= null) {
+      return getDistanceToSpeaker(swervePose.getEstimatedPosition(), getSpeakerPos());
+      
+    } else{ 
+      return 999;
+
+    }
+}
 
 
 /*
@@ -217,10 +339,6 @@ public double[] getDriveOutputCurrent (){
   public void setPose(Pose2d pose){
     swervePose.resetPosition(getGyroYaw(), getPositions(), pose);
 }
-
-public Rotation2d getHeading(){
-    return getPose().getRotation();
-  }
 
 public void setHeading(Rotation2d heading){
   swervePose.resetPosition(
@@ -237,49 +355,46 @@ public void setHeading(Rotation2d heading){
       );
   }
 
-  public Rotation2d getGyroYaw(){
-    return Rotation2d.fromDegrees(pidgeotto.getYaw().getValue());
-  }
-
   public void resetModulesToAbsolute(){
     for(SwerveModule module : swerveModules){
       module.resetToAbsolute();
     }
   }
-
-  /**
-   * Gets the current robot-relative velocity (x, y and omega) of the robot
-   * @return A ChassisSpeeds object of the current robot-relative velocity
-   */
-  public ChassisSpeeds getRobotVelocity(){
-      return kinematics.toChassisSpeeds(getStates());
-    }
   
 
   @Override
   public void periodic() {
+    //NOTE - All robot rotaion/position units must be in degrees OR Rotaton2d such as in our module and robot angle[With the exception of our Arm.java]
+    //NOTE - All robot distance traveled/velocity units must be in meters
+    //NOTE - All motor velocity must be measured in RPS[Exception on neo products which can be RPS or RPM]
+
     // This method will be called once per scheduler run
     swervePose.update(getGyroYaw(), getPositions());
 
-    StingerCam.setRobotOrientation(swervePose.getEstimatedPosition().getRotation().getDegrees());
+    boolean rejectUpdate = false;
+    LimelightHelpers.SetRobotOrientation("limelight", swervePose.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
-    if(!StingerCam.rejectPoseEstimate(pidgeotto.getRate() > 600))
-      {
-        swervePose.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));//tune these numbers 
-        swervePose.addVisionMeasurement(
-        StingerCam.getPoseEstimate().pose,
-        StingerCam.getPoseEstimate().timestampSeconds);
-      }
+    if(Math.abs(pidgeotto.getRate()) > 720 || mt2PoseEstimate.tagCount == 0){
+      rejectUpdate = true;
 
-    field.setRobotPose(getPose());
-
-    //Returns the Robot location of the field
-    SmartDashboard.putString("Robot Location coordinates", getPose().getTranslation().toString());
+    } else if(!rejectUpdate){
+      //REVIEW - Might have to increase these Vector values
+      swervePose.setVisionMeasurementStdDevs(VecBuilder.fill(.9,.9,9999999));
+      swervePose.addVisionMeasurement(
+        mt2PoseEstimate.pose, 
+        mt2PoseEstimate.timestampSeconds);
+    }
+    
+    //Gyro Yaw and Rate
     SmartDashboard.putNumber("Gyro Rate[Deg/S]", pidgeotto.getRate());
+    SmartDashboard.putNumber("Gyro Yaw[Deg]", getGyroYaw().getDegrees());
 
+    //Updates data for module visualization on advantage scope
+    swerveDisplay.set(getPositions());
+    arrayPublisher.set(new Pose2d[] {getPose()});
 
-    //gyro angle and swerve states and rate
-    SmartDashboard.putNumber("Gyro Angle", getGyroYaw().getDegrees());
-    swerveDisplay.set(getStates());
+    speakerDistance.setDouble(calcDistanceToSpeaker());
+    speakerRotation.setDouble(calcAngleToSpeaker());
   }
 }
