@@ -79,12 +79,16 @@ public class RobotContainer {
         () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
+        //REVIEW - Do we need to keep?
         () -> driverController.rightBumper().getAsBoolean(),//used to drive robot relative
         () -> driverController.leftBumper().getAsBoolean(),//used to decrease speed of chassis
+        //TODO - Replace with speakerlock[R2]
         () -> driverController.rightStick().getAsBoolean()//used to lock onto april tags
         ));
 
   //Y Button: Zero Gyro
+  //TODO - Swap buttons out with periodic check of alliance color and value[x,y] inversation based on it
+  //REVIEW -Relocate button, is useful for showcases
     driverController.y().onTrue(CommandManager.zeroGyro(swerveBase));
 
     driverController.start().onTrue(CommandManager.redReset(swerveBase, 180));
