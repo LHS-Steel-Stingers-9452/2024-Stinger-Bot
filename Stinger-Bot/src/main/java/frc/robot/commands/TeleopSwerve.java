@@ -57,6 +57,7 @@ public class TeleopSwerve extends Command {
   @Override
   public void execute() {
 
+    //TODO - Optimize how values are altered, before adding speaker lock
     double translationVal =
            MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
