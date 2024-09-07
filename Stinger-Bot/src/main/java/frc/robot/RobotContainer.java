@@ -80,10 +80,9 @@ public class RobotContainer {
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
         //REVIEW - Do we need to keep?
-        () -> driverController.rightBumper().getAsBoolean(),//used to drive robot relative
+        () -> driverController.rightTrigger().getAsBoolean(),//used to drive robot relative
         () -> driverController.leftBumper().getAsBoolean(),//used to decrease speed of chassis
-        //TODO - Replace with speakerlock[R2]
-        () -> driverController.rightStick().getAsBoolean()//used to lock onto april tags
+        () -> driverController.rightBumper().getAsBoolean()//used to lock onto speaker
         ));
 
   //Y Button: Zero Gyro
