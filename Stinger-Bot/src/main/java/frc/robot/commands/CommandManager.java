@@ -75,7 +75,7 @@ public class CommandManager {
         return command;
     }
 
-    //FIXME -  Non responsive
+    //NOTE - Dead Code
     public static double limelightAim(){
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -99,18 +99,8 @@ public class CommandManager {
 
     return targetingAngularVelocity;
     }
-/* 
-    public static double aimAtSpeaker(){
-        //get x diff
-        //get y diff
-        //get rot diff
-        //use pid to get desired
-        if(DriverStation.Alliance.Blue == DriverStation.getAlliance().get()){
-            //Lime
-        }
-        
-    }
-  */
+
+    //FIXME - Non responsive
     public static Command flashLeds(){
         Command command =
             new SequentialCommandGroup(
