@@ -12,40 +12,49 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.drive.SwerveBase;
-
-import frc.robot.LimelightHelpers;
 
 public class TeleopSwerve extends Command {
   /** Creates a new TeleopSwerve. */
   private SwerveBase swerveBase;
 
-  private DoubleSupplier translationSup;
-  private DoubleSupplier strafeSup;
+  private DoubleSupplier xSupplier;
+  private DoubleSupplier ySupplier;
   private DoubleSupplier rotationSup;
 
   private BooleanSupplier robotCentricSup;
   private BooleanSupplier slowChassisSup;
 
-  private BooleanSupplier lockTagSup;
+  private BooleanSupplier lockSpeakerSup;
+
+  private PIDController rotPIDController;
+
+  private GenericEntry rotationError;
 
   public TeleopSwerve( SwerveBase swerveBase,
-  DoubleSupplier translationSup,
-  DoubleSupplier strafeSup,
+  DoubleSupplier xSupplier,
+  DoubleSupplier ySupplier,
   DoubleSupplier rotationSup,
   BooleanSupplier robotCentricSup,
   BooleanSupplier slowChassisSup,
-  BooleanSupplier lockTagSup) {
+  BooleanSupplier lockSpeakerSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
-    this.translationSup = translationSup;
-    this.strafeSup = strafeSup;
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
     this.slowChassisSup = slowChassisSup;
-    this.lockTagSup = lockTagSup;
+    this.lockSpeakerSup = lockSpeakerSup;
+
+    //TODO - Values need to be tuned
+    rotPIDController = new PIDController(.35, 0, 0);
+
+    rotationError = Shuffleboard.getTab("vision").add("rot error[deg]", 0).getEntry();
 
     addRequirements(swerveBase);
   }
@@ -57,12 +66,11 @@ public class TeleopSwerve extends Command {
   @Override
   public void execute() {
 
-    //TODO - Optimize how values are altered, before adding speaker lock
-    double translationVal =
-           MathUtil.applyDeadband(translationSup.getAsDouble(), ControllerConstants.deadbandRange);
+    double xSpeedVal =
+           MathUtil.applyDeadband(xSupplier.getAsDouble(), ControllerConstants.deadbandRange);
 
-    double strafeVal =
-            MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerConstants.deadbandRange);
+    double ySpeedVal =
+            MathUtil.applyDeadband(ySupplier.getAsDouble(), ControllerConstants.deadbandRange);
 
     double rotationVal =
             MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
@@ -70,26 +78,24 @@ public class TeleopSwerve extends Command {
     boolean isChassisSlow = 
             slowChassisSup.getAsBoolean();
 
-    boolean isLockTag =
-            lockTagSup.getAsBoolean();
+    boolean isLockSpeaker =
+            lockSpeakerSup.getAsBoolean();
 
-    //If left bumper is held slow down chassis to a quarter of 4.6 m/s
-    if (isChassisSlow) {
-      swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
-      ((rotationVal)*Swerve.maxAngleVelocity),
-      (!robotCentricSup.getAsBoolean()),
-      (Swerve.openLoopDrive));
-    } else if(isLockTag) {
-      swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed).times(0.25)),
-      (CommandManager.limelightAim()),// should control robot rotation and lock onto april tags
-      (!robotCentricSup.getAsBoolean()),
-      (Swerve.openLoopDrive));
+    if (isChassisSlow){
+      xSpeedVal *= 0.25;
+      ySpeedVal *= 0.25;
     }
 
+    if(isLockSpeaker){
+      //NOTE - Currently getting error in degrees
+      rotationVal = 
+        //TODO -  test and negate if robot is moving opposite of desired rotation
+        rotPIDController.calculate(swerveBase.getGyroYaw().getDegrees(), swerveBase.rotToSpeaker().getDegrees());
+        rotationError.setDouble(rotPIDController.getPositionError());
+    }
+    
     swerveBase.drive(
-      (new Translation2d(translationVal, strafeVal).times(Swerve.maxSpeed)),
+      (new Translation2d(xSpeedVal, ySpeedVal).times(Swerve.maxSpeed)),
       (rotationVal)*Swerve.maxAngleVelocity,
       (!robotCentricSup.getAsBoolean()),
       (Swerve.openLoopDrive));
