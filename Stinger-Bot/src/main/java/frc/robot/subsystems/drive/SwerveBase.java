@@ -124,7 +124,7 @@ public class SwerveBase extends SubsystemBase {
   .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
 
     speakerDistance =  Shuffleboard.getTab("vision").add("speaker distance[m]",0).getEntry();
-    speakerRotation =  Shuffleboard.getTab("vision").add("speaker angle[degrees]",0).getEntry();
+    speakerRotation =  Shuffleboard.getTab("vision").add("rotation to speaker[degrees]",0).getEntry();
     
   }
 
@@ -281,8 +281,8 @@ public class SwerveBase extends SubsystemBase {
     return distanceToSpeaker;
   }
 
-  //TODO - Rotation to speaker based on two methods below
-  //TODO - Get rotation to speaker blue
+  //REVIEW - Rotation to speaker based on two methods below
+  //REVIEW - Get rotation to speaker blue
   public double getBlueAngleToSpeaker(){
     Pose2d robotPose = swervePose.getEstimatedPosition();
     Pose2d speakerPosition = RobotConstants.blueSpeaker;
@@ -293,21 +293,20 @@ public class SwerveBase extends SubsystemBase {
     return 180 - Math.toDegrees(Math.atan(yDiff/xDiff));
     
   }
-  //TODO - Get roation to speaker red
-public double getRedAngleToSpeaker(){
-  Pose2d robotPose = swervePose.getEstimatedPosition();
-  Pose2d speakerPosition = RobotConstants.redSpeaker;
+  //REVIEW - Get roation to speaker red
+  public double getRedAngleToSpeaker(){
+    Pose2d robotPose = swervePose.getEstimatedPosition();
+    Pose2d speakerPosition = RobotConstants.redSpeaker;
 
-  double xDiff = robotPose.getX() - speakerPosition.getX();
-  double yDiff = robotPose.getY() - speakerPosition.getY(); 
+    double xDiff = robotPose.getX() - speakerPosition.getX();
+    double yDiff = robotPose.getY() - speakerPosition.getY(); 
 
-  return Math.toDegrees(Math.atan(yDiff/xDiff));
-}
+    return Math.toDegrees(Math.atan(yDiff/xDiff));
+  }
 
 public double calcAngleToSpeaker(){
   if (getAllianceColor()== DriverStation.Alliance.Blue) {
     return getBlueAngleToSpeaker();
-    
   }
   else{
     return getRedAngleToSpeaker();
@@ -395,6 +394,6 @@ public void setHeading(Rotation2d heading){
     arrayPublisher.set(new Pose2d[] {getPose()});
 
     speakerDistance.setDouble(calcDistanceToSpeaker());
-    speakerRotation.setDouble(calcAngleToSpeaker());
+    speakerRotation.setDouble(rotToSpeaker().getDegrees());
   }
 }
