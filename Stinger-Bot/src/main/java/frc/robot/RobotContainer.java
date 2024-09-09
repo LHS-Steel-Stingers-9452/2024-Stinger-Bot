@@ -18,6 +18,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.VisionShot;
 import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.SwerveBase;
@@ -145,14 +146,17 @@ public class RobotContainer {
   * Shoot Related Bindings
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
-    operatorController.rightTrigger().whileTrue(
+    operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutySpeakerShot)))
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
-
+    /* 
     operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(1)))
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
+    */
 
+    operatorController.rightTrigger().whileTrue(
+      new VisionShot(armSub, shooterSub, swerveBase));
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
       .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
