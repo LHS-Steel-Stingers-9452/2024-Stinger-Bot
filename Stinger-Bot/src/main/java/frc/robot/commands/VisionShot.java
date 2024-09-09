@@ -6,8 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.launcher.Shooter;
+import frc.robot.LimelightHelpers;
 import frc.robot.Util.LookUpTbl;
+import frc.robot.Util.ShooterPreset;
 
 public class VisionShot extends Command {
       //shoot command
@@ -19,12 +22,14 @@ public class VisionShot extends Command {
      */
     private Arm armSub;
     private Shooter shooterSub;
-    private LookUpTbl visionLookupTable;
+    private SwerveBase swerveSub;
+    private LookUpTbl visionLookupTable = new LookUpTbl();
 
-  public VisionShot(Arm armSub, Shooter shooterSub){
+  public VisionShot(Arm armSub, Shooter shooterSub, SwerveBase swerveBase){
     // Use addRequirements() here to declare subsystem dependencies.
     this.armSub = armSub;
     this.shooterSub = shooterSub;
+    this.swerveSub = swerveBase;
 
     addRequirements(armSub, shooterSub);
   }
@@ -36,15 +41,25 @@ public class VisionShot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double distanceToSpeaker = swerveSub.calcDistanceToSpeaker();
+    ShooterPreset subsystemPresets = visionLookupTable.getShooterPreset(distanceToSpeaker);
+    //TODO - Add if statement to first check if robot is within speaker alignment tolerance
+    armSub.setPosition(subsystemPresets.getArmAngle());
+    shooterSub.runShooter(subsystemPresets.getShooterVeloc());
+    if (armSub.atRequestedPos() && shooterSub.areWheelsAtSpeed()){
+      LimelightHelpers.setLEDMode_ForceBlink("limelight");
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    LimelightHelpers.setLEDMode_ForceOff("limelight");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    return false;
   }
 }
