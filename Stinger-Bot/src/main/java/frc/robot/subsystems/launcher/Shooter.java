@@ -118,6 +118,11 @@ public class Shooter extends SubsystemBase {
     botttomFlywheel.set(speed);
   }
 
+      public void redirect(double speed){
+    topFlywheel.set(speed);
+  
+  }
+
   /**
   * @param targetVelocity The target velocity in RPS 
   */

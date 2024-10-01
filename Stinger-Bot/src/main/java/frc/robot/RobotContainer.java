@@ -125,7 +125,8 @@ public class RobotContainer {
       .onTrue(
         new ParallelCommandGroup(
           new InstantCommand(()-> armSub.setPosition(0.23), armSub),
-          new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutyAmpShot), shooterSub)));
+          new InstantCommand(() -> shooterSub.redirect(-0.35), shooterSub)));
+
 
     //slighly elevated state
     operatorController.b()
@@ -151,7 +152,8 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
     /* 
     operatorController.leftTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.dutyShot(1)))
+      new InstantCommand(() -> shooterSub.dutyShot(1)))\[]
+
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
     */
 
