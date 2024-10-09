@@ -52,7 +52,8 @@ public class TeleopSwerve extends Command {
     this.lockSpeakerSup = lockSpeakerSup;
 
     //TODO - Values need to be tuned
-    rotPIDController = new PIDController(.35, 0, 0);
+    rotPIDController = new PIDController(.008, 0, 0.0010);//.3 origin
+    rotPIDController.enableContinuousInput(-180, 180);
 
     rotationError = Shuffleboard.getTab("vision").add("rot error[deg]", 0).getEntry();
 
@@ -90,8 +91,8 @@ public class TeleopSwerve extends Command {
       //NOTE - Currently getting error in degrees
       rotationVal = 
         //TODO -  test and negate if robot is moving opposite of desired rotation
-        rotPIDController.calculate(swerveBase.getGyroYaw().getDegrees(), swerveBase.rotToSpeaker().getDegrees());
-        rotationError.setDouble(rotPIDController.getPositionError());
+        -rotPIDController.calculate(180 - swerveBase.getGyroYaw().getDegrees(), swerveBase.rotToSpeaker().getDegrees());
+        rotationError.setDouble(180 - rotPIDController.getPositionError());
     }
     
     swerveBase.drive(
