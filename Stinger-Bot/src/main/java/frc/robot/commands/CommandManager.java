@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-//import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
 import frc.robot.LimelightHelpers;
@@ -18,6 +18,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.transfer.Transfer;
 import frc.robot.subsystems.launcher.Shooter;
 import frc.robot.Constants.Swerve;
+import frc.robot.subsystems.climbers.Climbers;
 
 public class CommandManager {
 
@@ -72,6 +73,14 @@ public class CommandManager {
             new InstantCommand(
                 ()-> swerveBase.setHeading(new Rotation2d(Units.degreesToRadians(degrees))));
 
+        return command;
+    }
+
+     public static Command climberMove(Climbers climbers,  double RightClimbSetPoint){
+        Command command = 
+            new ParallelCommandGroup(
+                new InstantCommand(()-> climbers.setClimberSetpoint(RightClimbSetPoint))
+            );
         return command;
     }
 

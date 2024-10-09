@@ -230,6 +230,7 @@ public class Constants {
 
     public static final class DIOConstants {
         public static final int photoSensDioPort = 7;
+     
     }
 
 }

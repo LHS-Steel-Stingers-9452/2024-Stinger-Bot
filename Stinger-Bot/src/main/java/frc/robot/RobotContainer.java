@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.CommandManager;
@@ -21,6 +22,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.VisionShot;
 import frc.robot.commands.autoCommands;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drive.SwerveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.launcher.Shooter;
@@ -36,6 +38,7 @@ public class RobotContainer {
   private final Transfer transferSub;
   private final Arm armSub;
   private final Shooter shooterSub;
+  private final Climbers climberSub;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -53,6 +56,7 @@ public class RobotContainer {
 
     shooterSub = new Shooter();
 
+    climberSub = new Climbers();
 
 
     //Try moving where bindings are configured
@@ -92,6 +96,23 @@ public class RobotContainer {
     driverController.y().onTrue(CommandManager.zeroGyro(swerveBase));
 
     driverController.start().onTrue(CommandManager.redReset(swerveBase, 180));
+
+    /**
+     * Climber bindings 
+     *  Press and hold up d-pad for as long as you want to keep climbers going up
+     *  Press and hold down d-pad for as long as you want to keep climbers going down
+     */
+    driverController.povUp().whileTrue(new InstantCommand(()-> climberSub.climbUpTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+    driverController.povDown().whileTrue(new InstantCommand(() -> climberSub.climbDownTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+
+    /*Climber setpoints */
+    //Auto set's climbers 
+    //climbers max height
+    //Make sure max value is safe
+    driverController.povLeft().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight));
+    //climbers min height
+    //Make sure min value is safe
+    driverController.povRight().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight));
 
   }
 
@@ -159,6 +180,7 @@ public class RobotContainer {
 
     operatorController.rightTrigger().whileTrue(
       new VisionShot(armSub, shooterSub, swerveBase));
+
     //Trap shot
     operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
       .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
@@ -167,7 +189,8 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(
       CommandManager.feedNote(transferSub))
         .onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
-  }
+
+  } 
 
 /* 
   //[OG Saftey Auto]
