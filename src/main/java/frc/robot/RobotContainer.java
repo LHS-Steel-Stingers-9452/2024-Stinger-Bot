@@ -94,7 +94,7 @@ public class RobotContainer {
         //REVIEW - Do we need to keep?
         () -> driverController.rightTrigger().getAsBoolean(),// used to drive robot relative
         () -> driverController.leftBumper().getAsBoolean()// used to decrease speed of chassis
-        //() -> driverController.rightBumper().getAsBoolean()// used to lock onto speaker
+        () -> driverController.rightBumper().getAsBoolean()// used to lock onto speaker
         ));
 
   // Y Button: Zero Gyro
@@ -200,8 +200,8 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
     */
 
-/*     operatorController.rightTrigger()
-      .whileTrue(new VisionShot(armSub, shooterSub, swerveBase)); */
+     operatorController.rightTrigger()
+      .whileTrue(new VisionShot(armSub, shooterSub, swerveBase)); 
 
 
     //Trap shot
