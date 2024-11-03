@@ -15,15 +15,16 @@ import frc.robot.Constants.Swerve.Mod3;
 
 import static frc.robot.Constants.Swerve.*;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-// import edu.wpi.first.math.VecBuilder;
-// import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -48,9 +49,7 @@ public class SwerveBase extends SubsystemBase {
   /** Creates a new SwerveBase. */
   private final Pigeon2 pidgeotto;
 
-  // private final SwerveDrivePoseEstimator swervePose;
-  private final SwerveDriveOdometry swerveOdometry;
-  
+  private final SwerveDrivePoseEstimator swervePose;
   private final SwerveModule[] swerveModules;
 
   private Alliance allianceColor;
@@ -84,18 +83,12 @@ public class SwerveBase extends SubsystemBase {
     Timer.delay(1.0);
     resetModulesToAbsolute();
     
-    // Swerve Pose Estimator
-    /*     swervePose = new SwerveDrivePoseEstimator(
+    //Swerve Pose Estimator
+    swervePose = new SwerveDrivePoseEstimator(
       kinematics, 
       getGyroYaw(), 
       getPositions(), 
-      new Pose2d()); */
-
-    // Swerve Odometry
-    swerveOdometry  = 
-      new SwerveDriveOdometry(kinematics, getGyroYaw(), getPositions());
-    
-    
+      new Pose2d());
 
     AutoBuilder.configureHolonomic(
             this::getPose, // Robot pose supplier
@@ -224,7 +217,7 @@ public class SwerveBase extends SubsystemBase {
   }
 
   public Pose2d getPose(){
-    return swerveOdometry.getPoseMeters();
+    return swervePose.getEstimatedPosition();
   }
 
   public Rotation2d getHeading(){
@@ -242,8 +235,11 @@ public class SwerveBase extends SubsystemBase {
   public ChassisSpeeds getRobotVelocity(){
     return kinematics.toChassisSpeeds(getStates());
   }
-/* 
-  
+
+  /**
+   * 
+   * @return current alliance color
+   */
   private Alliance getAllianceColor(){
       if(allianceColor == null){
         if(DriverStation.getAlliance().isPresent()){
@@ -333,7 +329,6 @@ public double calcDistanceToSpeaker(){
 
     }
 }
- */
 
 
 /*
@@ -341,18 +336,18 @@ public double calcDistanceToSpeaker(){
  */
 
   public void setPose(Pose2d pose){
-    swerveOdometry.resetPosition(getGyroYaw(), getPositions(), pose);
+    swervePose.resetPosition(getGyroYaw(), getPositions(), pose);
 }
 
 public void setHeading(Rotation2d heading){
-  swerveOdometry.resetPosition(
+  swervePose.resetPosition(
     getGyroYaw(), 
     getPositions(), 
     new Pose2d(getPose().getTranslation(), heading));
   }
 
   public void zeroGyro(){
-    swerveOdometry.resetPosition(
+    swervePose.resetPosition(
       getGyroYaw(), 
       getPositions(), 
       new Pose2d(getPose().getTranslation(), new Rotation2d())
@@ -373,11 +368,9 @@ public void setHeading(Rotation2d heading){
     //NOTE - All motor velocity must be measured in RPS[Exception on neo products which can be RPS or RPM]
 
     // This method will be called once per scheduler run
-    // swervePose.update(getGyroYaw(), getPositions());
+    swervePose.update(getGyroYaw(), getPositions());
 
-    swerveOdometry.update(getGyroYaw(), getPositions());
-
-/*     boolean rejectUpdate = false;
+    boolean rejectUpdate = false;
     LimelightHelpers.SetRobotOrientation("limelight", swervePose.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
@@ -390,7 +383,7 @@ public void setHeading(Rotation2d heading){
       swervePose.addVisionMeasurement(
         mt2PoseEstimate.pose, 
         mt2PoseEstimate.timestampSeconds);
-    } */
+    }
     
     //Gyro Yaw and Rate
     SmartDashboard.putNumber("Gyro Rate[Deg/S]", pidgeotto.getRate());
@@ -400,7 +393,7 @@ public void setHeading(Rotation2d heading){
     swerveDisplay.set(getPositions());
     arrayPublisher.set(new Pose2d[] {getPose()});
 
-/*     speakerDistance.setDouble(calcDistanceToSpeaker());
-    speakerRotation.setDouble(rotToSpeaker().getDegrees()); */
+    speakerDistance.setDouble(calcDistanceToSpeaker());
+    speakerRotation.setDouble(rotToSpeaker().getDegrees());
   }
 }
