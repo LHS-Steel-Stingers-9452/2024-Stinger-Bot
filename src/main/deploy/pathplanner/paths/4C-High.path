@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.9,
-        "y": 7.52
+        "x": 7.79,
+        "y": 7.44
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.235343789006004,
-        "y": 7.520326620116567
+        "x": 8.29,
+        "y": 7.44
       },
       "isLocked": false,
       "linkedName": null
@@ -20,36 +20,42 @@
         "y": 7.46
       },
       "prevControl": {
-        "x": 5.23032029963881,
-        "y": 7.519069349408824
+        "x": 5.264859547705466,
+        "y": 7.472524309383573
       },
       "nextControl": {
-        "x": 3.543735170896465,
-        "y": 7.37473208602797
+        "x": 3.5402425045074333,
+        "y": 7.442722100170635
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.71,
-        "y": 6.667299774671107
+        "x": 0.6924444618120005,
+        "y": 6.700750495518085
       },
       "prevControl": {
-        "x": 1.4014142602882713,
-        "y": 6.814156597901747
+        "x": 1.1192667924367188,
+        "y": 7.4592387917963405
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.4,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Back up intake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {

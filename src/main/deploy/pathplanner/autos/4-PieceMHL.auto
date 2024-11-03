@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -34,9 +34,15 @@
                 }
               },
               {
+                "type": "path",
+                "data": {
+                  "pathName": "speaker push"
+                }
+              },
+              {
                 "type": "named",
                 "data": {
-                  "name": "midArmShot"
+                  "name": "shootNote"
                 }
               }
             ]
