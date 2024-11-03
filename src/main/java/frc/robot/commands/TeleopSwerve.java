@@ -29,18 +29,19 @@ public class TeleopSwerve extends Command {
   private BooleanSupplier robotCentricSup;
   private BooleanSupplier slowChassisSup;
 
-  // private BooleanSupplier lockSpeakerSup;
+  private BooleanSupplier lockSpeakerSup;
 
-  // private GenericEntry rotationError;
+  private PIDController rotPIDController;
+
+  private GenericEntry rotationError;
 
   public TeleopSwerve( SwerveBase swerveBase,
   DoubleSupplier xSupplier,
   DoubleSupplier ySupplier,
   DoubleSupplier rotationSup,
   BooleanSupplier robotCentricSup,
-  BooleanSupplier slowChassisSup
-  // BooleanSupplier lockSpeakerSup
-  ) {
+  BooleanSupplier slowChassisSup,
+  BooleanSupplier lockSpeakerSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveBase = swerveBase;
     this.xSupplier = xSupplier;
@@ -48,13 +49,13 @@ public class TeleopSwerve extends Command {
     this.rotationSup = rotationSup;
     this.robotCentricSup = robotCentricSup;    
     this.slowChassisSup = slowChassisSup;
-    // this.lockSpeakerSup = lockSpeakerSup;
+    this.lockSpeakerSup = lockSpeakerSup;
 
     //TODO - Values need to be tuned
-    // rotPIDController = new PIDController(.008, 0, 0.0010);//.3 origin
-    // rotPIDController.enableContinuousInput(-180, 180);
+    rotPIDController = new PIDController(.008, 0, 0.0010);//.3 origin
+    rotPIDController.enableContinuousInput(-180, 180);
 
-    // rotationError = Shuffleboard.getTab("vision").add("rot error[deg]", 0).getEntry();
+    rotationError = Shuffleboard.getTab("vision").add("rot error[deg]", 0).getEntry();
 
     addRequirements(swerveBase);
   }
@@ -70,29 +71,29 @@ public class TeleopSwerve extends Command {
            MathUtil.applyDeadband(xSupplier.getAsDouble(), ControllerConstants.deadbandRange);
 
     double ySpeedVal =
-           MathUtil.applyDeadband(ySupplier.getAsDouble(), ControllerConstants.deadbandRange);
+            MathUtil.applyDeadband(ySupplier.getAsDouble(), ControllerConstants.deadbandRange);
 
     double rotationVal =
-           MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
+            MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerConstants.deadbandRange);
 
     boolean isChassisSlow = 
-           slowChassisSup.getAsBoolean();
+            slowChassisSup.getAsBoolean();
 
-/*     boolean isLockSpeaker =
-            lockSpeakerSup.getAsBoolean(); */
+    boolean isLockSpeaker =
+            lockSpeakerSup.getAsBoolean();
 
     if (isChassisSlow){
       xSpeedVal *= 0.25;
       ySpeedVal *= 0.25;
     }
 
-/*     if(isLockSpeaker){
+    if(isLockSpeaker){
       //NOTE - Currently getting error in degrees
       rotationVal = 
         //TODO -  test and negate if robot is moving opposite of desired rotation
         -rotPIDController.calculate(180 - swerveBase.getGyroYaw().getDegrees(), swerveBase.rotToSpeaker().getDegrees());
         rotationError.setDouble(180 - rotPIDController.getPositionError());
-    } */
+    }
     
     swerveBase.drive(
       (new Translation2d(xSpeedVal, ySpeedVal).times(Swerve.maxSpeed)),
