@@ -41,14 +41,14 @@ public class VisionShot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /* double distanceToSpeaker = swerveSub.calcDistanceToSpeaker();
+    double distanceToSpeaker = swerveSub.calcDistanceToSpeaker();
     ShooterPreset subsystemPresets = visionLookupTable.getShooterPreset(distanceToSpeaker);
     //TODO - Add if statement to first check if robot is within speaker alignment tolerance
     armSub.setPosition(subsystemPresets.getArmAngle());
     shooterSub.runShooter(subsystemPresets.getShooterVeloc());
     if (armSub.atRequestedPos() && shooterSub.areWheelsAtSpeed()){
       LimelightHelpers.setLEDMode_ForceBlink("limelight");
-    } */
+    } 
   }
 
   // Called once the command ends or is interrupted.
