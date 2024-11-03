@@ -50,7 +50,7 @@ public class IntakeNoteReg extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSub.stopIntake();
-    transferSub.stopTransfer(); //working
+    transferSub.stopTransfer(); //command in command nono 
     
     //CommandManager.flashLeds();
   }

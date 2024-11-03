@@ -164,8 +164,8 @@ public class Constants {
         public static final int bottomID = 18;
 
         //Duty cycle value [quick backup shots]
-        public static final double dutySpeakerShot = 0.60;// was 0.50
-        public static final double dutyAmpShot = 0.22;// was .20
+        public static final double dutySpeakerShot = 0.60;// 0.50
+        public static final double dutyAmpShot = 0.22;// .20
 
         public static final double shooterTolerence = 10;
 
@@ -221,7 +221,7 @@ public class Constants {
 
         //moves climbers to max height using dutycycle and log output
         //use number slighly under max for tolerance
-        public static final double maxHight = 480;
+        public static final double maxHeight = 480;
         //min height should be slightly higher than 0 to account for slippage and such
         public static final double minHeight = 19.6;
     }

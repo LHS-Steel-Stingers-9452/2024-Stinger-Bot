@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ControllerConstants;
+
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.CommandManager;
 import frc.robot.commands.TeleopSwerve;
@@ -30,8 +31,10 @@ import frc.robot.subsystems.transfer.Transfer;
 
 public class RobotContainer {
   //Controllers
-  private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverControllerPort);
-  public final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorControllerPort);
+  private final CommandXboxController driverController = 
+    new CommandXboxController(ControllerConstants.driverControllerPort);
+  public final CommandXboxController operatorController = 
+    new CommandXboxController(ControllerConstants.operatorControllerPort);
 
   private final SwerveBase swerveBase;
   private final Intake intakeSub;
@@ -65,9 +68,12 @@ public class RobotContainer {
     configureOperatorBindings();
 
     // Register Named Commands
-    NamedCommands.registerCommand("autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
-    NamedCommands.registerCommand("shootNote", autoCommands.shootNote(shooterSub, transferSub));
-    NamedCommands.registerCommand("midArmShot", autoCommands.midArmShot(armSub, shooterSub, transferSub));
+    NamedCommands.registerCommand(
+      "autoIntake", autoCommands.intakeNote(intakeSub, transferSub));
+    NamedCommands.registerCommand(
+      "shootNote", autoCommands.shootNote(shooterSub, transferSub));
+    NamedCommands.registerCommand(
+      "midArmShot", autoCommands.midArmShot(armSub, shooterSub, transferSub));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -75,102 +81,118 @@ public class RobotContainer {
   }
 
   private void configureDriverBindings(){
-  /* Driver Controls */
+  // Driver Controls 
   
     swerveBase.setDefaultCommand(
       new TeleopSwerve(
         swerveBase,
-        //inverts controls because joysticks are back-right (+) while robot is front-left (+)
+        // inverts controls because joysticks are back-right (+) 
+        // while robot is front-left (+)
         () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
         //REVIEW - Do we need to keep?
-        () -> driverController.rightTrigger().getAsBoolean(),//used to drive robot relative
-        () -> driverController.leftBumper().getAsBoolean(),//used to decrease speed of chassis
-        () -> driverController.rightBumper().getAsBoolean()//used to lock onto speaker
+        () -> driverController.rightTrigger().getAsBoolean(),// used to drive robot relative
+        () -> driverController.leftBumper().getAsBoolean()// used to decrease speed of chassis
+        () -> driverController.rightBumper().getAsBoolean()// used to lock onto speaker
         ));
 
-  //Y Button: Zero Gyro
-  //TODO - Swap buttons out with periodic check of alliance color and value[x,y] inversation based on it
-  //REVIEW -Relocate button, is useful for showcases
+  // Y Button: Zero Gyro
+  // TODO - Swap buttons out with periodic check of alliance color 
+  // and value[x,y] inversation based on it
+  // REVIEW -Relocate button, is useful for showcases
     driverController.y().onTrue(CommandManager.zeroGyro(swerveBase));
 
     driverController.start().onTrue(CommandManager.redReset(swerveBase, 180));
 
     /**
-     * Climber bindings 
+     *  Climber bindings 
      *  Press and hold up d-pad for as long as you want to keep climbers going up
      *  Press and hold down d-pad for as long as you want to keep climbers going down
      */
-    driverController.povUp().whileTrue(new InstantCommand(()-> climberSub.climbUpTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
-    driverController.povDown().whileTrue(new InstantCommand(() -> climberSub.climbDownTest())).whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+    driverController.povUp()
+      .whileTrue(new InstantCommand(()-> climberSub.climbUpTest()))
+      .whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
+
+    driverController.povDown()
+      .whileTrue(new InstantCommand(() -> climberSub.climbDownTest()))
+      .whileFalse(new InstantCommand(()-> climberSub.stopClimber()));
 
     /*Climber setpoints */
-    //Auto set's climbers 
-    //climbers max height
-    //Make sure max value is safe
-    driverController.povLeft().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHight));
-    //climbers min height
-    //Make sure min value is safe
-    driverController.povRight().onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight));
+    // Auto set's climbers 
+    // climbers max height
+    // Make sure max value is safe
+    driverController.povLeft()
+      .onTrue(CommandManager.climberMove(climberSub, ClimberConstants.maxHeight));
+    // Climbers min height
+    // Make sure min value is safe
+    driverController.povRight()
+      .onTrue(CommandManager.climberMove(climberSub, ClimberConstants.minHeight));
 
   }
 
   private void configureOperatorBindings(){
-  /*add vision to determine speed and angle necessary to score in speaker */
+  // add vision to determine speed and angle necessary to score in speaker 
 
-    /**
+    /*
      * Intake Related Bindings
      * */
-    //Left Bumber: Auto intake *Press once and it will run until canceled or overwritten*
-    operatorController.leftBumper().onTrue(
-      autoCommands.intakeNote(intakeSub, transferSub));
+    // Left Bumber: Auto intake *Press once and it will run until canceled or overwritten*
+    operatorController.leftBumper()
+      .onTrue(autoCommands.intakeNote(intakeSub, transferSub));
 
-    //Dpad up: manually intake
-    operatorController.povUp().whileTrue(
-      CommandManager.intakeNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+    // Dpad up: manually intake
+    operatorController.povUp()
+      .whileTrue(CommandManager.intakeNote(intakeSub, transferSub))
+      .onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
-    //Dpad down: manually spit out
-    operatorController.povDown().whileTrue(
-      CommandManager.spitNote(intakeSub, transferSub)).onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
+    // Dpad down: manually spit out
+    operatorController.povDown()
+      .whileTrue(CommandManager.spitNote(intakeSub, transferSub))
+      .onFalse(CommandManager.stopIntaking(intakeSub, transferSub));
 
-    //POV Left: E stop for intake and trasnfer [Added requirements on Instant Commands so should interrupt autoIntaking]
-    operatorController.start().onTrue(
-      CommandManager.eStop(intakeSub, transferSub, armSub, shooterSub));
+    // POV Left: E stop for intake and trasnfer 
+    // [Added requirements on Instant Commands so should interrupt autoIntaking]
+    operatorController.start()
+      .onTrue(CommandManager.eStop(intakeSub, transferSub, armSub, shooterSub));
 
   /**
   * Arm Related Bindings
   * */
-  //amp state
+  // amp state
     operatorController.y()
       .onTrue(
         new ParallelCommandGroup(
-          new InstantCommand(()-> armSub.setPosition(0.218), armSub), // intial pos 0.23
-          new InstantCommand(() -> shooterSub.redirect(-0.35), shooterSub)));
+          new InstantCommand(()-> 
+            armSub.setPosition(0.218), armSub), // pos 0.23
+          new InstantCommand(() -> 
+            shooterSub.dutyShot(ShooterConstants.dutyAmpShot), shooterSub)));
 
 
     //slighly elevated state
     operatorController.b()
-      .onTrue(
-        new InstantCommand(()-> armSub.setPosition(0.096), armSub));
+      .onTrue(new InstantCommand(()-> armSub.setPosition(0.096), armSub));
 
     //slighly elevated state
     operatorController.x()
-      .onTrue(
-        new InstantCommand(()-> armSub.setPosition(0.024), armSub));
+      .onTrue(new InstantCommand(()-> armSub.setPosition(0.024), armSub));
     
     //bring arm to default position
     operatorController.a()
-      .onTrue(
-        new InstantCommand(()-> armSub.setPosition(0.0), armSub));
+      .onTrue(new InstantCommand(()-> armSub.setPosition(0.0), armSub));
 
   /**
   * Shoot Related Bindings
   * */
   //Right Trigger: Manual speaker speed [dutycycle]
-    operatorController.leftTrigger().whileTrue(
-      new InstantCommand(() -> shooterSub.dutyShot(ShooterConstants.dutySpeakerShot)))
-        .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
+    operatorController.leftTrigger()
+      .whileTrue(
+          new InstantCommand(() -> 
+            shooterSub.dutyShot(ShooterConstants.dutySpeakerShot)))
+      .onFalse(
+          new InstantCommand(()-> 
+            shooterSub.dutyStop()));
+
     /* 
     operatorController.leftTrigger().whileTrue(
       new InstantCommand(() -> shooterSub.dutyShot(1)))\[]
@@ -178,18 +200,19 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
     */
 
-    operatorController.rightTrigger().whileTrue(
-      new VisionShot(armSub, shooterSub, swerveBase));
+     operatorController.rightTrigger()
+      .whileTrue(new VisionShot(armSub, shooterSub, swerveBase)); 
+
 
     //Trap shot
-    operatorController.rightStick().whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
+    operatorController.rightStick()
+      .whileTrue(new InstantCommand(() -> shooterSub.dutyShot(0.38)))
       .onFalse(new InstantCommand(()-> shooterSub.dutyStop()));
 
   //Right Bumber: Feed Note to shooter [run transfer]
-    operatorController.rightBumper().whileTrue(
-      CommandManager.feedNote(transferSub))
-        .onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
-
+    operatorController.rightBumper()
+      .whileTrue(CommandManager.feedNote(transferSub))
+      .onFalse(new InstantCommand(()-> transferSub.stopTransfer()));
   } 
 
 /* 

@@ -100,13 +100,17 @@ public class Shooter extends SubsystemBase {
     canShoot.setBoolean(areWheelsAtSpeed());
 
     //FIXME - Logic could be flaw not allowing the motors to move when requested
-    //NOTE - By the time motors leads are shorted coast mode will be applied so the else{} logic is uncessecarry
-    //REVIEW - Logic needs secand hand confirmation review, but issues hould be resolved
+    //NOTE - By the time motors leads are shorted coast mode will be applied 
+    // so the else{} logic is uncessecarry
+    //REVIEW - Logic needs secand hand confirmation review, 
+    // but issues hould be resolved
+
     /* 
     if ((areWheelsAtSpeed()) && (targetVelocValue == 0)){
       coastMode();
     } 
     */
+   
   }
 
     /**
@@ -118,7 +122,7 @@ public class Shooter extends SubsystemBase {
     botttomFlywheel.set(speed);
   }
 
-      public void redirect(double speed){
+  public void redirect(double speed){
     topFlywheel.set(speed);
   
   }

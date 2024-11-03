@@ -48,7 +48,7 @@ public class VisionShot extends Command {
     shooterSub.runShooter(subsystemPresets.getShooterVeloc());
     if (armSub.atRequestedPos() && shooterSub.areWheelsAtSpeed()){
       LimelightHelpers.setLEDMode_ForceBlink("limelight");
-    }
+    } 
   }
 
   // Called once the command ends or is interrupted.
