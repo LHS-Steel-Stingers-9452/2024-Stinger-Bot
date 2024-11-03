@@ -93,7 +93,7 @@ public class RobotContainer {
         () -> -driverController.getRightX(),
         //REVIEW - Do we need to keep?
         () -> driverController.rightTrigger().getAsBoolean(),// used to drive robot relative
-        () -> driverController.leftBumper().getAsBoolean()// used to decrease speed of chassis
+        () -> driverController.leftBumper().getAsBoolean(),// used to decrease speed of chassis
         () -> driverController.rightBumper().getAsBoolean()// used to lock onto speaker
         ));
 
