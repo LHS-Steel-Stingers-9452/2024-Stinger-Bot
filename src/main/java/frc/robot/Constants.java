@@ -221,7 +221,7 @@ public class Constants {
 
         //moves climbers to max height using dutycycle and log output
         //use number slighly under max for tolerance
-        public static final double maxHight = 480;
+        public static final double maxHeight = 480;
         //min height should be slightly higher than 0 to account for slippage and such
         public static final double minHeight = 19.6;
     }
